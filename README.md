@@ -8,5 +8,5 @@ ComeOn design token architecture — a 5-collection, multi-axis Figma Variables 
 - Architecture deck: <https://zlatkolazarov-rgb.github.io/design-tokens/design-token-architecture-v2.html>
 - Token reference: <https://zlatkolazarov-rgb.github.io/design-tokens/design-token-reference.html>
 
-Updates: push to `main` and Pages redeploys automatically within ~1 minute.
+Updates: push to `main` and Pages redeploys automatically within ~1 minute. Claude auto-syncs via a `PostToolUse` hook — every edit to files in this repo is committed and pushed automatically.
 
