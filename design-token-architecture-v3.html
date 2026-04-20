@@ -798,12 +798,12 @@
       <span class="section-num">17</span>
       <span class="tag">v2 ↔ v3</span>
     </div>
-    <h2>v2 is the <span class="teal">foundation</span>. v3 is the <span class="accent">field patch</span>.</h2>
-    <p class="lead" style="margin-bottom: 22px;">v2 defined the 5 collections, the axes, the 4-point scale, the SemVer cadence. None of that changes. v3 extends the <i>contents</i> of the semantic layer and promotes the component-alias layer to first-class status — nothing more, nothing less.</p>
+    <h2>v3 stands alone. v2 is the <span class="teal">history</span>.</h2>
+    <p class="lead" style="margin-bottom: 22px;">The 5-collection model, the axes, the 4-point scale — all inherited from v2 and unchanged. v3 extends the <b>contents</b> of Collections 3 (Semantic) and 5 (Component). v2 lives in the Archive as the record of how we got here.</p>
 
     <div class="grid-2">
       <div class="card">
-        <h4>v2 owns</h4>
+        <h4>Carried over from v2, unchanged</h4>
         <ul class="arrow">
           <li>The 5-collection model</li>
           <li>The 4 axes (brand × theme × jurisdiction × viewport)</li>
@@ -811,20 +811,21 @@
           <li>SemVer, quarterly cadence</li>
           <li>Jurisdiction modes (SE · DK · MT · ON · NL · PL + default)</li>
           <li>The 20-brand scaling story</li>
+          <li>All iGaming semantic families (odds, betslip, casino, VIP, launcher, etc.)</li>
         </ul>
-        <p style="margin-top: 14px;"><a href="design-token-architecture-v2.html" style="color: var(--teal);">→ Open Architecture v2</a></p>
+        <p style="margin-top: 14px;"><a href="design-token-architecture-v2.html" style="color: var(--text-muted);">→ Archive: Architecture v2 (for historical reference)</a></p>
       </div>
       <div class="card highlight">
         <h4 class="teal">v3 adds</h4>
         <ul class="check">
-          <li>10 new semantic roles (pill, badge, modal radius, icon.nav-selected, banner.overlay, banner.on-surface)</li>
-          <li>Promotes Component aliases to a named layer</li>
-          <li>4 new alias packs (menu-row, view-all, nav, header, cta-context)</li>
-          <li>CTA Radius becomes context-scoped (form / card / wallet / landing)</li>
-          <li>Marketing-designer permission matrix</li>
-          <li>Intentional-splits README convention</li>
+          <li><b>Collection 3 · Semantic</b>: 10 new roles (<code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">radius.modal</code>, <code class="inline">radius.badge</code>, <code class="inline">color.icon.nav-selected</code>, <code class="inline">banner.overlay</code>, <code class="inline">banner.on-surface</code>)</li>
+          <li><b>Collection 5 · Component</b>: expanded from v2's &lt;10 tokens to ~35 alias packs (<code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code>, <code class="inline">header.*</code>, <code class="inline">cta.*</code>)</li>
+          <li>CTA radius becomes a Figma <b>component variant</b> axis (form / card / wallet / landing) — not a mode axis</li>
+          <li>Marketing-designer permission matrix: edit brand-mode values on Collection 1 only</li>
+          <li>Intentional-splits README convention inside the Figma file</li>
+          <li>Nine-brand audit evidence feeding every decision</li>
         </ul>
-        <p style="margin-top: 14px;"><a href="design-token-reference-v3.html" style="color: var(--teal);">→ Open Token Reference v3</a></p>
+        <p style="margin-top: 14px;"><a href="design-token-reference-v3.html" style="color: var(--teal);">→ Open Token Reference v3 (full catalogue)</a></p>
       </div>
     </div>
   </div>
