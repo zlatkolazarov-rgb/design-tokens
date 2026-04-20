@@ -81,6 +81,12 @@
   .pill.warn { background: rgba(253, 203, 110, 0.1); color: var(--warning); border-color: rgba(253, 203, 110, 0.3); }
   .pill.new { background: rgba(0, 212, 180, 0.15); color: var(--teal); }
 
+  /* v3 section status badges */
+  .v3-badge { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; }
+  .v3-badge.stable { color: var(--text-muted); border: 1px solid var(--border); background: var(--bg-code); }
+  .v3-badge.evo    { color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.4); background: rgba(0, 212, 180, 0.08); }
+  .v3-badge.newv3  { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.4); background: rgba(253, 203, 110, 0.1); }
+
   .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin: 24px 0 40px; }
   .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
   .stat-num { font-family: 'Sora', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--purple-light); line-height: 1; }
