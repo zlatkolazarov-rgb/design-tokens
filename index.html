@@ -84,38 +84,26 @@
     </header>
 
     <section>
-      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">design system</span></h2>
-      <p class="desc">The strategy decks. v3 builds on v2 — keep both open for full context.</p>
-      <div class="cards two">
-        <a class="card primary" href="design-token-architecture-v3.html">
-          <div class="meta"><span>Deck</span><span class="v">· v3</span><span class="badge new">New</span></div>
-          <h3>Architecture v3 <span class="badge v3">current</span></h3>
-          <p>Edge cases from the 9-brand audit absorbed into the architecture. 3 new semantic families, 4 new component alias packs, context-scoped CTA radius, marketing-designer permission matrix, non-breaking migration path from v2.</p>
-          <span class="arrow">Open deck →</span>
-        </a>
-        <a class="card archived" href="design-token-architecture-v2.html">
-          <div class="meta"><span>Deck</span><span class="v">· v2</span><span class="badge v2">foundation</span></div>
-          <h3>Architecture v2</h3>
-          <p>The 5-collection model, the four axes (brand × theme × jurisdiction × viewport), the 4-point scale linked to 1rem = 16px. v3 builds on this; it still defines the architectural foundation.</p>
+      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">current</span></h2>
+      <p class="desc">The current design-token architecture. v3 is standalone — it stands on its own, not in combination with v2.</p>
+      <div class="cards">
+        <a class="card primary" href="design-token-architecture-v3.html" style="grid-column: 1 / -1;">
+          <div class="meta"><span>Deck · 19 slides</span><span class="v">· 2026-04-20</span><span class="badge v3">current</span></div>
+          <h3>Architecture v3</h3>
+          <p>The standalone architecture. Five collections (Primitives with 20 brand modes · Theme · Semantic · Regulatory · Component). Nine-brand edge-case audit absorbed into the semantic + component layers. Implementation diagram shows the full token-resolution chain. Marketing-designer permission matrix and intentional-splits documentation convention.</p>
           <span class="arrow">Open deck →</span>
         </a>
       </div>
     </section>
 
     <section>
-      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">tables</span></h2>
-      <p class="desc">Detailed token listings. v3 covers the proposed new set; v2 covers the complete existing token catalogue.</p>
-      <div class="cards two">
-        <a class="card primary" href="design-token-reference-v3.html">
-          <div class="meta"><span>Reference</span><span class="v">· v3</span><span class="badge new">New</span></div>
-          <h3>Token Reference v3 <span class="badge v3">proposed set</span></h3>
-          <p>The new tokens v3 introduces: <code>pill.*</code>, <code>badge.*</code>, <code>radius.modal</code>, <code>color.icon.nav-selected</code>, <code>banner.overlay</code>, plus alias packs <code>menu-row.*</code>, <code>view-all.*</code>, <code>nav.*</code>, <code>header.*</code>, <code>cta.*</code>. With per-brand sample values for the 9 audited brands.</p>
-          <span class="arrow">Open reference →</span>
-        </a>
-        <a class="card archived" href="design-token-reference.html">
-          <div class="meta"><span>Reference</span><span class="v">· v2</span><span class="badge v2">complete catalogue</span></div>
-          <h3>Token Reference v2</h3>
-          <p>The full v2 catalogue — every token across all 5 collections with aliases, modes, and example values. Source of truth for everything not changed by v3.</p>
+      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">full catalogue</span></h2>
+      <p class="desc">Every token that needs to exist in Figma, across all five collections, with status badges showing what changed from v2.</p>
+      <div class="cards">
+        <a class="card primary" href="design-token-reference-v3.html" style="grid-column: 1 / -1;">
+          <div class="meta"><span>Reference · ~585 tokens</span><span class="v">· 2026-04-20</span><span class="badge v3">current</span></div>
+          <h3>Token Reference v3</h3>
+          <p>Complete token list. Inherits every v2 token (marked <code>stable</code> or <code>evolved</code>) and adds the v3 semantic families (<code>pill.*</code>, <code>badge.*</code>, <code>banner.*</code>, icon roles, <code>radius.modal</code>) plus the expanded Collection 5 component packs (<code>menu-row.*</code>, <code>view-all.*</code>, <code>nav.*</code> with split, <code>header.*</code>, <code>cta.*</code> with four context variants).</p>
           <span class="arrow">Open reference →</span>
         </a>
       </div>
@@ -123,7 +111,7 @@
 
     <section>
       <h2><span class="sec-num">03</span> Audits <span class="sec-tag">evidence base</span></h2>
-      <p class="desc">The raw data behind v3. Useful when arguing a specific edge case or onboarding new designers.</p>
+      <p class="desc">The raw data feeding v3. Useful when arguing a specific edge case or onboarding new designers.</p>
       <div class="cards two">
         <a class="card" href="brand-audit.html">
           <div class="meta"><span>Audit</span><span class="v">· per-brand</span></div>
@@ -140,19 +128,21 @@
       </div>
     </section>
 
-    <section>
-      <h2><span class="sec-num">04</span> Archive <span class="sec-tag">history</span></h2>
-      <p class="desc">Superseded but kept for history and diffing.</p>
-      <div class="cards three">
+    <section id="archive">
+      <h2><span class="sec-num">04</span> Archive <span class="sec-tag">process history</span></h2>
+      <p class="desc">v2 is preserved here as a record of how we got to v3 — the foundational 5-collection model the current architecture inherits. Not for day-to-day use; open v3 above.</p>
+      <div class="cards two">
         <a class="card archived" href="design-token-architecture-v2.html">
-          <div class="meta"><span>Deck</span><span class="v">· 2026-04-17</span></div>
+          <div class="meta"><span>Deck · v2</span><span class="v">· 2026-04-17</span><span class="badge v2">superseded by v3</span></div>
           <h3>Architecture v2</h3>
-          <p>5-collection walkthrough. Still load-bearing — v3 extends it rather than replacing.</p>
+          <p>The original 22-slide walkthrough. Locked the 5-collection model, the four axes (brand × theme × jurisdiction × viewport), the 4-point scale linked to 1rem = 16px. v3 inherits the shape from here and extends the contents of Collections 3 and 5.</p>
+          <span class="arrow">Open archived deck →</span>
         </a>
         <a class="card archived" href="design-token-reference.html">
-          <div class="meta"><span>Reference</span><span class="v">· 2026-04-17</span></div>
-          <h3>Reference v2</h3>
-          <p>Full v2 token catalogue. Source of truth for unchanged tokens.</p>
+          <div class="meta"><span>Reference · v2</span><span class="v">· 2026-04-17</span><span class="badge v2">superseded by v3</span></div>
+          <h3>Token Reference v2</h3>
+          <p>The original ~550-token catalogue. v3 carries all of these forward and adds ~35 new tokens. Kept here to show what v3 was built on top of.</p>
+          <span class="arrow">Open archived reference →</span>
         </a>
       </div>
     </section>
