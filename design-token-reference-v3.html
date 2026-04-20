@@ -262,30 +262,47 @@
 <!-- ============ MAIN ============ -->
 <main id="top">
 
-<div class="kicker">20-Brand White Label · Casino &amp; Sportsbook · v2</div>
-<h1>Design Token Reference</h1>
-<p class="lead">Every token that needs to exist in Figma, organised by collection and group. Use this alongside the <a href="design-token-architecture-v2.html">architecture presentation</a>, which explains why the structure looks this way.</p>
+<div class="kicker">20-Brand White Label · Casino &amp; Sportsbook · v3 · 2026-04-20</div>
+<h1>Design Token Reference v3</h1>
+<p class="lead">The full catalogue — every token that needs to exist in Figma, organised by the 5 collections. v3 is the current architecture; it inherits the v2 foundation and absorbs the 9-brand edge-case audit. See the <a href="design-token-architecture-v3.html">Architecture v3 deck</a> for the rationale and implementation diagram, and the <a href="brand-audit.html">Brand Audit</a> for per-brand evidence.</p>
 
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 24px;">
   <span class="pill">20 brands</span>
   <span class="pill">light + dark</span>
-  <span class="pill">SE · DK · MT · ON · NL · PL</span>
+  <span class="pill">SE · DK · MT · ON · NL · PL + default</span>
   <span class="pill brand">Figma Enterprise · native</span>
   <span class="pill">4-pt · 1rem = 16px</span>
+  <span class="pill warn">marketing edits Collection 1</span>
 </div>
 
 <div class="stat-row">
   <div class="stat"><div class="stat-num">5</div><div class="stat-label">collections</div></div>
-  <div class="stat"><div class="stat-num">~550</div><div class="stat-label">tokens</div></div>
-  <div class="stat"><div class="stat-num">~2.3K</div><div class="stat-label">values</div></div>
+  <div class="stat"><div class="stat-num">~585</div><div class="stat-label">tokens</div></div>
+  <div class="stat"><div class="stat-num">~2.4K</div><div class="stat-label">values</div></div>
   <div class="stat"><div class="stat-num">4px</div><div class="stat-label">scale base</div></div>
   <div class="stat"><div class="stat-num">7</div><div class="stat-label">jurisdictions</div></div>
 </div>
 
+<section id="legend">
 <div class="note-card teal">
-  <h4>How to read these tables</h4>
-  <p style="margin: 0;"><strong>Token path</strong> is the Figma Variable name (slashes become groups). <strong>Type</strong> is the Figma Variable type (<code class="inline">Color</code>, <code class="inline">Number</code>, <code class="inline">String</code>, <code class="inline">Boolean</code>). <strong>Value / Alias</strong> shows the raw value or what it aliases to. Dimension Numbers are px in Figma; the export script converts to rem (<code class="inline">rem = px / 16</code>).</p>
+  <h4>How to read v3</h4>
+  <p style="margin: 0 0 10px;"><strong>Token path</strong> is the Figma Variable name (slashes become groups). <strong>Type</strong> is the Figma Variable type (<code class="inline">Color</code>, <code class="inline">Number</code>, <code class="inline">String</code>, <code class="inline">Boolean</code>). <strong>Value / Alias</strong> shows the raw value or what it aliases to. Dimension Numbers are px in Figma; the export script converts to rem (<code class="inline">rem = px / 16</code>).</p>
+  <p style="margin: 0;"><strong>Status badges</strong> mark what changed from v2:
+    <span class="v3-badge stable">stable</span> unchanged from v2 ·
+    <span class="v3-badge evo">evolved</span> v2 token with renamed / expanded semantics ·
+    <span class="v3-badge newv3">v3</span> introduced in v3 based on the brand audit.
+  </p>
 </div>
+
+<div class="note-card warn">
+  <h4>What v3 adds over v2</h4>
+  <ul style="margin: 6px 0 0 18px; font-size: 0.92rem; line-height: 1.7;">
+    <li><b>Collection 3 · Semantic</b> — five new families: <code class="inline">icon.*</code> (3-way split explicit), <code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">banner.*</code> (overlay + on-surface), and <code class="inline">radius.modal</code> / <code class="inline">radius.badge</code>.</li>
+    <li><b>Collection 5 · Component</b> — expanded from v2's &lt;10 last-resort tokens to ~35 proper alias packs: <code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code> (with icon/text split), <code class="inline">header.*</code>, <code class="inline">cta.*</code> with 4 component variants (form / card / wallet / landing).</li>
+    <li><b>No structural change</b> — five collections, same axes. Brand remains a 20-mode axis on Collection 1. Theme = 2 modes on Collection 2. Jurisdiction = 7 modes on Collection 4. Semantic + Component are global.</li>
+  </ul>
+</div>
+</section>
 
 <!-- ============================================================
      COLLECTION 1 — PRIMITIVES
