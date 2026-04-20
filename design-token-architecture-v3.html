@@ -728,22 +728,22 @@
       <div class="card">
         <h4 class="teal">Step 1</h4>
         <h3>Add tokens</h3>
-        <p class="card-note">Create the new semantic roles (<code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">radius.modal</code>) and component aliases (<code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code>, <code class="inline">cta-context.*</code>). Default each new token to alias today's value so nothing renders differently.</p>
+        <p class="card-note">In <b>Collection 3 · Semantic</b>, add the new roles (<code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">radius.modal</code>, <code class="inline">color.icon.nav-selected</code>, <code class="inline">banner.overlay</code>). In <b>Collection 5 · Component</b>, add the alias packs (<code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code>, <code class="inline">header.*</code>, <code class="inline">cta.*</code>). Default each to alias today's value.</p>
       </div>
       <div class="card">
         <h4 class="teal">Step 2</h4>
         <h3>Rewire masters</h3>
-        <p class="card-note">Repoint the Pill, Menu Item, View-All, Bottom Navbar, Button masters from their current tokens to the new aliases. Verify pixel-parity on the 9 brand rows before merging.</p>
+        <p class="card-note">Repoint Pill, Menu Item, View-All, Bottom Navbar, Button, Banner masters from their current tokens to the new Collection 5 aliases. For CTA, also create 4 component variants (form / card / wallet / landing) each binding to its own <code class="inline">radius.cta.*</code> token. Verify pixel-parity on the 9 brand rows before merging.</p>
       </div>
       <div class="card">
         <h4 class="teal">Step 3</h4>
-        <h3>Brand overrides</h3>
-        <p class="card-note">In each brand mode, override only the new tokens where a deliberate split is required (e.g. reviant-A splits <code class="inline">nav.selected-icon</code> from <code class="inline">nav.selected-text</code>). Leave everything else defaulted.</p>
+        <h3>Brand-mode values</h3>
+        <p class="card-note">In <b>Collection 1 · Primitives</b>, under each of the 20 brand modes, populate the new ramp stops that the v3 semantic roles alias through. Overrides only where a deliberate split is required (reviant-A <code class="inline">nav.selected-icon</code> ≠ <code class="inline">nav.selected-text</code>). Leave the rest defaulted.</p>
       </div>
       <div class="card">
         <h4 class="teal">Step 4</h4>
         <h3>Lock + document</h3>
-        <p class="card-note">Lock collections 1, 2, 3 to read-only for non-DS editors. Add README frame with intentional-splits list. Publish branch; invite marketing team to validate.</p>
+        <p class="card-note">Lock <b>Collections 2, 3, 5</b> to read-only for non-DS editors. Keep Collection 1 editable by Marketing (brand-mode values only) and Collection 4 gated by Compliance. Add README frame with intentional-splits list. Publish branch; invite marketing team to validate.</p>
       </div>
     </div>
 
