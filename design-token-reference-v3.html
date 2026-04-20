@@ -1557,6 +1557,97 @@
 </section>
 
 <!-- ============================================================
+     v3 ADDITIONS TO SEMANTIC (3.26 – 3.30)
+     Icon · Pill · Badge · Banner · Radius roles
+     ============================================================ -->
+
+<section id="s-icon">
+<h3>3.26 · Icon <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— three-way split, informed by the brand audit</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Three distinct icon roles that 4 of 9 audited brands diverge (getlucky, reviant-A, reviant-B, 888.nl). <code class="inline">color.icon.action</code> is never auto-aliased to <code class="inline">color.primary</code> — brands that reserve the primary for CTAs (mobilespin, 888.nl) must be free to tint icons independently.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">color/icon/content</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600 <em>or</em> text/primary</td><td class="note">Illustrative content icons (hero illustrations, category art)</td></tr>
+    <tr><td class="mono">color/icon/descriptive</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600 <em>or</em> text/secondary</td><td class="note">Small icons that label menu rows</td></tr>
+    <tr><td class="mono">color/icon/action</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600 <em>or</em> text/muted</td><td class="note">Chevrons, arrows, carets — brands can diverge from primary</td></tr>
+    <tr><td class="mono">color/icon/nav-selected</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600</td><td class="note">Bottom-nav selected icon — reviant-A splits this from nav label</td></tr>
+    <tr><td class="mono">color/icon/disabled</td><td class="t-color">Color</td><td class="mono-dim">text/disabled</td><td class="note">Any icon in disabled state</td></tr>
+    <tr><td class="mono">color/icon/inverse</td><td class="t-color">Color</td><td class="mono-dim">text/inverse</td><td class="note">Icons on inverse surfaces</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="s-pill">
+<h3>3.27 · Pill <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— new semantic family (was borrowed from Sub Menu in v2)</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Dedicated role family for Pill / Filter Pill / Navigation Pill / Small Pill / segmented pill component-sets. Replaces the accidental <code class="inline">Sub Menu/*</code> borrowing that caused cross-brand pill drift in v2.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">pill/surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-100 <em>or</em> color/neutral-100</td><td class="note">Default state bg</td></tr>
+    <tr><td class="mono">pill/on-surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-800 <em>or</em> text/primary</td><td class="note">Default label + icon</td></tr>
+    <tr><td class="mono">pill/border</td><td class="t-color">Color</td><td class="mono-dim">color/always/transparent <em>or</em> color/brand/primary-500</td><td class="note">Outline-style brands (reviant-B) use visible stroke</td></tr>
+    <tr><td class="mono">pill/surface-hover</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-200</td><td class="note">Hover state</td></tr>
+    <tr><td class="mono">pill/surface-selected</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600</td><td class="note">Selected / active</td></tr>
+    <tr><td class="mono">pill/on-surface-selected</td><td class="t-color">Color</td><td class="mono-dim">color/always/white</td><td class="note">Label on selected</td></tr>
+    <tr><td class="mono">pill/border-selected</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-700</td><td class="note">Stroked selected</td></tr>
+    <tr><td class="mono">pill/surface-disabled</td><td class="t-color">Color</td><td class="mono-dim">color/neutral-100</td><td class="note"></td></tr>
+    <tr><td class="mono">pill/on-surface-disabled</td><td class="t-color">Color</td><td class="mono-dim">text/disabled</td><td class="note"></td></tr>
+    <tr><td class="mono">pill/padding-x</td><td class="t-num">Number</td><td class="mono-dim">spacing/3 · 12px</td><td class="note">Horizontal padding</td></tr>
+    <tr><td class="mono">pill/padding-y</td><td class="t-num">Number</td><td class="mono-dim">spacing/1 · 4px</td><td class="note">Vertical padding</td></tr>
+    <tr><td class="mono">pill/gap</td><td class="t-num">Number</td><td class="mono-dim">spacing/1 · 4px</td><td class="note">Gap between icon + label</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="s-badge">
+<h3>3.28 · Badge <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— formalises the single Main/Badge primitive from v2</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Extends v2's lone <code class="inline">Main/Badge</code> primitive into a full family so brands can set on-surface and border independently.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">badge/surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/secondary-500 <em>or</em> color/status/error-500</td><td class="note">Was Main/Badge in v2</td></tr>
+    <tr><td class="mono">badge/on-surface</td><td class="t-color">Color</td><td class="mono-dim">color/always/white</td><td class="note">Label / count</td></tr>
+    <tr><td class="mono">badge/border</td><td class="t-color">Color</td><td class="mono-dim">color/always/transparent</td><td class="note">Optional stroke</td></tr>
+    <tr><td class="mono">badge/min-size</td><td class="t-num">Number</td><td class="mono-dim">16</td><td class="note">Smallest dot indicator</td></tr>
+    <tr><td class="mono">badge/dot-surface</td><td class="t-color">Color</td><td class="mono-dim">color/status/error-500</td><td class="note">Unread-dot variant (no count)</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="s-banner">
+<h3>3.29 · Banner <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— evolved from Banner/Background + Banner/Stroke (v2)</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Completes the banner family with <code class="inline">banner.on-surface</code> and <code class="inline">banner.overlay</code> so hero cards stop using inline fills.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">banner/surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-700</td><td class="note"><span class="v3-badge evo">evolved</span> was Banner/Background</td></tr>
+    <tr><td class="mono">banner/stroke</td><td class="t-color">Color</td><td class="mono-dim">color/always/transparent</td><td class="note"><span class="v3-badge evo">evolved</span> was Banner/Stroke; reviant-B sets to #ff4655</td></tr>
+    <tr><td class="mono">banner/on-surface</td><td class="t-color">Color</td><td class="mono-dim">color/always/white</td><td class="note">Banner text + icon</td></tr>
+    <tr><td class="mono">banner/overlay</td><td class="t-color">Color</td><td class="mono-dim">color/always/black × opacity/40</td><td class="note">Gradient / scrim over hero imagery</td></tr>
+    <tr><td class="mono">banner/accent</td><td class="t-color">Color</td><td class="mono-dim">color/brand/secondary-500</td><td class="note">Secondary brand accent within banner</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="s-radius-sem">
+<h3>3.30 · Radius roles <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— semantic mapping on top of radius primitives</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Role-level radius tokens that map intent ("this is a modal") to a primitive ("radius/lg"). v3 adds <code class="inline">radius.modal</code> and <code class="inline">radius.badge</code> so brands can tune modal/badge corners independently from cards.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">radius/card</td><td class="t-num">Number</td><td class="mono-dim">radius/md <em>or</em> radius/lg</td><td class="note"><span class="v3-badge evo">evolved</span> role-layer over primitive</td></tr>
+    <tr><td class="mono">radius/input</td><td class="t-num">Number</td><td class="mono-dim">radius/sm <em>or</em> radius/md</td><td class="note"><span class="v3-badge evo">evolved</span> role-layer</td></tr>
+    <tr><td class="mono">radius/pill</td><td class="t-num">Number</td><td class="mono-dim">radius/full</td><td class="note"><span class="v3-badge evo">evolved</span> role-layer</td></tr>
+    <tr><td class="mono">radius/badge</td><td class="t-num">Number</td><td class="mono-dim">radius/sm · 4px</td><td class="note"><span class="v3-badge newv3">v3</span> independent from card</td></tr>
+    <tr><td class="mono">radius/modal</td><td class="t-num">Number</td><td class="mono-dim">radius/xl · 16px</td><td class="note"><span class="v3-badge newv3">v3</span> independent from card (reviant-B 0)</td></tr>
+    <tr><td class="mono">radius/navigation</td><td class="t-num">Number</td><td class="mono-dim">radius/none · 0</td><td class="note"><span class="v3-badge evo">evolved</span> reviant-A sets to 12</td></tr>
+    <tr><td class="mono">radius/focus-ring</td><td class="t-num">Number</td><td class="mono-dim">radius/sm</td><td class="note">Focus ring around interactive</td></tr>
+  </tbody>
+</table>
+<p class="dim" style="font-size: 0.85rem; margin-top: 6px;"><strong>Note on CTA radius</strong>: in v3 <code class="inline">cta.radius</code> is resolved via Figma <b>component variants</b> (form / card / wallet / landing), not a semantic role alias. See Collection 5 <a href="#c-cta">cta.*</a>.</p>
+</section>
+
+<!-- ============================================================
      COLLECTION 4 — REGULATORY
      ============================================================ -->
 <h2 id="c4">Collection 4 · Regulatory <span class="pill warn" style="font-size: 0.7rem; vertical-align: middle;">7 modes · default · SE · DK · MT · ON · NL · PL</span></h2>
