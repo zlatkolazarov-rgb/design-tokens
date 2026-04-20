@@ -674,30 +674,31 @@
       <span class="tag teal">Marketing-designer editability</span>
     </div>
     <h2>One layer edits. Four layers protect.</h2>
-    <p class="lead" style="margin-bottom: 22px;">The point of the 5-collection model is that each layer has an <strong>owner</strong> and a <strong>lock</strong>. v3 makes this explicit.</p>
+    <p class="lead" style="margin-bottom: 22px;">Marketing designers edit <b>brand-mode values on Collection 1</b> — and nothing else. Every other collection is locked.</p>
 
     <div class="grid-2">
       <div>
         <h4 style="margin-bottom: 10px;">Ownership matrix</h4>
         <table class="compact">
-          <thead><tr><th>Collection</th><th>Editor</th><th>Permission</th></tr></thead>
+          <thead><tr><th>Collection</th><th>Modes</th><th>Editor</th><th>Permission</th></tr></thead>
           <tbody>
-            <tr><td>1 · Primitives</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
-            <tr><td>2 · Semantic roles</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
-            <tr><td>3 · Component aliases</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
-            <tr><td>4 · Brand modes</td><td class="teal"><b>Marketing designers</b></td><td><span class="pill-chip" style="background: rgba(0,212,180,0.18); color: var(--teal);">Edit</span></td></tr>
-            <tr><td>5 · Jurisdiction</td><td class="dim">Compliance + DS team</td><td><span class="pill-chip warn">Edit with review</span></td></tr>
+            <tr><td>1 · Primitives</td><td class="dim">20 brand modes</td><td class="teal"><b>Marketing + DS</b></td><td><span class="pill-chip" style="background: rgba(0,212,180,0.18); color: var(--teal);">Edit brand-mode values</span></td></tr>
+            <tr><td>2 · Theme</td><td class="dim">2 (light / dark)</td><td class="dim">DS team</td><td><span class="pill-chip">Read-only (rarely changes)</span></td></tr>
+            <tr><td>3 · Semantic</td><td class="dim">global</td><td class="dim">DS team</td><td><span class="pill-chip">Read-only</span></td></tr>
+            <tr><td>4 · Regulatory</td><td class="dim">7 jurisdictions</td><td class="dim">Compliance + DS</td><td><span class="pill-chip warn">Edit with review</span></td></tr>
+            <tr><td>5 · Component</td><td class="dim">global</td><td class="dim">DS team</td><td><span class="pill-chip">Read-only</span></td></tr>
           </tbody>
         </table>
+        <p class="dim" style="margin-top: 12px; font-size: 0.86rem;">Marketing designers never touch the Semantic or Component layers — they touch <code class="inline">color/brand/primary-600</code> under the brand mode, and every semantic/component token downstream re-renders.</p>
       </div>
       <div>
         <div class="card highlight">
           <h4 class="teal">Six rules for editability</h4>
           <ol style="margin-left: 18px;">
-            <li style="margin-bottom: 6px;"><b>Edit at brand-mode only.</b> All other layers read-only.</li>
+            <li style="margin-bottom: 6px;"><b>Edit brand-mode values only</b> (the 20-mode axis on Collection 1). All other layers read-only.</li>
             <li style="margin-bottom: 6px;"><b>Role names, never colour names.</b> <code class="inline">text.primary</code> not <code class="inline">text.orange</code>.</li>
-            <li style="margin-bottom: 6px;"><b>Paired aliases for divergence.</b> <code class="inline">view-all.label</code> + <code class="inline">view-all.icon</code>, default equal, split when needed.</li>
-            <li style="margin-bottom: 6px;"><b>A pinned "brand editor" page</b> with every component + token side-panel.</li>
+            <li style="margin-bottom: 6px;"><b>Paired aliases for divergence.</b> <code class="inline">view-all.label</code> + <code class="inline">view-all.icon</code> in Collection 5, default equal, split via brand-mode values.</li>
+            <li style="margin-bottom: 6px;"><b>A pinned "brand editor" page</b> in Figma with every component + brand-mode token side-panel.</li>
             <li style="margin-bottom: 6px;"><b>A README frame</b> listing intentional splits (lyllo dual-palette, reviant-A nav split, etc.).</li>
             <li><b>Component constraints.</b> Master fills bind to tokens; colour-picker disabled at the shape level.</li>
           </ol>
@@ -709,7 +710,7 @@
 
     <div class="card" style="margin-top: 6px;">
       <h4>"15-minute" re-theme test</h4>
-      <p class="card-note" style="margin-top: 6px;">Give a marketing designer an invented brand (name + 2 hex values), ask them to build a mode from scratch. Goal: working theme in under 15 minutes using only the brand-mode panel, no component edits, no primitive edits. If they hit a wall, that's the next semantic role v4 needs.</p>
+      <p class="card-note" style="margin-top: 6px;">Give a marketing designer an invented brand (name + 2 hex values), ask them to build a brand mode from scratch. Goal: working theme in under 15 minutes using only the brand-mode panel on Collection 1, no component edits, no semantic edits. If they hit a wall, that's the next semantic role v4 needs.</p>
     </div>
   </div>
 </section>
