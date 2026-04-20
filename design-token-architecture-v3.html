@@ -195,33 +195,173 @@
       <span class="section-num">03</span>
       <span class="tag teal">The 5-collection model</span>
     </div>
-    <h2>Same shape as v2.</h2>
-    <p class="lead" style="margin-bottom: 20px;">No restructure, no collapse. v3 adds <strong>roles</strong> inside Semantic, promotes <strong>Component Aliases</strong> to a clearly-named layer, and tightens <strong>permissions</strong> on the edit boundaries.</p>
+    <h2>Same five collections as v2. Different contents.</h2>
+    <p class="lead" style="margin-bottom: 20px;">Brand is a <b>mode on Collection 1</b>, not its own collection. v3 adds new <b>roles inside Semantic</b> (collection 3), and <b>expands Component</b> (collection 5) from v2's &lt;10 last-resort tokens into proper alias packs.</p>
 
     <div class="arch" style="margin-top: 16px;">
       <div class="arch-box">
-        <div><span class="arch-label">1 · Primitives</span> <span class="arch-badge" style="background: rgba(108,92,231,0.15); color: var(--purple-light);">Locked</span></div>
-        <span class="arch-modes">raw colours · radii · spacing · typography scale · 4-pt base</span>
-      </div>
-      <div class="arch-box new">
-        <div><span class="arch-label">2 · Semantic roles</span> <span class="arch-badge">+10 roles in v3</span></div>
-        <span class="arch-modes">text.* · surface.* · icon.* · pill.* · badge.* · radius.* · banner.*</span>
-      </div>
-      <div class="arch-box new">
-        <div><span class="arch-label">3 · Component aliases</span> <span class="arch-badge">promoted in v3</span></div>
-        <span class="arch-modes">menu-row.* · view-all.* · nav.selected-* · cta-context.* · header.*</span>
-      </div>
-      <div class="arch-box highlight">
-        <div><span class="arch-label">4 · Brand modes</span> <span class="arch-badge" style="background: rgba(0,212,180,0.15); color: var(--teal);">Marketing edits here</span></div>
-        <span class="arch-modes">20 brands · dual-palette · 3-icon · radius identity</span>
+        <div><span class="arch-label">1 · Primitives</span> <span class="arch-badge" style="background: rgba(108,92,231,0.15); color: var(--purple-light);">20 brand modes</span></div>
+        <span class="arch-modes">raw colour ramps · typography families · radius · layout · gradients · 4-pt base</span>
       </div>
       <div class="arch-box">
-        <div><span class="arch-label">5 · Jurisdiction modes</span></div>
-        <span class="arch-modes">SE · DK · MT · ON · NL · PL + default</span>
+        <div><span class="arch-label">2 · Theme</span> <span class="arch-badge" style="background: rgba(108,92,231,0.15); color: var(--purple-light);">2 modes · light / dark</span></div>
+        <span class="arch-modes">~25 neutral-flip tokens · surface · text · border · overlay</span>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">3 · Semantic</span> <span class="arch-badge">+10 roles in v3 · global</span></div>
+        <span class="arch-modes">text.* · surface.* · icon.* · <b>pill.*</b> · <b>badge.*</b> · radius.* · banner.* · iGaming families</span>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">4 · Regulatory</span> <span class="arch-badge" style="background: rgba(253, 203, 110, 0.15); color: var(--warning);">7 jurisdiction modes</span></div>
+        <span class="arch-modes">default · SE · DK · MT · ON · NL · PL · reg/rg/* · reg/bonus-disclaimer/* · reg/age-gate/*</span>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">5 · Component</span> <span class="arch-badge">expanded in v3 · global</span></div>
+        <span class="arch-modes">menu-row.* · view-all.* · nav.selected-* · <b>cta.*</b> with variants · header.*</span>
       </div>
     </div>
 
-    <p class="dim" style="margin-top: 22px; font-size: 0.88rem;">Collection 3 existed conceptually in v2 but wasn't formalised. v3 names it, documents it, and forces every component that can diverge per brand to bind through it.</p>
+    <p class="dim" style="margin-top: 22px; font-size: 0.88rem;">Brand isn't a separate collection — <b>it's the 20-mode axis on Primitives</b>. Theme lives as 2 modes on Collection 2. Jurisdiction as 7 modes on Collection 4. Semantic and Component are global (no modes) and compose everything downstream.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3B: IMPLEMENTATION DIAGRAM ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="tag teal">Implementation diagram</span>
+    </div>
+    <h2>How a single token resolves.</h2>
+    <p class="lead" style="margin-bottom: 18px;">Follow one example — a menu-row chevron on the <i>getlucky</i> brand in <i>dark theme</i> under <i>NL jurisdiction</i>. Seven hops, five collections, one final hex.</p>
+
+    <div style="background: var(--bg-code); border: 1px solid var(--border); border-radius: 12px; padding: 22px 26px; margin-bottom: 18px;">
+      <pre style="margin: 0; background: transparent; border: 0; padding: 0; font-size: 0.82rem; line-height: 1.7;"><span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  🧩  Component master: Menu Item · chevron shape fill                │</span>
+<span class="c">└───────────────────────────────┬──────────────────────────────────────┘</span>
+                                <span class="k">↓ binds to</span>
+<span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  5 · COMPONENT</span>                                            <span class="s">(global)</span><span class="c">   │
+│     menu-row.action-icon      →   color.icon.action                   │
+└───────────────────────────────┬──────────────────────────────────────┘</span>
+                                <span class="k">↓ aliases to</span>
+<span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  3 · SEMANTIC</span>                                             <span class="s">(global)</span><span class="c">   │
+│     color.icon.action         →   color/brand/primary-600              │
+└───────────────────────────────┬──────────────────────────────────────┘</span>
+         <span class="k">↓ can be narrow-overridden by</span>   <span class="v">(only if this role has a reg entry)</span>
+<span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  4 · REGULATORY</span>                              <span class="s">mode: NL · 7-mode axis</span><span class="c">   │
+│     (no override for icon.action) — resolution continues              │
+└───────────────────────────────┬──────────────────────────────────────┘</span>
+                                <span class="k">↓ falls through to</span>
+<span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  2 · THEME</span>                                     <span class="s">mode: dark · 2-mode axis</span><span class="c">   │
+│     (icon.action doesn't flip per theme, uses Primitives directly)    │
+└───────────────────────────────┬──────────────────────────────────────┘</span>
+                                <span class="k">↓ resolves to</span>
+<span class="c">┌──────────────────────────────────────────────────────────────────────┐
+│  1 · PRIMITIVES</span>                        <span class="s">mode: getlucky · 20-mode axis</span><span class="c">   │
+│     color/brand/primary-600   →   </span><span class="v">#ff993d</span>  <span class="c">orange                       │
+└──────────────────────────────────────────────────────────────────────┘</span>
+                                <span class="k">↓ rendered</span>
+<span class="c">                        🎨  </span><span class="v">#ff993d</span> <span class="c">applied to chevron path</span></pre>
+    </div>
+
+    <div class="grid-3" style="gap: 14px; margin-top: 6px;">
+      <div class="card card-sm" style="padding: 14px 18px;">
+        <h4 style="margin-bottom: 4px;">Figma modes are per-frame</h4>
+        <p class="card-note" style="font-size: 0.85rem;">Each frame picks one mode per mode-carrying collection. Primitives + Theme + Regulatory each have a dropdown; Semantic + Component follow automatically.</p>
+      </div>
+      <div class="card card-sm" style="padding: 14px 18px;">
+        <h4 style="margin-bottom: 4px;">Aliases across collections</h4>
+        <p class="card-note" style="font-size: 0.85rem;">A Semantic token points to a Primitive. When the user flips brand-mode, the Primitive returns a different hex — the Semantic value follows automatically.</p>
+      </div>
+      <div class="card card-sm" style="padding: 14px 18px;">
+        <h4 style="margin-bottom: 4px;">Regulatory narrows</h4>
+        <p class="card-note" style="font-size: 0.85rem;">Regulatory only overrides the ~15 tokens that jurisdictions actually constrain. Everything else falls through to Primitives as usual.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3C: MODE AXES VISUAL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="tag">Where each mode lives</span>
+    </div>
+    <h2>One mode axis per collection.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Fused into one collection, 20 × 2 × 7 = 280 modes per token. Split across collections, each axis multiplies only the tokens that actually vary along it.</p>
+
+    <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; gap: 10px; background: var(--bg-code); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
+      <div></div>
+      <div style="text-align: center; color: var(--purple-light); font-weight: 600;">1 · Primitives</div>
+      <div style="text-align: center; color: var(--purple-light); font-weight: 600;">2 · Theme</div>
+      <div style="text-align: center; color: var(--purple-light); font-weight: 600;">3 · Semantic</div>
+      <div style="text-align: center; color: var(--purple-light); font-weight: 600;">4 · Regulatory</div>
+
+      <div style="color: var(--text-muted); padding-top: 4px;">Mode axis</div>
+      <div style="background: rgba(108,92,231,0.1); border-radius: 6px; padding: 6px; text-align: center; color: var(--teal);">Brand<br><span style="color: var(--text-muted); font-size: 0.74rem;">20 modes</span></div>
+      <div style="background: rgba(108,92,231,0.1); border-radius: 6px; padding: 6px; text-align: center; color: var(--teal);">Theme<br><span style="color: var(--text-muted); font-size: 0.74rem;">2 modes</span></div>
+      <div style="background: rgba(255,255,255,0.03); border-radius: 6px; padding: 6px; text-align: center; color: var(--text-muted);">Global<br><span style="font-size: 0.74rem;">no modes</span></div>
+      <div style="background: rgba(253,203,110,0.08); border-radius: 6px; padding: 6px; text-align: center; color: var(--warning);">Jurisdiction<br><span style="color: var(--text-muted); font-size: 0.74rem;">7 modes</span></div>
+
+      <div style="color: var(--text-muted); padding-top: 4px;">Contents</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text); line-height: 1.4;">ramps · radii · fonts · layout · gradients</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text); line-height: 1.4;">surface · text · border · overlay (neutral flips)</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text); line-height: 1.4;">text.* · surface.* · icon.* · pill.* · iGaming families</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text); line-height: 1.4;">reg/rg/* · reg/bonus/* · reg/age-gate/*</div>
+
+      <div style="color: var(--text-muted); padding-top: 4px;">Token count (approx)</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text);">~110 / brand</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text);">~25 (flip)</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text);">~345</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text);">~22</div>
+
+      <div style="color: var(--text-muted); padding-top: 4px;">v3 additions</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text-muted);">—</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text-muted);">—</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--warning); font-weight: 600;">+10 roles</div>
+      <div style="text-align: center; font-size: 0.76rem; color: var(--text-muted);">—</div>
+    </div>
+
+    <div class="arch-box highlight" style="margin-top: 18px;">
+      <div><span class="arch-label">5 · Component</span> <span class="arch-badge" style="background: rgba(0,212,180,0.15); color: var(--teal);">global · no modes · expanded in v3</span></div>
+      <span class="arch-modes">menu-row.* · view-all.* · nav.selected-* · header.* · cta.* (with 4 context variants) — was ~8 tokens in v2, ~35 in v3</span>
+    </div>
+
+    <p class="dim" style="margin-top: 16px; font-size: 0.88rem; text-align: center;">Frame picks a mode per collection independently. Figma resolves cross-collection aliases at render time. No single token stores 280 values; each stores only the values for the axis it sits on.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3D: EDGE-CASE TO COLLECTION MAP ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="tag">Edge case → Collection</span>
+    </div>
+    <h2>Every v3 edge case lives in a specific collection.</h2>
+    <p class="lead" style="margin-bottom: 20px;">The answer to "where does this go?" for each of the 8 patterns from the Brand Audit.</p>
+
+    <table style="font-size: 0.92rem;">
+      <thead><tr><th>Edge case</th><th>New token(s)</th><th>Collection</th><th>Why there</th></tr></thead>
+      <tbody>
+        <tr><td>Three-icon split (Big / Descriptive / Action)</td><td><code class="inline">color.icon.*</code> already exist; no change</td><td><b>3 · Semantic</b></td><td>Semantic roles, brand-moded via Primitives alias</td></tr>
+        <tr><td>Menu-row icon ≠ chevron</td><td><code class="inline">menu-row.icon</code>, <code class="inline">menu-row.action-icon</code></td><td><b>5 · Component</b></td><td>Component alias pack — brand sees two split tokens in mode panel</td></tr>
+        <tr><td>Pill family missing</td><td><code class="inline">pill.surface</code>, <code class="inline">pill.on-surface</code>, <code class="inline">pill.border</code>, <code class="inline">pill.*.selected</code></td><td><b>3 · Semantic</b></td><td>Role-level semantic tokens, aliased per-brand via Primitives</td></tr>
+        <tr><td>Badge formalised</td><td><code class="inline">badge.on-surface</code>, <code class="inline">badge.border</code>, <code class="inline">radius.badge</code></td><td><b>3 · Semantic</b></td><td>Extends existing <code class="inline">Main/Badge</code> into a family</td></tr>
+        <tr><td>Modal radius independent</td><td><code class="inline">radius.modal</code></td><td><b>3 · Semantic</b></td><td>One role; brand mode sets the value via Primitives alias</td></tr>
+        <tr><td>CTA radius varies by context</td><td><code class="inline">cta.radius</code> with 4 variants (form/card/wallet/landing)</td><td><b>5 · Component</b></td><td><b>Figma component variants</b>, not a mode axis — each CTA variant binds to a different radius Primitive</td></tr>
+        <tr><td>Bottom-nav selected split</td><td><code class="inline">nav.selected-icon</code>, <code class="inline">nav.selected-text</code></td><td><b>5 · Component</b></td><td>Component alias pack — reviant-A splits them; all other brands default equal</td></tr>
+        <tr><td>Header isolated from page</td><td><code class="inline">header.*</code> alias pack (9 tokens)</td><td><b>5 · Component</b></td><td>Formalises the existing <code class="inline">Lobby Header/*</code> primitives into a component-layer namespace</td></tr>
+        <tr><td>View-all label ≠ icon</td><td><code class="inline">view-all.label</code>, <code class="inline">view-all.icon</code></td><td><b>5 · Component</b></td><td>Component alias pack — evolves v2's <code class="inline">interactive/viewall/*</code></td></tr>
+        <tr><td>Landing third-accent Tag</td><td>Keep existing <code class="inline">Landing/Tag</code> as is</td><td><b>3 · Semantic</b></td><td>Already its own role in v2; v3 just documents it as intentional</td></tr>
+        <tr><td>Banner overlay / on-surface</td><td><code class="inline">banner.overlay</code>, <code class="inline">banner.on-surface</code></td><td><b>3 · Semantic</b></td><td>Completes the banner family so hero cards stop using inline fills</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
