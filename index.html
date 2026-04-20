@@ -4,60 +4,164 @@
 <meta charset="utf-8">
 <title>Design Tokens · Landing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0b0a14;
+    --bg-alt: #0f0e1f;
     --bg-card: #17162a;
+    --bg-card-hover: #1f1c3e;
     --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(0, 212, 180, 0.35);
     --text: #e8e6f0;
     --text-muted: #8a86a0;
+    --text-dim: #5c587a;
     --purple: #8b7dff;
     --purple-light: #a29bfe;
     --teal: #00d4b4;
+    --warning: #fdcb6e;
   }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; min-height: 100vh; }
-  body { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
-  .wrap { width: 100%; max-width: 880px; }
-  .tag { display: inline-block; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); background: rgba(0, 212, 180, 0.12); border: 1px solid rgba(0, 212, 180, 0.3); padding: 6px 12px; border-radius: 999px; }
-  h1 { font-size: 2.6rem; line-height: 1.1; margin: 20px 0 12px; font-weight: 800; letter-spacing: -0.02em; }
-  h1 .accent { color: var(--purple-light); }
-  p.lead { font-size: 1.05rem; color: var(--text-muted); margin: 0 0 40px; line-height: 1.55; max-width: 620px; }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
-  a.card { display: block; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 26px 28px; text-decoration: none; color: inherit; transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease; }
-  a.card:hover { border-color: var(--teal); transform: translateY(-2px); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.04) 100%); }
-  a.card h3 { margin: 0 0 6px; font-size: 1.25rem; }
-  a.card .meta { font-size: 0.8rem; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
-  a.card p { margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
-  a.card .arrow { display: inline-block; margin-top: 14px; color: var(--purple-light); font-weight: 600; font-size: 0.95rem; }
-  footer { margin-top: 48px; color: var(--text-muted); font-size: 0.85rem; }
-  footer code { font-family: "JetBrains Mono", "SF Mono", monospace; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; line-height: 1.55; }
+  h1, h2, h3 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.88em; }
+  a { color: inherit; text-decoration: none; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 24px 120px; }
+
+  header.hero { margin-bottom: 56px; }
+  header.hero .tag { display: inline-block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: rgba(0, 212, 180, 0.12); border: 1px solid rgba(0, 212, 180, 0.3); padding: 5px 12px; border-radius: 999px; }
+  header.hero h1 { font-size: 2.8rem; line-height: 1.1; margin: 20px 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+  header.hero h1 .accent { color: var(--purple-light); }
+  header.hero p.lead { font-size: 1.05rem; color: var(--text-muted); margin: 0 0 12px; line-height: 1.55; max-width: 640px; }
+  header.hero .meta { font-size: 0.85rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+
+  section { margin-bottom: 52px; }
+  section h2 { font-size: 1.12rem; font-weight: 600; margin-bottom: 6px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  section h2 .sec-num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-size: 0.84em; font-weight: 500; }
+  section h2 .sec-tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 2px 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-weight: 400; }
+  section > p.desc { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 18px; max-width: 720px; }
+
+  .cards { display: grid; gap: 16px; }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 820px) { .cards.two, .cards.three { grid-template-columns: 1fr; } }
+
+  a.card { display: block; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; text-decoration: none; color: inherit; transition: border-color 0.18s, transform 0.18s, background 0.18s; position: relative; }
+  a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.04) 100%); }
+  a.card .meta { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
+  a.card .meta .v { color: var(--text-muted); }
+  a.card h3 { margin: 0 0 6px; font-size: 1.12rem; font-weight: 600; color: var(--text); }
+  a.card p { margin: 0; color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; }
+  a.card .arrow { display: block; margin-top: 12px; color: var(--purple-light); font-weight: 600; font-size: 0.88rem; }
+
+  a.card.primary { border-color: rgba(0, 212, 180, 0.25); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.06) 100%); }
+  a.card.primary:hover { border-color: var(--teal); }
+  a.card.archived { opacity: 0.72; }
+  a.card.archived:hover { opacity: 1; }
+
+  .badge { display: inline-block; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; }
+  .badge.new { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.4); background: rgba(253, 203, 110, 0.08); }
+  .badge.v3 { color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.4); background: rgba(0, 212, 180, 0.1); }
+  .badge.v2 { color: var(--text-muted); border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+
+  footer { margin-top: 72px; color: var(--text-muted); font-size: 0.82rem; padding-top: 24px; border-top: 1px solid var(--border); }
+  footer code { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+  footer p { margin-bottom: 6px; }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <span class="tag">20-brand white label · ComeOn</span>
-    <h1>Design Token <span class="accent">Architecture</span></h1>
-    <p class="lead">A 5-collection, multi-axis Figma Variables system for brand, theme, jurisdiction, and iGaming-specific surfaces — built on a 4-point scale linked to a 16px body.</p>
 
-    <div class="cards">
-      <a class="card" href="design-token-architecture-v2.html">
-        <div class="meta">Deck · v2</div>
-        <h3>Architecture v2</h3>
-        <p>5-collection Figma-native design. Walks through brand, theme, regulatory, semantic, and component layers — how they alias, how to manage them in Figma.</p>
-        <div class="arrow">Open deck →</div>
-      </a>
-      <a class="card" href="design-token-reference.html">
-        <div class="meta">Reference · full tables</div>
-        <h3>Token Reference</h3>
-        <p>Complete token list across all collections, with aliases, modes, and example values. The source of truth while we build and audit.</p>
-        <div class="arrow">Open reference →</div>
-      </a>
-    </div>
+    <header class="hero">
+      <span class="tag">20-brand white label · ComeOn</span>
+      <h1>Design Token <span class="accent">Architecture</span></h1>
+      <p class="lead">A 5-collection, multi-axis Figma Variables system for brand, theme, jurisdiction, and iGaming-specific surfaces — built on a 4-point scale linked to a 16px body.</p>
+      <p class="meta">Current: v3 · Based on the 9-brand edge-case audit · 2026-04-20</p>
+    </header>
 
-    <footer>Served via GitHub Pages — update the deck by pushing to <code>main</code>.</footer>
+    <section>
+      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">design system</span></h2>
+      <p class="desc">The strategy decks. v3 builds on v2 — keep both open for full context.</p>
+      <div class="cards two">
+        <a class="card primary" href="design-token-architecture-v3.html">
+          <div class="meta"><span>Deck</span><span class="v">· v3</span><span class="badge new">New</span></div>
+          <h3>Architecture v3 <span class="badge v3">current</span></h3>
+          <p>Edge cases from the 9-brand audit absorbed into the architecture. 3 new semantic families, 4 new component alias packs, context-scoped CTA radius, marketing-designer permission matrix, non-breaking migration path from v2.</p>
+          <span class="arrow">Open deck →</span>
+        </a>
+        <a class="card archived" href="design-token-architecture-v2.html">
+          <div class="meta"><span>Deck</span><span class="v">· v2</span><span class="badge v2">foundation</span></div>
+          <h3>Architecture v2</h3>
+          <p>The 5-collection model, the four axes (brand × theme × jurisdiction × viewport), the 4-point scale linked to 1rem = 16px. v3 builds on this; it still defines the architectural foundation.</p>
+          <span class="arrow">Open deck →</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">tables</span></h2>
+      <p class="desc">Detailed token listings. v3 covers the proposed new set; v2 covers the complete existing token catalogue.</p>
+      <div class="cards two">
+        <a class="card primary" href="design-token-reference-v3.html">
+          <div class="meta"><span>Reference</span><span class="v">· v3</span><span class="badge new">New</span></div>
+          <h3>Token Reference v3 <span class="badge v3">proposed set</span></h3>
+          <p>The new tokens v3 introduces: <code>pill.*</code>, <code>badge.*</code>, <code>radius.modal</code>, <code>color.icon.nav-selected</code>, <code>banner.overlay</code>, plus alias packs <code>menu-row.*</code>, <code>view-all.*</code>, <code>nav.*</code>, <code>header.*</code>, <code>cta.*</code>. With per-brand sample values for the 9 audited brands.</p>
+          <span class="arrow">Open reference →</span>
+        </a>
+        <a class="card archived" href="design-token-reference.html">
+          <div class="meta"><span>Reference</span><span class="v">· v2</span><span class="badge v2">complete catalogue</span></div>
+          <h3>Token Reference v2</h3>
+          <p>The full v2 catalogue — every token across all 5 collections with aliases, modes, and example values. Source of truth for everything not changed by v3.</p>
+          <span class="arrow">Open reference →</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="sec-num">03</span> Audits <span class="sec-tag">evidence base</span></h2>
+      <p class="desc">The raw data behind v3. Useful when arguing a specific edge case or onboarding new designers.</p>
+      <div class="cards two">
+        <a class="card" href="brand-audit.html">
+          <div class="meta"><span>Audit</span><span class="v">· per-brand</span></div>
+          <h3>Brand Audit</h3>
+          <p>Per-brand evidence cards for 9 brands × key screens. Every divergence categorised (dual-palette, three-icon split, pill colour rules, CTA radius by context, header as its own identity). Maps each edge case to a v3 token change.</p>
+          <span class="arrow">Open audit →</span>
+        </a>
+        <a class="card" href="component-hex-audit.html">
+          <div class="meta"><span>Audit</span><span class="v">· component library</span></div>
+          <h3>Component Hex Audit</h3>
+          <p>Which masters are fully tokenised, which have partial gaps, and where a semantic role is missing entirely (Pill, Badge, Modal). Per-component migration plan for the v3 rewire.</p>
+          <span class="arrow">Open audit →</span>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="sec-num">04</span> Archive <span class="sec-tag">history</span></h2>
+      <p class="desc">Superseded but kept for history and diffing.</p>
+      <div class="cards three">
+        <a class="card archived" href="design-token-architecture-v2.html">
+          <div class="meta"><span>Deck</span><span class="v">· 2026-04-17</span></div>
+          <h3>Architecture v2</h3>
+          <p>5-collection walkthrough. Still load-bearing — v3 extends it rather than replacing.</p>
+        </a>
+        <a class="card archived" href="design-token-reference.html">
+          <div class="meta"><span>Reference</span><span class="v">· 2026-04-17</span></div>
+          <h3>Reference v2</h3>
+          <p>Full v2 token catalogue. Source of truth for unchanged tokens.</p>
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <p>Served via GitHub Pages at <a href="https://zlatkolazarov-rgb.github.io/design-tokens/" style="color: var(--teal);">zlatkolazarov-rgb.github.io/design-tokens</a>. Push to <code>main</code>, Pages redeploys in ~1 minute.</p>
+      <p style="margin-top: 6px;">Evidence base: Figma file <code>qnPOhVnKHuYo7t0g6PgrcS</code> (Token Explorations). Auto-sync via Claude PostToolUse hook; updates commit + push on every edit.</p>
+    </footer>
+
   </div>
 </body>
 </html>
-<!-- updated at 17:13:24 -->

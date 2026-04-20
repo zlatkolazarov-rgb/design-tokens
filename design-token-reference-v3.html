@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Token Reference v3 — Proposed token set</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --teal: #00d4b4; --teal-soft: rgba(0, 212, 180, 0.12);
+    --text: #eceaf5; --text-muted: #8a86a8; --text-dim: #5c587a;
+    --success: #00b894; --warning: #fdcb6e; --error: #e17055;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.88em; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { color: var(--purple-light); }
+
+  .topbar { position: sticky; top: 0; z-index: 20; background: rgba(11, 10, 26, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .topbar .back { color: var(--text-muted); font-size: 0.88rem; }
+  .topbar .back:hover { color: var(--teal); }
+  .topbar .crumbs { font-size: 0.82rem; color: var(--text-muted); }
+  .topbar .crumbs a { color: var(--text-muted); margin-right: 6px; }
+  .topbar .tag { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: var(--teal-soft); border: 1px solid rgba(0, 212, 180, 0.28); padding: 4px 10px; border-radius: 999px; }
+
+  .wrap { display: grid; grid-template-columns: 240px 1fr; max-width: 1400px; margin: 0 auto; gap: 40px; padding: 40px 24px 140px; }
+  aside.toc { position: sticky; top: 68px; height: max-content; font-size: 0.88rem; }
+  aside.toc h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; font-family: 'Inter', sans-serif; }
+  aside.toc ol { list-style: none; padding: 0; }
+  aside.toc ol li { padding: 6px 0; }
+  aside.toc ol li a { color: var(--text-muted); display: block; padding: 2px 10px; border-left: 2px solid var(--border); transition: color 0.15s, border 0.15s; }
+  aside.toc ol li a:hover { color: var(--teal); border-left-color: var(--teal); }
+  aside.toc ol li.group { color: var(--purple-light); font-weight: 600; padding-top: 14px; padding-bottom: 2px; font-size: 0.8rem; letter-spacing: 0.04em; }
+
+  main { min-width: 0; }
+  header.hero { margin-bottom: 48px; }
+  header.hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 14px; }
+  header.hero h1 .accent { color: var(--purple-light); }
+  header.hero p { color: var(--text-muted); font-size: 1.02rem; max-width: 780px; }
+
+  section { margin-bottom: 60px; scroll-margin-top: 80px; }
+  section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  section h2 .num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.88em; }
+  section > p.lead { color: var(--text-muted); margin-bottom: 22px; max-width: 820px; }
+  section h3 { font-size: 1.12rem; font-weight: 600; margin: 30px 0 10px; color: var(--purple-light); }
+
+  .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); background: var(--bg-alt); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(108, 92, 231, 0.04); }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text); }
+  td .muted { color: var(--text-muted); }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(255,255,255,0.14); }
+
+  .badge { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
+  .badge.new { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.4); background: rgba(253, 203, 110, 0.08); }
+  .badge.evo { color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.4); background: rgba(0, 212, 180, 0.08); }
+  .badge.stable { color: var(--text-muted); border: 1px solid var(--border); background: var(--bg-code); }
+
+  pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.6; color: var(--text); overflow-x: auto; white-space: pre; margin-bottom: 16px; }
+  pre .k { color: var(--purple-light); } pre .s { color: var(--teal); } pre .c { color: var(--text-dim); } pre .v { color: var(--warning); }
+
+  .callout { background: var(--bg-code); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 18px 0; color: var(--text); font-size: 0.92rem; }
+  .callout.warn { border-left-color: var(--warning); }
+
+  footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; }
+
+  @media (max-width: 1020px) {
+    .wrap { grid-template-columns: 1fr; gap: 24px; }
+    aside.toc { position: static; }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="index.html">← Design Tokens home</a>
+    <div class="crumbs">
+      <a href="design-token-architecture-v3.html">Architecture v3</a> ·
+      <a href="brand-audit.html">Brand Audit</a> ·
+      <a href="component-hex-audit.html">Component Audit</a>
+    </div>
+    <span class="tag">Reference · v3 proposed</span>
+  </div>
+
+  <div class="wrap">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ol>
+        <li class="group">01 · Conventions</li>
+        <li><a href="#legend">Legend</a></li>
+        <li><a href="#collections">5 collections</a></li>
+
+        <li class="group">02 · Semantic · new</li>
+        <li><a href="#pill">pill.*</a></li>
+        <li><a href="#badge">badge.*</a></li>
+        <li><a href="#icon">color.icon.*</a></li>
+        <li><a href="#radius">radius.*</a></li>
+        <li><a href="#banner">banner.*</a></li>
+
+        <li class="group">03 · Component aliases</li>
+        <li><a href="#menu-row">menu-row.*</a></li>
+        <li><a href="#view-all">view-all.*</a></li>
+        <li><a href="#nav">nav.*</a></li>
+        <li><a href="#header">header.*</a></li>
+        <li><a href="#cta">cta.*</a></li>
+
+        <li class="group">04 · Brand modes</li>
+        <li><a href="#brand-samples">Sample values</a></li>
+        <li><a href="#splits">Intentional splits</a></li>
+
+        <li class="group">05 · Context modes</li>
+        <li><a href="#contexts">CTA context modes</a></li>
+      </ol>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <h1>Token Reference <span class="accent">v3</span> — proposed set</h1>
+        <p>Forward-looking reference: every token v3 adds, evolves, or renames. v2 tokens that remain unchanged are <b>not repeated</b> here — see <a href="design-token-reference.html">Reference v2</a> for the stable baseline. Values in brand columns come from the 9-brand audit in the Token Explorations file.</p>
+      </header>
+
+      <section id="legend">
+        <h2><span class="num">01</span> Legend</h2>
+        <p class="lead">Every row carries a status badge so migration is obvious.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Badge</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge new">New</span></td><td>Introduced in v3. No equivalent in v2.</td></tr>
+              <tr><td><span class="badge evo">Evolved</span></td><td>Existed in v2 under a different name or scope; v3 renames, promotes, or refactors it.</td></tr>
+              <tr><td><span class="badge stable">Stable</span></td><td>Listed here for context — unchanged from v2, but referenced by a new alias.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="collections">
+        <h2><span class="num">02</span> The 5 collections, recap</h2>
+        <p class="lead">Same as v2. Every token on this page lives in one of these; the "Lives in" column tells you which.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>#</th><th>Collection</th><th>Contents</th><th>Edit rights</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Primitives</td><td>Raw hex, raw radii, raw spacing</td><td class="muted">Read-only</td></tr>
+              <tr><td>2</td><td>Semantic roles</td><td><code>text.*</code>, <code>surface.*</code>, <code>icon.*</code>, <code>pill.*</code>, <code>badge.*</code>, <code>radius.*</code>, <code>banner.*</code></td><td class="muted">Read-only</td></tr>
+              <tr><td>3</td><td>Component aliases</td><td><code>menu-row.*</code>, <code>view-all.*</code>, <code>nav.*</code>, <code>header.*</code>, <code>cta-context.*</code></td><td class="muted">Read-only</td></tr>
+              <tr><td>4</td><td>Brand modes</td><td>20 brands, overriding semantic + alias values</td><td><span class="badge evo">Marketing edits here</span></td></tr>
+              <tr><td>5</td><td>Jurisdiction</td><td>SE · DK · MT · ON · NL · PL + default</td><td class="muted">DS + compliance</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="pill">
+        <h2><span class="num">03</span> <code>pill.*</code> <span class="badge new">New family</span></h2>
+        <p class="lead">Replaces the accidental <code>Sub Menu/*</code> borrowing. The Pill / Filter Pill / Navigation Pill / Small Pill / segmented pill masters all point here after rewire.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Status</th><th>Default alias</th><th>Lives in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">pill.surface</td><td>Default state background</td><td><span class="badge new">New</span></td><td class="mono">Sub Menu/Default</td><td>Semantic</td></tr>
+              <tr><td class="mono">pill.on-surface</td><td>Default label + icon</td><td><span class="badge new">New</span></td><td class="mono">Sub Menu/On-Default</td><td>Semantic</td></tr>
+              <tr><td class="mono">pill.border</td><td>Outline (reviant-B style)</td><td><span class="badge new">New</span></td><td class="mono">transparent</td><td>Semantic</td></tr>
+              <tr><td class="mono">pill.surface.selected</td><td>Selected state background</td><td><span class="badge new">New</span></td><td class="mono">Sub Menu/Selected</td><td>Semantic</td></tr>
+              <tr><td class="mono">pill.on-surface.selected</td><td>Selected label + icon</td><td><span class="badge new">New</span></td><td class="mono">Sub Menu/On-Selected</td><td>Semantic</td></tr>
+              <tr><td class="mono">pill.surface.hover</td><td>Hover state</td><td><span class="badge new">New</span></td><td class="mono">Sub Menu/Default</td><td>Semantic</td></tr>
+              <tr><td class="mono">radius.pill</td><td>Pill corner radius</td><td><span class="badge evo">Evolved</span></td><td class="mono">Extras/Pill Radius</td><td>Semantic</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">Why the split matters: today, <code>Main/Badge</code> and <code>Sub Menu/*</code> are the <i>only</i> tokens pills can reach for. When mobilespin sets Badge yellow and Sub Menu black, the pill is forced to pick one. <code>pill.surface</code> is a dedicated role per brand.</div>
+      </section>
+
+      <section id="badge">
+        <h2><span class="num">04</span> <code>badge.*</code> <span class="badge new">New family</span></h2>
+        <p class="lead">Formalises the existing <code>Main/Badge</code> token into a complete family with on-surface + radius.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Status</th><th>Default alias</th><th>Lives in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">badge.surface</td><td>Badge background</td><td><span class="badge evo">Evolved</span></td><td class="mono">Main/Badge</td><td>Semantic</td></tr>
+              <tr><td class="mono">badge.on-surface</td><td>Badge label + icon</td><td><span class="badge new">New</span></td><td class="mono">on-primary</td><td>Semantic</td></tr>
+              <tr><td class="mono">badge.border</td><td>Optional outline</td><td><span class="badge new">New</span></td><td class="mono">transparent</td><td>Semantic</td></tr>
+              <tr><td class="mono">radius.badge</td><td>Badge corner radius</td><td><span class="badge new">New</span></td><td class="mono">4</td><td>Semantic</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="icon">
+        <h2><span class="num">05</span> <code>color.icon.*</code> <span class="badge evo">Evolved + one new role</span></h2>
+        <p class="lead">The 3-way icon split (Big / Descriptive / Action) is already present in v2 under different names. v3 renames into the <code>color.icon.*</code> convention and adds <code>nav-selected</code> as a first-class member.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Status</th><th>Replaces / aliases</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">color.icon.content</td><td>Illustrative / content icons</td><td><span class="badge evo">Evolved</span></td><td class="mono">Main/Big-Icons</td></tr>
+              <tr><td class="mono">color.icon.descriptive</td><td>Small icons labelling menu rows</td><td><span class="badge evo">Evolved</span></td><td class="mono">Main/Icons</td></tr>
+              <tr><td class="mono">color.icon.action</td><td>Chevrons, arrows, carets</td><td><span class="badge evo">Evolved</span></td><td class="mono">Main/Action-Icons</td></tr>
+              <tr><td class="mono">color.icon.nav-selected</td><td>Bottom-nav selected icon</td><td><span class="badge new">New</span></td><td class="mono">Bottom Navbar/Selected-Icon</td></tr>
+              <tr><td class="mono">color.icon.disabled</td><td>Any icon in disabled state</td><td><span class="badge new">New</span></td><td class="mono">text.disabled</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn">Brand modes should default <code>color.icon.*</code> tokens equal where the brand doesn't split, but <b>never</b> alias <code>color.icon.action = color.primary</code> at the semantic layer — that would force a merge on brands that want to diverge (e.g. mobilespin chevrons stay black while CTAs stay red).</div>
+      </section>
+
+      <section id="radius">
+        <h2><span class="num">06</span> <code>radius.*</code> <span class="badge evo">Evolved + context modes</span></h2>
+        <p class="lead">v3 introduces context-scoped CTA radii (see <a href="#contexts">Context modes</a> below) and new roles for modal + badge.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Typical</th><th>Role</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">radius.cta.form</td><td>3</td><td>CTA inside a form / next to inputs</td><td><span class="badge evo">Evolved</span> (was <code>Extras/CTA Radius</code>)</td></tr>
+              <tr><td class="mono">radius.cta.card</td><td>12</td><td>CTA inside a card (match card radius)</td><td><span class="badge new">New</span></td></tr>
+              <tr><td class="mono">radius.cta.wallet</td><td>100</td><td>Wallet / Checkout CTA (fully rounded)</td><td><span class="badge new">New</span></td></tr>
+              <tr><td class="mono">radius.cta.landing</td><td>100</td><td>Marketing / landing CTA (fully rounded)</td><td><span class="badge new">New</span></td></tr>
+              <tr><td class="mono">radius.card</td><td>12</td><td>Cards</td><td><span class="badge stable">Stable</span></td></tr>
+              <tr><td class="mono">radius.input</td><td>3</td><td>Form inputs</td><td><span class="badge stable">Stable</span></td></tr>
+              <tr><td class="mono">radius.pill</td><td>100</td><td>Pills</td><td><span class="badge stable">Stable</span></td></tr>
+              <tr><td class="mono">radius.badge</td><td>4</td><td>Badges / chips</td><td><span class="badge new">New</span></td></tr>
+              <tr><td class="mono">radius.modal</td><td>16</td><td>Modal / dialog containers</td><td><span class="badge new">New</span></td></tr>
+              <tr><td class="mono">radius.navigation</td><td>0 or 12</td><td>Bottom navbar elevation</td><td><span class="badge stable">Stable</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="banner">
+        <h2><span class="num">07</span> <code>banner.*</code> <span class="badge evo">Evolved + new overlay</span></h2>
+        <p class="lead">Existing <code>Banner/Background</code> + <code>Banner/Stroke</code> get on-surface and overlay companions so landing hero cards can be re-skinned without inline overrides.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Status</th><th>Default alias</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">banner.surface</td><td>Banner background</td><td><span class="badge evo">Evolved</span></td><td class="mono">Banner/Background</td></tr>
+              <tr><td class="mono">banner.stroke</td><td>Banner border (rare)</td><td><span class="badge evo">Evolved</span></td><td class="mono">Banner/Stroke</td></tr>
+              <tr><td class="mono">banner.on-surface</td><td>Banner text + icon</td><td><span class="badge new">New</span></td><td class="mono">text.on-primary</td></tr>
+              <tr><td class="mono">banner.overlay</td><td>Gradient / scrim over hero imagery</td><td><span class="badge new">New</span></td><td class="mono">rgba(0,0,0,0.4)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="menu-row">
+        <h2><span class="num">08</span> <code>menu-row.*</code> <span class="badge new">New alias pack</span></h2>
+        <p class="lead">Collection 3. Replaces the direct semantic binding in the Menu Item master. Default equal where brand doesn't split; split only where the brand's identity requires it.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Default</th><th>Splits in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">menu-row.icon</td><td>Leading icon (descriptive)</td><td class="mono">color.icon.descriptive</td><td>lyllo · getlucky · reviant-A</td></tr>
+              <tr><td class="mono">menu-row.action-icon</td><td>Trailing chevron</td><td class="mono">color.icon.action</td><td>lyllo · getlucky · reviant-A</td></tr>
+              <tr><td class="mono">menu-row.label</td><td>Primary label</td><td class="mono">text.primary</td><td>—</td></tr>
+              <tr><td class="mono">menu-row.label-muted</td><td>Supporting label</td><td class="mono">text.supportive</td><td>—</td></tr>
+              <tr><td class="mono">menu-row.surface</td><td>Row background</td><td class="mono">surface.page</td><td>comeon (inverts on selection)</td></tr>
+              <tr><td class="mono">menu-row.surface.selected</td><td>Selected row bg</td><td class="mono">surface.selected</td><td>comeon</td></tr>
+            </tbody>
+          </table>
+        </div>
+<pre><span class="c">// example — brand mode: getlucky</span>
+<span class="k">color.icon.descriptive</span> = <span class="v">#ff993d</span>    <span class="c">// orange — both icon roles merged in this brand</span>
+<span class="k">color.icon.action</span>      = <span class="v">#ff993d</span>
+
+<span class="c">// example — brand mode: lyllo (dual-palette)</span>
+<span class="k">color.icon.descriptive</span> = <span class="v">#fd6a00</span>    <span class="c">// orange content tone</span>
+<span class="k">color.icon.action</span>      = <span class="v">#f02884</span>    <span class="c">// pink action tone</span>
+<span class="c">// → menu row shows orange icon + pink chevron without touching the master</span></pre>
+      </section>
+
+      <section id="view-all">
+        <h2><span class="num">09</span> <code>view-all.*</code> <span class="badge new">New alias pack</span></h2>
+        <p class="lead">Makes the "View all" pattern editable as two distinct tokens so marketing can split label and chevron.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Default</th><th>Splits in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">view-all.label</td><td>"View all" text</td><td class="mono">text.primary</td><td>lyllo · getlucky</td></tr>
+              <tr><td class="mono">view-all.icon</td><td>Trailing chevron</td><td class="mono">color.icon.action</td><td>lyllo · getlucky</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="nav">
+        <h2><span class="num">10</span> <code>nav.*</code> <span class="badge new">New alias pack</span></h2>
+        <p class="lead">Bottom navbar aliases — every token split so reviant-A's icon ≠ text and elevated+rounded style are first-class choices.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Default</th><th>Splits in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">nav.background</td><td>Navbar surface</td><td class="mono">Bottom Navbar/Background</td><td>—</td></tr>
+              <tr><td class="mono">nav.default-icon</td><td>Unselected icon</td><td class="mono">Bottom Navbar/Default</td><td>—</td></tr>
+              <tr><td class="mono">nav.default-text</td><td>Unselected label</td><td class="mono">Bottom Navbar/Default</td><td>—</td></tr>
+              <tr><td class="mono">nav.selected-icon</td><td>Selected icon</td><td class="mono">color.icon.nav-selected</td><td>reviant-A</td></tr>
+              <tr><td class="mono">nav.selected-text</td><td>Selected label</td><td class="mono">nav.selected-icon</td><td>reviant-A</td></tr>
+              <tr><td class="mono">nav.radius</td><td>Navbar corner radius</td><td class="mono">radius.navigation</td><td>reviant-A (12)</td></tr>
+              <tr><td class="mono">nav.shadow</td><td>Navbar elevation</td><td class="mono">Extras/Navigation Shadow</td><td>reviant-A</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="header">
+        <h2><span class="num">11</span> <code>header.*</code> <span class="badge evo">Evolved (namespace promoted)</span></h2>
+        <p class="lead">Promotes the existing <code>Lobby Header/*</code> namespace into component aliases so no shape inside the header can reach for <code>color.primary</code>.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Aliases</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">header.surface</td><td>Header background</td><td class="mono">Lobby Header/Background</td></tr>
+              <tr><td class="mono">header.surface-1</td><td>Elevated surface (pill / badge in header)</td><td class="mono">Lobby Header/Surface-1</td></tr>
+              <tr><td class="mono">header.surface-2</td><td>Further-elevated surface</td><td class="mono">Lobby Header/Surface-2</td></tr>
+              <tr><td class="mono">header.accent.surface</td><td>Primary accent in header (e.g. selected tab)</td><td class="mono">Lobby Header/Surface-Primary</td></tr>
+              <tr><td class="mono">header.secondary.surface</td><td>Secondary accent</td><td class="mono">Lobby Header/Surface-Secondary</td></tr>
+              <tr><td class="mono">header.on-surface</td><td>Default text/icon on header</td><td class="mono">Lobby Header/Text</td></tr>
+              <tr><td class="mono">header.on-accent</td><td>Text/icon on accent surface</td><td class="mono">Lobby Header/On-Surface-Primary</td></tr>
+              <tr><td class="mono">header.active-selected</td><td>Active-state indicator</td><td class="mono">Lobby Header/Active-Selected</td></tr>
+              <tr><td class="mono">header.ios-bar</td><td>iOS status bar tint</td><td class="mono">Lobby Header/IOS-Bar</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">Lint rule: anything in the Lobby Header master binding to <code>color.primary</code> or <code>text.primary</code> directly is a bug. Must go through <code>header.*</code>.</div>
+      </section>
+
+      <section id="cta">
+        <h2><span class="num">12</span> <code>cta.*</code> <span class="badge new">New alias pack</span></h2>
+        <p class="lead">Bundles CTA fill + label + radius so all CTA components bind through one alias pack.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Token</th><th>Role</th><th>Default</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">cta.primary.surface</td><td>Primary CTA fill</td><td class="mono">color.primary</td></tr>
+              <tr><td class="mono">cta.primary.on-surface</td><td>Primary CTA label</td><td class="mono">text.on-primary</td></tr>
+              <tr><td class="mono">cta.secondary.surface</td><td>Secondary CTA fill</td><td class="mono">surface.1</td></tr>
+              <tr><td class="mono">cta.secondary.on-surface</td><td>Secondary CTA label</td><td class="mono">text.primary</td></tr>
+              <tr><td class="mono">cta.tertiary.surface</td><td>Tertiary (outline) CTA fill</td><td class="mono">transparent</td></tr>
+              <tr><td class="mono">cta.tertiary.border</td><td>Tertiary CTA border</td><td class="mono">color.primary</td></tr>
+              <tr><td class="mono">cta.radius</td><td>Routed via context mode</td><td class="mono">radius.cta.form (default context)</td></tr>
+              <tr><td class="mono">cta.label</td><td>CTA label (when split from icon)</td><td class="mono">cta.primary.on-surface</td></tr>
+              <tr><td class="mono">cta.icon</td><td>CTA leading/trailing icon</td><td class="mono">cta.primary.on-surface</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="contexts">
+        <h2><span class="num">13</span> CTA context modes <span class="badge new">New</span></h2>
+        <p class="lead">v3 introduces a "context" mode axis on <code>cta.radius</code> so the same CTA component picks form / card / wallet / landing radius based on where it's dropped.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Context</th><th>Resolves to</th><th>Rationale</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">form</td><td class="mono">radius.cta.form (3)</td><td>Sits next to text inputs; matches input radius.</td></tr>
+              <tr><td class="mono">card</td><td class="mono">radius.cta.card (12)</td><td>Inside a card; matches card radius for visual coherence.</td></tr>
+              <tr><td class="mono">wallet</td><td class="mono">radius.cta.wallet (100)</td><td>Deposit / withdraw CTAs are pill-shaped on 6 of 9 brands.</td></tr>
+              <tr><td class="mono">landing</td><td class="mono">radius.cta.landing (100)</td><td>Marketing CTAs are pill-shaped to read as decisive action.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">How it works in Figma: the CTA component gets a "Context" variant property. Each variant binds <code>cta.radius</code> to a different context token. When a designer drops a CTA into a form frame, they select the "form" variant; the radius follows.</div>
+      </section>
+
+      <section id="brand-samples">
+        <h2><span class="num">14</span> Brand-mode sample values</h2>
+        <p class="lead">The 9 brands from the audit, showing how the new tokens resolve. Empty cells mean "defaults to alias" (no override).</p>
+
+        <h3>Icons</h3>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Brand</th><th>color.icon.content</th><th>color.icon.descriptive</th><th>color.icon.action</th><th>color.icon.nav-selected</th></tr></thead>
+            <tbody>
+              <tr><td>lyllo</td><td class="mono"><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td class="mono"><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td></tr>
+              <tr><td>snabbare</td><td class="muted mono">—</td><td class="muted mono">—</td><td class="mono"><span class="swatch" style="background:#12ce67"></span>#12ce67</td><td class="mono"><span class="swatch" style="background:#0086ff"></span>#0086ff</td></tr>
+              <tr><td>mobilebet</td><td class="muted mono">—</td><td class="muted mono">—</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td></tr>
+              <tr><td>comeon</td><td class="muted mono">—</td><td class="muted mono">—</td><td class="mono"><span class="swatch" style="background:#39f56a"></span>#39f56a</td><td class="mono"><span class="swatch" style="background:#39f56a"></span>#39f56a</td></tr>
+              <tr><td>mobilespin</td><td class="mono"><span class="swatch" style="background:#212121"></span>#212121</td><td class="mono"><span class="swatch" style="background:#212121"></span>#212121</td><td class="mono"><span class="swatch" style="background:#212121"></span>#212121</td><td class="mono"><span class="swatch" style="background:#ffee00"></span>#ffee00</td></tr>
+              <tr><td>getlucky</td><td class="mono"><span class="swatch" style="background:#333333"></span>#333333</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono"><span class="swatch" style="background:#e26591"></span>#e26591</td></tr>
+              <tr><td>reviant (A)</td><td class="mono"><span class="swatch" style="background:#2e3236"></span>#2e3236</td><td class="mono"><span class="swatch" style="background:#b18378"></span>#b18378</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td></tr>
+              <tr><td>888.nl</td><td class="mono"><span class="swatch" style="background:#ffffff"></span>#ffffff</td><td class="mono"><span class="swatch" style="background:#ffffff"></span>#ffffff</td><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#fce403"></span>#fce403</td></tr>
+              <tr><td>reviant (B)</td><td class="mono"><span class="swatch" style="background:#5330ff"></span>#5330ff</td><td class="mono"><span class="swatch" style="background:#ff878f"></span>#ff878f</td><td class="mono"><span class="swatch" style="background:#ff4655"></span>#ff4655</td><td class="mono"><span class="swatch" style="background:#ff4655"></span>#ff4655</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Radii</h3>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Brand</th><th>radius.card</th><th>radius.cta.form</th><th>radius.cta.wallet</th><th>radius.cta.landing</th><th>radius.input</th><th>radius.pill</th><th>radius.navigation</th></tr></thead>
+            <tbody>
+              <tr><td>lyllo</td><td class="mono">12</td><td class="mono">3</td><td class="mono">100</td><td class="mono">100</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>snabbare</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>mobilebet</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>comeon</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>mobilespin</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>getlucky</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>reviant (A)</td><td class="mono">12</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">3</td><td class="mono">100</td><td class="mono">12</td></tr>
+              <tr><td>888.nl</td><td class="mono">12</td><td class="mono">3</td><td class="mono">100</td><td class="mono">100</td><td class="mono">3</td><td class="mono">100</td><td class="mono">0</td></tr>
+              <tr><td>reviant (B)</td><td class="mono">0</td><td class="mono">3</td><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Landing (existing family, shown for context)</h3>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Brand</th><th>Primary CTA</th><th>Icon CTA (tertiary)</th><th>Tag</th></tr></thead>
+            <tbody>
+              <tr><td>lyllo</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td></tr>
+              <tr><td>snabbare</td><td class="mono"><span class="swatch" style="background:#12ce67"></span>#12ce67</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#ef7171"></span>#ef7171</td></tr>
+              <tr><td>mobilebet</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td><td class="mono">#1e2021</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td></tr>
+              <tr><td>comeon</td><td class="mono"><span class="swatch" style="background:#39f56a"></span>#39f56a</td><td class="mono"><span class="swatch" style="background:#c0f9c8"></span>#c0f9c8</td><td class="mono"><span class="swatch" style="background:#c3ff00"></span>#c3ff00</td></tr>
+              <tr><td>mobilespin</td><td class="mono"><span class="swatch" style="background:#d6112b"></span>#d6112b</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#ffee00"></span>#ffee00</td></tr>
+              <tr><td>getlucky</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono">#ffffff40</td><td class="mono"><span class="swatch" style="background:#639bf4"></span>#639bf4</td></tr>
+              <tr><td>reviant (A)</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td class="mono"><span class="swatch" style="background:#b18378"></span>#b18378</td></tr>
+              <tr><td>888.nl</td><td class="mono"><span class="swatch" style="background:#fce403"></span>#fce403</td><td class="mono"><span class="swatch" style="background:#212121"></span>#212121</td><td class="mono"><span class="swatch" style="background:#fce403"></span>#fce403</td></tr>
+              <tr><td>reviant (B)</td><td class="mono"><span class="swatch" style="background:#ff4655"></span>#ff4655</td><td class="mono"><span class="swatch" style="background:#ff878f"></span>#ff878f</td><td class="mono"><span class="swatch" style="background:#5330ff"></span>#5330ff</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="splits">
+        <h2><span class="num">15</span> Intentional splits (README content)</h2>
+        <p class="lead">Document this list inside the Figma file so nobody "corrects" these divergences.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Brand</th><th>Split</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>lyllo</td><td><code>text.primary</code> ≠ <code>color.primary</code></td><td>Dual-palette identity: orange text + pink action.</td></tr>
+              <tr><td>snabbare</td><td><code>header.surface</code> ≠ <code>color.primary</code></td><td>Blue-header / green-CTA two-colour identity.</td></tr>
+              <tr><td>comeon</td><td><code>header.surface = surface.page</code></td><td>Borderless header is a brand signature.</td></tr>
+              <tr><td>mobilespin</td><td><code>color.icon.*</code> all black, <code>color.primary</code> red</td><td>Red reserved for CTAs; icons black for clarity.</td></tr>
+              <tr><td>getlucky</td><td><code>text.primary</code> ≠ <code>color.primary</code>, <code>Landing/Tag</code> = blue</td><td>Pink text, orange action, third-accent tag.</td></tr>
+              <tr><td>reviant (A)</td><td><code>nav.selected-icon</code> ≠ <code>nav.selected-text</code></td><td>Brand signature: red selected icon + dark label.</td></tr>
+              <tr><td>reviant (A)</td><td><code>nav.radius</code> = 12, <code>nav.shadow</code> visible</td><td>Elevated rounded navbar — unique to this brand.</td></tr>
+              <tr><td>888.nl</td><td><code>color.icon.action</code> white, <code>color.primary</code> yellow</td><td>Yellow too low-contrast for small icons.</td></tr>
+              <tr><td>reviant (B)</td><td>All radii = 0; 3-colour icon split</td><td>Sharp-edges identity; purple-pink-red tri-palette.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <p>Based on the 9-brand audit in Figma file <code>qnPOhVnKHuYo7t0g6PgrcS</code> (2026-04-20). See <a href="design-token-architecture-v3.html">Architecture v3</a> for the rationale and migration path, <a href="brand-audit.html">Brand Audit</a> for the raw per-brand evidence.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

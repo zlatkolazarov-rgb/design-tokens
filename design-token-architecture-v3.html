@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Token Architecture v3 — Edge cases, new semantic families, component aliases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-card-hover: #1f1c3e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --purple-dark: #4a3db8;
+    --teal: #00d4b4; --teal-soft: rgba(0, 212, 180, 0.12);
+    --text: #eceaf5; --text-muted: #8a86a8; --text-dim: #5c587a;
+    --success: #00b894; --warning: #fdcb6e; --error: #e17055; --info: #74b9ff;
+    --white: #ffffff;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; width: 100vw; height: 100vh; font-feature-settings: 'cv11', 'ss01'; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  .deck { display: flex; flex-direction: column; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+  .deck::-webkit-scrollbar { display: none; }
+
+  .slide { min-height: 100vh; width: 100vw; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 56px 72px 72px; position: relative; overflow: hidden; }
+  .slide-inner { width: 100%; max-width: 1240px; }
+
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--purple), var(--teal)); z-index: 100; transition: width 0.3s ease; }
+  .slide-counter { position: fixed; bottom: 18px; right: 28px; font-size: 0.82rem; color: var(--text-muted); font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', monospace; z-index: 100; }
+  .nav-hint { position: fixed; bottom: 18px; left: 28px; font-size: 0.72rem; color: var(--text-dim); z-index: 100; letter-spacing: 0.04em; }
+
+  h1 { font-family: 'Sora', sans-serif; font-size: 3.8rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
+  h2 { font-family: 'Sora', sans-serif; font-size: 2.3rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.6rem; }
+  h4 { font-size: 0.92rem; font-weight: 600; line-height: 1.4; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+  p, li { font-size: 1.04rem; line-height: 1.6; color: var(--text); }
+  .subtitle { font-size: 1.18rem; color: var(--text-muted); line-height: 1.55; max-width: 820px; }
+  .lead { font-size: 1.2rem; color: var(--text); line-height: 1.55; max-width: 920px; }
+  .accent { color: var(--purple-light); }
+  .teal { color: var(--teal); }
+  .warn { color: var(--warning); }
+  .dim { color: var(--text-muted); }
+  strong { color: var(--white); font-weight: 600; }
+
+  .tag { display: inline-block; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: var(--white); font-size: 0.72rem; font-weight: 700; padding: 6px 14px; border-radius: 4px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.4rem; }
+  .tag.teal { background: linear-gradient(135deg, var(--teal) 0%, #00a88e 100%); color: #04140f; }
+  .tag.warn { background: linear-gradient(135deg, #c93838 0%, #8a1f1f 100%); color: var(--white); }
+
+  .orb { position: absolute; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--purple) 0%, transparent 70%); opacity: 0.18; pointer-events: none; filter: blur(1px); }
+  .orb.teal { background: radial-gradient(circle at 30% 30%, var(--teal) 0%, transparent 70%); opacity: 0.12; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; transition: transform 0.25s ease, border-color 0.25s ease; }
+  .card:hover { border-color: var(--border-strong); }
+  .card.highlight { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.06) 100%); }
+  .card.warn-card { border-color: rgba(253, 203, 110, 0.4); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.05) 100%); }
+  .card h3 { color: var(--white); }
+  .card-note { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: 100%; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  th { color: var(--purple-light); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
+  tr:last-child td { border-bottom: none; }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text); }
+  tr:hover td { background: rgba(108, 92, 231, 0.04); }
+
+  pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.6; color: var(--text); overflow-x: auto; white-space: pre; width: 100%; }
+  pre .k { color: var(--purple-light); } pre .s { color: var(--teal); } pre .c { color: var(--text-dim); } pre .v { color: var(--warning); }
+  code.inline { background: var(--bg-code); border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px; font-size: 0.88em; color: var(--purple-light); }
+
+  ul.check, ul.arrow { list-style: none; padding: 0; }
+  ul.check li, ul.arrow li { padding-left: 26px; position: relative; margin-bottom: 8px; font-size: 0.98rem; }
+  ul.check li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+  ul.arrow li::before { content: '→'; position: absolute; left: 0; color: var(--purple-light); font-weight: 700; }
+
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(255,255,255,0.14); }
+
+  .pill-chip { display: inline-block; padding: 3px 10px; background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.3); border-radius: 999px; font-size: 0.76rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+  .pill-chip.brand { background: rgba(108, 92, 231, 0.12); color: var(--purple-light); border-color: rgba(108, 92, 231, 0.3); }
+  .pill-chip.warn { background: rgba(253, 203, 110, 0.1); color: var(--warning); border-color: rgba(253, 203, 110, 0.3); }
+
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: var(--teal); letter-spacing: 0.08em; }
+
+  .arch { display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.92rem; width: 100%; }
+  .arch-box { width: 100%; padding: 14px 22px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; }
+  .arch-box.highlight { border-color: var(--teal); background: linear-gradient(90deg, var(--bg-card), var(--teal-soft)); }
+  .arch-box.new { border-color: var(--warning); background: linear-gradient(90deg, var(--bg-card), rgba(253, 203, 110, 0.06)); }
+  .arch-label { font-weight: 600; color: var(--white); font-family: 'Sora', sans-serif; font-size: 1.02rem; }
+  .arch-modes { font-size: 0.82rem; color: var(--text-muted); }
+  .arch-badge { font-size: 0.66rem; padding: 2px 8px; border-radius: 999px; background: rgba(253, 203, 110, 0.15); color: var(--warning); margin-left: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .title-slide { text-align: center; align-items: center; }
+  .title-kicker { font-size: 0.88rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 22px; font-weight: 600; }
+  .title-underline { display: inline-block; padding-bottom: 8px; border-bottom: 4px solid var(--teal); }
+
+  .kbd { display: inline-block; padding: 2px 8px; background: var(--bg-code); border: 1px solid var(--border); border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--purple-light); }
+
+  .divider-line { height: 1px; background: var(--border); width: 100%; margin: 22px 0; }
+
+  .brand-evidence { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .brand-evidence .ev { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; padding: 2px 8px; border-radius: 4px; background: var(--bg-code); border: 1px solid var(--border); }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 28px; }
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.7rem; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="slide-counter" id="counter">01 / 16</div>
+<div class="nav-hint">↑ ↓ <span class="dim">navigate</span> &nbsp;·&nbsp; <span class="kbd">Space</span></div>
+
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<section class="slide title-slide">
+  <div class="orb" style="width: 520px; height: 520px; top: -160px; right: -160px;"></div>
+  <div class="orb teal" style="width: 340px; height: 340px; bottom: -90px; left: -90px;"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">20-Brand White Label · ComeOn · 2026-04-20</div>
+    <h1>
+      Design Token<br>
+      <span class="title-underline">Architecture</span> <span class="accent">v3</span>
+    </h1>
+    <p class="subtitle" style="margin: 18px auto 0;">v2's 5-collection model stays intact. v3 absorbs the real-world edge cases found in the brand audit — three-icon splits, pill families, context-scoped CTA radius, component aliases — and adds a discipline layer for marketing-designer editability.</p>
+    <div style="margin-top: 40px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      <span class="pill-chip">9 brands audited</span>
+      <span class="pill-chip">3 new semantic families</span>
+      <span class="pill-chip">1 new collection layer</span>
+      <span class="pill-chip brand">non-breaking from v2</span>
+      <span class="pill-chip warn">marketing-editable</span>
+    </div>
+    <p style="margin-top: 40px;">
+      <a href="brand-audit.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Brand Audit (evidence)</a>
+      <a href="component-hex-audit.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Component Audit</a>
+      <a href="design-token-reference-v3.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Token Reference v3</a>
+    </p>
+    <p class="dim" style="margin-top: 18px; font-size: 0.85rem;">Based on <a href="design-token-architecture-v2.html" style="color: var(--text-muted); border-bottom: 1px dotted var(--text-muted);">Architecture v2</a> — v2 remains the architectural foundation.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: WHY v3 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="tag">Why v3</span>
+    </div>
+    <h2>v2 described the <span class="accent">shape</span>. v3 describes the <span class="teal">edges</span>.</h2>
+    <p class="lead" style="margin-bottom: 28px;">v2 locked the 5-collection model, the 4-point scale, the four axes (brand × theme × jurisdiction × viewport). But the brand audit across 9 live brands surfaced recurring divergences that v2's semantic layer can't cleanly express today.</p>
+
+    <div class="grid-2">
+      <div class="card warn-card">
+        <h4 class="warn">What v2 didn't cover</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li>3-way icon split (Big / Descriptive / Action) happens in 4 of 9 brands; implicit in v2, not named.</li>
+          <li>Menu row needs independent tokens for label-icon vs chevron — no component alias layer exists.</li>
+          <li>Pill has no <code class="inline">pill.*</code> semantic family; it borrows from <code class="inline">Sub Menu/*</code>.</li>
+          <li>CTA radius varies by context (form vs wallet vs landing) but contexts aren't named modes.</li>
+          <li>"View all" is a pattern, not a component; its label/icon split is invisible.</li>
+          <li>Landing has a third-accent Tag on 5 of 9 brands — getlucky blue, reviant purple, lyllo pink — with no guidance that this is deliberate.</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h4 class="teal">What v3 adds</h4>
+        <ul class="check" style="margin-top: 8px;">
+          <li>3 new semantic families: <code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">banner.overlay</code>.</li>
+          <li>1 new layer between semantic and brand: <b>Component aliases</b> (collection 3 in v2 terms — now first-class).</li>
+          <li>4 new component aliases: <code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code>, <code class="inline">cta-context.*</code>.</li>
+          <li>A "Context mode" on CTA Radius so form / card / wallet / landing are named and switchable.</li>
+          <li>Locked collections for marketing-designer safety. Brand Modes the only edit surface.</li>
+          <li>A "README" inside Figma listing intentional splits, so nobody "fixes" them.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: THE MODEL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="tag teal">The 5-collection model</span>
+    </div>
+    <h2>Same shape as v2.</h2>
+    <p class="lead" style="margin-bottom: 20px;">No restructure, no collapse. v3 adds <strong>roles</strong> inside Semantic, promotes <strong>Component Aliases</strong> to a clearly-named layer, and tightens <strong>permissions</strong> on the edit boundaries.</p>
+
+    <div class="arch" style="margin-top: 16px;">
+      <div class="arch-box">
+        <div><span class="arch-label">1 · Primitives</span> <span class="arch-badge" style="background: rgba(108,92,231,0.15); color: var(--purple-light);">Locked</span></div>
+        <span class="arch-modes">raw colours · radii · spacing · typography scale · 4-pt base</span>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">2 · Semantic roles</span> <span class="arch-badge">+10 roles in v3</span></div>
+        <span class="arch-modes">text.* · surface.* · icon.* · pill.* · badge.* · radius.* · banner.*</span>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">3 · Component aliases</span> <span class="arch-badge">promoted in v3</span></div>
+        <span class="arch-modes">menu-row.* · view-all.* · nav.selected-* · cta-context.* · header.*</span>
+      </div>
+      <div class="arch-box highlight">
+        <div><span class="arch-label">4 · Brand modes</span> <span class="arch-badge" style="background: rgba(0,212,180,0.15); color: var(--teal);">Marketing edits here</span></div>
+        <span class="arch-modes">20 brands · dual-palette · 3-icon · radius identity</span>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">5 · Jurisdiction modes</span></div>
+        <span class="arch-modes">SE · DK · MT · ON · NL · PL + default</span>
+      </div>
+    </div>
+
+    <p class="dim" style="margin-top: 22px; font-size: 0.88rem;">Collection 3 existed conceptually in v2 but wasn't formalised. v3 names it, documents it, and forces every component that can diverge per brand to bind through it.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: EDGE CASE 01 — 3 ICON SPLIT ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="tag">Edge case 01</span>
+    </div>
+    <h2>Three icon types, independently settable.</h2>
+    <p class="lead" style="margin-bottom: 20px;">"Big" (content illustrations), "Descriptive" (small icons labelling menu rows), "Action" (chevrons/arrows). 4 of 9 brands diverge them.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <h4>v3 semantic roles</h4>
+<pre><span class="c">// collection 2 · semantic</span>
+<span class="k">color.icon.content</span>      <span class="s">→ Main/Big-Icons</span>
+<span class="k">color.icon.descriptive</span>  <span class="s">→ Main/Icons</span>
+<span class="k">color.icon.action</span>       <span class="s">→ Main/Action-Icons</span>
+<span class="k">color.icon.nav-selected</span> <span class="s">→ Bottom Navbar/Selected-Icon</span> <span class="c">(new)</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="card highlight">
+          <h4 class="teal">Evidence in the wild</h4>
+          <table>
+            <thead><tr><th>Brand</th><th>Content</th><th>Desc.</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>reviant (B)</td><td class="mono"><span class="swatch" style="background:#5330ff"></span>#5330ff</td><td class="mono"><span class="swatch" style="background:#ff878f"></span>#ff878f</td><td class="mono"><span class="swatch" style="background:#ff4655"></span>#ff4655</td></tr>
+              <tr><td>reviant (A)</td><td class="mono"><span class="swatch" style="background:#2e3236"></span>#2e3236</td><td class="mono"><span class="swatch" style="background:#b18378"></span>#b18378</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td></tr>
+              <tr><td>getlucky</td><td class="mono"><span class="swatch" style="background:#333333"></span>#333333</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td></tr>
+              <tr><td>lyllo</td><td class="mono"><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td class="mono"><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td></tr>
+              <tr><td>888.nl</td><td class="mono"><span class="swatch" style="background:#ffffff"></span>#ffffff</td><td class="mono"><span class="swatch" style="background:#ffffff"></span>#ffffff</td><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card warn-card" style="margin-top: 20px;">
+      <h4 class="warn">Rule</h4>
+      <p class="card-note">Never alias <code class="inline">icon.action = color.primary</code> at the semantic layer. Default them equal <i>in brand mode</i>, so any brand can un-merge without a schema change.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: EDGE CASE 02 — MENU ROW ALIAS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="tag">Edge case 02</span>
+    </div>
+    <h2>Menu row: <span class="accent">icon ≠ chevron</span> (without editing the master).</h2>
+    <p class="lead" style="margin-bottom: 20px;">Your first reported concern. In the deposit flow / profile, the leading icon and trailing chevron need to be tintable independently per brand. v3 achieves this through component aliases.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-bottom: 12px;">v3 component aliases (collection 3)</h4>
+<pre><span class="c">// collection 3 · component</span>
+<span class="k">menu-row.icon</span>         = <span class="s">color.icon.descriptive</span>
+<span class="k">menu-row.action-icon</span>  = <span class="s">color.icon.action</span>
+<span class="k">menu-row.label</span>        = <span class="s">text.primary</span>
+<span class="k">menu-row.label-muted</span>  = <span class="s">text.supportive</span>
+
+<span class="c">// collection 4 · brand mode: getlucky</span>
+<span class="k">color.icon.descriptive</span> = <span class="v">#ff993d</span> <span class="c">// orange</span>
+<span class="k">color.icon.action</span>      = <span class="v">#ff993d</span> <span class="c">// orange</span>
+<span class="c">// → merged, looks like one token, still two</span>
+
+<span class="c">// collection 4 · brand mode: reviant (A)</span>
+<span class="k">color.icon.descriptive</span> = <span class="v">#b18378</span> <span class="c">// brown</span>
+<span class="k">color.icon.action</span>      = <span class="v">#e71f00</span> <span class="c">// red</span>
+<span class="c">// → split on this one brand, zero master edits</span></pre>
+      </div>
+      <div>
+        <div class="card highlight">
+          <h4 class="teal">Why this pattern works</h4>
+          <ul class="check">
+            <li>The Menu Item master points at two different aliases, not at <code class="inline">color.primary</code>.</li>
+            <li>Marketing designers see two named tokens in the brand-mode panel — the split is discoverable.</li>
+            <li>If the two resolve to the same value, the UI looks merged; if they diverge, the UI splits. No code.</li>
+            <li>Locked collection 3 means a designer can't accidentally delete the alias and break the row.</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top: 14px;">
+          <h4>Same pattern applies to</h4>
+          <ul class="arrow">
+            <li><code class="inline">view-all.label</code> / <code class="inline">view-all.icon</code></li>
+            <li><code class="inline">nav.selected-icon</code> / <code class="inline">nav.selected-text</code></li>
+            <li><code class="inline">cta.label</code> / <code class="inline">cta.icon</code> (when CTA has leading icon)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: EDGE CASE 03 — PILL FAMILY ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="tag">Edge case 03</span>
+    </div>
+    <h2>Pills get their own semantic family.</h2>
+    <p class="lead" style="margin-bottom: 18px;">Today: Pill fills reach for <code class="inline">Sub Menu/*</code> or <code class="inline">Main/Badge</code>. That's why pills look accidentally different across brands. v3 gives them a dedicated family and rewires the masters.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-bottom: 10px;">v3 additions</h4>
+<pre><span class="c">// collection 2 · semantic · new</span>
+<span class="k">pill.surface</span>             <span class="c">// default state bg</span>
+<span class="k">pill.on-surface</span>          <span class="c">// label + icon</span>
+<span class="k">pill.border</span>              <span class="c">// outline-style brands</span>
+<span class="k">pill.surface.selected</span>
+<span class="k">pill.on-surface.selected</span>
+<span class="k">pill.surface.hover</span>
+<span class="k">radius.pill</span>              <span class="c">→ Extras/Pill Radius</span>
+
+<span class="c">// collection 3 · component · new</span>
+<span class="k">filter-pill.*</span>   <span class="c">// alias pack for filter variant</span>
+<span class="k">nav-pill.*</span>      <span class="c">// alias pack for navigation variant</span></pre>
+      </div>
+      <div>
+        <div class="card highlight">
+          <h4 class="teal">Migration path (non-breaking)</h4>
+          <ol style="margin-left: 20px; font-size: 0.95rem; color: var(--text);">
+            <li style="margin-bottom: 6px;">Add the 7 new semantic tokens, default them to alias the current borrowed values (<code class="inline">pill.surface</code> → <code class="inline">Sub Menu/Default</code>).</li>
+            <li style="margin-bottom: 6px;">Repoint Pill masters to the new tokens. Visually unchanged on day one.</li>
+            <li style="margin-bottom: 6px;">In each brand mode, override the pill tokens where identity diverges (mobilespin yellow-on-red, comeon mint-on-dark, reviant-B outline).</li>
+            <li>Reclaim <code class="inline">Sub Menu/*</code> for sub-menus only. Drop the cross-usage.</li>
+          </ol>
+        </div>
+        <div class="card warn-card" style="margin-top: 12px;">
+          <h4 class="warn">Why outline-style needs <code class="inline">pill.border</code></h4>
+          <p class="card-note">reviant (B) uses a stroked pill (ff4655 border) with a transparent interior — that's a legitimate design decision, but today it's achieved by inline override. A <code class="inline">pill.border</code> token lifts it into the system.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: EDGE CASE 04 — CTA CONTEXT RADIUS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="tag">Edge case 04</span>
+    </div>
+    <h2>CTA radius is already context-scoped. Name the contexts.</h2>
+    <p class="lead" style="margin-bottom: 18px;">Brand <b>lyllo</b>'s Button component resolves <code class="inline">Extras/CTA Radius = 3</code>, while its Wallet CTA and Landing CTA both resolve to <code class="inline">100</code>. The token is already context-switchable; the contexts just aren't named.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-bottom: 10px;">v3 rename + mode-switch</h4>
+<pre><span class="c">// collection 2 · semantic</span>
+<span class="k">radius.cta.form</span>     <span class="c">// input-adjacent, small radius</span>
+<span class="k">radius.cta.card</span>     <span class="c">// inside a card, match card r</span>
+<span class="k">radius.cta.wallet</span>   <span class="c">// wallet/checkout, fully rounded</span>
+<span class="k">radius.cta.landing</span>  <span class="c">// marketing hero, fully rounded</span>
+
+<span class="c">// collection 4 · brand mode: lyllo</span>
+<span class="k">radius.cta.form</span>    = <span class="v">3</span>
+<span class="k">radius.cta.card</span>    = <span class="v">12</span>   <span class="c">// match card</span>
+<span class="k">radius.cta.wallet</span>  = <span class="v">100</span>
+<span class="k">radius.cta.landing</span> = <span class="v">100</span>
+
+<span class="c">// collection 4 · brand mode: reviant (B)</span>
+<span class="k">radius.cta.*</span> = <span class="v">0</span>  <span class="c">// all contexts sharp</span></pre>
+      </div>
+      <div>
+        <h4>All radius roles in v3</h4>
+        <table class="compact">
+          <thead><tr><th>Role</th><th>Typical</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">radius.cta.form</td><td>3</td><td>renamed from <code class="inline">Extras/CTA Radius</code></td></tr>
+            <tr><td class="mono">radius.cta.card</td><td>12</td><td>match card</td></tr>
+            <tr><td class="mono">radius.cta.wallet</td><td>100</td><td>pill-style CTA</td></tr>
+            <tr><td class="mono">radius.cta.landing</td><td>100</td><td>pill-style CTA</td></tr>
+            <tr><td class="mono">radius.card</td><td>12</td><td>unchanged</td></tr>
+            <tr><td class="mono">radius.input</td><td>3</td><td>unchanged</td></tr>
+            <tr><td class="mono">radius.pill</td><td>100</td><td>unchanged</td></tr>
+            <tr><td class="mono">radius.badge</td><td>4</td><td><b>new</b></td></tr>
+            <tr><td class="mono">radius.modal</td><td>16</td><td><b>new</b></td></tr>
+            <tr><td class="mono">radius.navigation</td><td>0 or 12</td><td>unchanged</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: EDGE CASE 05 — HEADER NAMESPACE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="tag">Edge case 05</span>
+    </div>
+    <h2>The header is its own identity.</h2>
+    <p class="lead" style="margin-bottom: 18px;">snabbare lives the loudest version: <span class="swatch" style="background:#0086ff"></span><b>blue header</b> with <span class="swatch" style="background:#12ce67"></span><b>green brand</b> everywhere else. This already works today because <code class="inline">Lobby Header/*</code> tokens are isolated. v3's job is to <i>enforce</i> the boundary.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <h4>v3 rule</h4>
+          <ul class="check">
+            <li>Nothing inside the Lobby Header component may bind to <code class="inline">color.primary</code>.</li>
+            <li>Everything inside the header binds to <code class="inline">header.surface.*</code> / <code class="inline">header.on-surface.*</code>.</li>
+            <li>The header's accent badge binds to <code class="inline">header.accent.surface</code> — separate from <code class="inline">color.primary</code> by design.</li>
+            <li>comeon is the only brand where <code class="inline">header.surface = surface.page</code>; v3 keeps them as distinct tokens with equal values.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom: 10px;">v3 header aliases (collection 3)</h4>
+<pre><span class="c">// collection 3 · component</span>
+<span class="k">header.surface</span>              <span class="s">→ Lobby Header/Background</span>
+<span class="k">header.surface-1</span>            <span class="s">→ Lobby Header/Surface-1</span>
+<span class="k">header.surface-2</span>            <span class="s">→ Lobby Header/Surface-2</span>
+<span class="k">header.accent.surface</span>       <span class="s">→ Lobby Header/Surface-Primary</span>
+<span class="k">header.secondary.surface</span>    <span class="s">→ Lobby Header/Surface-Secondary</span>
+<span class="k">header.on-surface</span>           <span class="s">→ Lobby Header/Text</span>
+<span class="k">header.on-accent</span>            <span class="s">→ Lobby Header/On-Surface-Primary</span>
+<span class="k">header.active-selected</span>      <span class="s">→ Lobby Header/Active-Selected</span>
+<span class="k">header.ios-bar</span>              <span class="s">→ Lobby Header/IOS-Bar</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: EDGE CASE 06 — LANDING SUB-SYSTEM ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="tag">Edge case 06</span>
+    </div>
+    <h2>Landing is a sub-system with a <span class="accent">third-accent</span> Tag.</h2>
+    <p class="lead" style="margin-bottom: 16px;">5 of 9 brands paint the Landing <code class="inline">Tag</code> with a colour that isn't Primary or Text-Primary — a third brand accent. Keep it as its own token, never alias it.</p>
+
+    <table style="margin-top: 14px;">
+      <thead><tr><th>Brand</th><th>Primary CTA</th><th>Secondary</th><th>Icon CTA (tertiary)</th><th>Tag</th></tr></thead>
+      <tbody>
+        <tr><td>lyllo</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td><td class="mono">#ffffff</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#f02884"></span>#f02884</td></tr>
+        <tr><td>snabbare</td><td class="mono"><span class="swatch" style="background:#12ce67"></span>#12ce67</td><td class="mono">#ffffff</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#ef7171"></span>#ef7171 <span class="warn">(3rd)</span></td></tr>
+        <tr><td>mobilebet</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td><td class="mono">#ffffff</td><td class="mono">#1e2021</td><td class="mono"><span class="swatch" style="background:#57b902"></span>#57b902</td></tr>
+        <tr><td>comeon</td><td class="mono"><span class="swatch" style="background:#39f56a"></span>#39f56a</td><td class="mono">#3c423c</td><td class="mono">#c0f9c8</td><td class="mono"><span class="swatch" style="background:#c3ff00"></span>#c3ff00 <span class="warn">(3rd)</span></td></tr>
+        <tr><td>mobilespin</td><td class="mono"><span class="swatch" style="background:#d6112b"></span>#d6112b</td><td class="mono">#ffffff</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#ffee00"></span>#ffee00</td></tr>
+        <tr><td>getlucky</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono"><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="mono">#ffffff40</td><td class="mono"><span class="swatch" style="background:#639bf4"></span>#639bf4 <span class="warn">(3rd)</span></td></tr>
+        <tr><td>reviant (A)</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td class="mono"><span class="swatch" style="background:#cbaca5"></span>#cbaca5</td><td class="mono"><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td class="mono"><span class="swatch" style="background:#b18378"></span>#b18378 <span class="warn">(3rd)</span></td></tr>
+        <tr><td>888.nl</td><td class="mono"><span class="swatch" style="background:#fce403"></span>#fce403</td><td class="mono">#212121</td><td class="mono">#212121</td><td class="mono"><span class="swatch" style="background:#fce403"></span>#fce403</td></tr>
+        <tr><td>reviant (B)</td><td class="mono"><span class="swatch" style="background:#ff4655"></span>#ff4655</td><td class="mono">#ffffff</td><td class="mono"><span class="swatch" style="background:#ff878f"></span>#ff878f</td><td class="mono"><span class="swatch" style="background:#5330ff"></span>#5330ff <span class="warn">(3rd)</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="dim" style="margin-top: 16px; font-size: 0.92rem;">v3 keeps the existing <code class="inline">Landing/*</code> family intact, no new tokens needed here, but documents these third-accent tags as intentional so marketing designers know to source them independently when theming.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: EDGE CASE 07 — BOTTOM NAV ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="tag">Edge case 07</span>
+    </div>
+    <h2>Bottom-nav split + the elevated brand.</h2>
+
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <h4>Only reviant (A) splits selected-icon ≠ selected-text</h4>
+          <p class="card-note" style="margin-top: 8px;">Selected icon resolves <span class="swatch" style="background:#e71f00"></span><code class="inline">#e71f00</code> (red), selected text resolves <span class="swatch" style="background:#2e3236"></span><code class="inline">#2e3236</code> (dark). Every other brand keeps them equal. Keep the tokens split; default them equal in brand mode.</p>
+        </div>
+        <div class="card" style="margin-top: 14px;">
+          <h4>Only reviant (A) elevates + rounds the nav</h4>
+          <p class="card-note" style="margin-top: 8px;"><code class="inline">Extras/Navigation Radius = 12</code>, <code class="inline">Navigation Shadow = #0000001a</code>. Distinctive brand signature; must stay independent of card/pill radius.</p>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom: 10px;">v3 component aliases</h4>
+<pre><span class="c">// collection 3 · component</span>
+<span class="k">nav.background</span>        <span class="s">→ Bottom Navbar/Background</span>
+<span class="k">nav.default-icon</span>      <span class="s">→ Bottom Navbar/Default</span>
+<span class="k">nav.default-text</span>      <span class="s">→ Bottom Navbar/Default</span>
+<span class="k">nav.selected-icon</span>     <span class="s">→ Bottom Navbar/Selected-Icon</span>
+<span class="k">nav.selected-text</span>     <span class="s">→ Bottom Navbar/Selected-Text</span>
+<span class="k">nav.radius</span>             <span class="s">→ Extras/Navigation Radius</span>
+<span class="k">nav.shadow</span>             <span class="s">→ Extras/Navigation Shadow</span>
+
+<span class="c">// collection 4 · brand mode: reviant (A)</span>
+<span class="k">nav.selected-icon</span> = <span class="v">#e71f00</span>
+<span class="k">nav.selected-text</span> = <span class="v">#2e3236</span>
+<span class="k">nav.radius</span>        = <span class="v">12</span>
+<span class="k">nav.shadow</span>        = <span class="v">#0000001a</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: MARKETING DESIGNER FLOW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="tag teal">Marketing-designer editability</span>
+    </div>
+    <h2>One layer edits. Four layers protect.</h2>
+    <p class="lead" style="margin-bottom: 22px;">The point of the 5-collection model is that each layer has an <strong>owner</strong> and a <strong>lock</strong>. v3 makes this explicit.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4 style="margin-bottom: 10px;">Ownership matrix</h4>
+        <table class="compact">
+          <thead><tr><th>Collection</th><th>Editor</th><th>Permission</th></tr></thead>
+          <tbody>
+            <tr><td>1 · Primitives</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
+            <tr><td>2 · Semantic roles</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
+            <tr><td>3 · Component aliases</td><td class="dim">Design system team</td><td><span class="pill-chip">Read-only</span></td></tr>
+            <tr><td>4 · Brand modes</td><td class="teal"><b>Marketing designers</b></td><td><span class="pill-chip" style="background: rgba(0,212,180,0.18); color: var(--teal);">Edit</span></td></tr>
+            <tr><td>5 · Jurisdiction</td><td class="dim">Compliance + DS team</td><td><span class="pill-chip warn">Edit with review</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card highlight">
+          <h4 class="teal">Six rules for editability</h4>
+          <ol style="margin-left: 18px;">
+            <li style="margin-bottom: 6px;"><b>Edit at brand-mode only.</b> All other layers read-only.</li>
+            <li style="margin-bottom: 6px;"><b>Role names, never colour names.</b> <code class="inline">text.primary</code> not <code class="inline">text.orange</code>.</li>
+            <li style="margin-bottom: 6px;"><b>Paired aliases for divergence.</b> <code class="inline">view-all.label</code> + <code class="inline">view-all.icon</code>, default equal, split when needed.</li>
+            <li style="margin-bottom: 6px;"><b>A pinned "brand editor" page</b> with every component + token side-panel.</li>
+            <li style="margin-bottom: 6px;"><b>A README frame</b> listing intentional splits (lyllo dual-palette, reviant-A nav split, etc.).</li>
+            <li><b>Component constraints.</b> Master fills bind to tokens; colour-picker disabled at the shape level.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-line"></div>
+
+    <div class="card" style="margin-top: 6px;">
+      <h4>"15-minute" re-theme test</h4>
+      <p class="card-note" style="margin-top: 6px;">Give a marketing designer an invented brand (name + 2 hex values), ask them to build a mode from scratch. Goal: working theme in under 15 minutes using only the brand-mode panel, no component edits, no primitive edits. If they hit a wall, that's the next semantic role v4 needs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: MIGRATION PATH ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="tag">Migration from v2</span>
+    </div>
+    <h2>Non-breaking. Four steps.</h2>
+
+    <div class="grid-4" style="gap: 14px;">
+      <div class="card">
+        <h4 class="teal">Step 1</h4>
+        <h3>Add tokens</h3>
+        <p class="card-note">Create the new semantic roles (<code class="inline">pill.*</code>, <code class="inline">badge.*</code>, <code class="inline">radius.modal</code>) and component aliases (<code class="inline">menu-row.*</code>, <code class="inline">view-all.*</code>, <code class="inline">nav.*</code>, <code class="inline">cta-context.*</code>). Default each new token to alias today's value so nothing renders differently.</p>
+      </div>
+      <div class="card">
+        <h4 class="teal">Step 2</h4>
+        <h3>Rewire masters</h3>
+        <p class="card-note">Repoint the Pill, Menu Item, View-All, Bottom Navbar, Button masters from their current tokens to the new aliases. Verify pixel-parity on the 9 brand rows before merging.</p>
+      </div>
+      <div class="card">
+        <h4 class="teal">Step 3</h4>
+        <h3>Brand overrides</h3>
+        <p class="card-note">In each brand mode, override only the new tokens where a deliberate split is required (e.g. reviant-A splits <code class="inline">nav.selected-icon</code> from <code class="inline">nav.selected-text</code>). Leave everything else defaulted.</p>
+      </div>
+      <div class="card">
+        <h4 class="teal">Step 4</h4>
+        <h3>Lock + document</h3>
+        <p class="card-note">Lock collections 1, 2, 3 to read-only for non-DS editors. Add README frame with intentional-splits list. Publish branch; invite marketing team to validate.</p>
+      </div>
+    </div>
+
+    <div class="card warn-card" style="margin-top: 22px;">
+      <h4 class="warn">Zero visual regression guarantee</h4>
+      <p class="card-note">Every new token defaults to an alias of today's value. Rendering is unchanged until a brand mode explicitly overrides. The switchover is additive, never subtractive.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: VERIFICATION ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <span class="tag teal">Verification</span>
+    </div>
+    <h2>How we know v3 is correct.</h2>
+
+    <div class="grid-2">
+      <div>
+        <h4>Per-brand regression checks</h4>
+        <ul class="check">
+          <li>getlucky: menu icon <span class="swatch" style="background:#e26591"></span>pink ≠ chevron <span class="swatch" style="background:#ff993d"></span>orange (or equal, documented)</li>
+          <li>reviant (A): nav selected-icon <span class="swatch" style="background:#e71f00"></span>red ≠ text <span class="swatch" style="background:#2e3236"></span>dark</li>
+          <li>reviant (B): cards + inputs + pills radius = 0; CTA landing = 0</li>
+          <li>mobilespin: chevrons <span class="swatch" style="background:#212121"></span>black, not <span class="swatch" style="background:#d6112b"></span>red</li>
+          <li>snabbare: header bg <span class="swatch" style="background:#0086ff"></span>blue, brand CTAs <span class="swatch" style="background:#12ce67"></span>green</li>
+          <li>888.nl: icons <span class="swatch" style="background:#f8f9fd"></span>white, CTAs <span class="swatch" style="background:#fce403"></span>yellow</li>
+          <li>lyllo: view-all label <span class="swatch" style="background:#fd6a00"></span>orange, chevron <span class="swatch" style="background:#f02884"></span>pink</li>
+        </ul>
+      </div>
+      <div>
+        <h4>System-level checks</h4>
+        <ul class="check">
+          <li>Invent a dummy brand, fill only brand-mode values — every component re-skins without master edits.</li>
+          <li>Log in as "marketing designer" role, try to edit a primitive — must fail.</li>
+          <li>Try to edit a brand-mode token — must succeed.</li>
+          <li>Re-theme test: a marketing designer does a cold re-theme in &lt; 15 min, zero docs.</li>
+          <li>No component in the library binds to <code class="inline">Sub Menu/*</code> outside the sub-menu scope (pill rewire complete).</li>
+          <li>Every new token has a README entry if its divergence is brand-specific and intentional.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: RELATIONSHIP TO v2 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <span class="tag">v2 ↔ v3</span>
+    </div>
+    <h2>v2 is the <span class="teal">foundation</span>. v3 is the <span class="accent">field patch</span>.</h2>
+    <p class="lead" style="margin-bottom: 22px;">v2 defined the 5 collections, the axes, the 4-point scale, the SemVer cadence. None of that changes. v3 extends the <i>contents</i> of the semantic layer and promotes the component-alias layer to first-class status — nothing more, nothing less.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>v2 owns</h4>
+        <ul class="arrow">
+          <li>The 5-collection model</li>
+          <li>The 4 axes (brand × theme × jurisdiction × viewport)</li>
+          <li>The 4-point scale linked to 1rem = 16px</li>
+          <li>SemVer, quarterly cadence</li>
+          <li>Jurisdiction modes (SE · DK · MT · ON · NL · PL + default)</li>
+          <li>The 20-brand scaling story</li>
+        </ul>
+        <p style="margin-top: 14px;"><a href="design-token-architecture-v2.html" style="color: var(--teal);">→ Open Architecture v2</a></p>
+      </div>
+      <div class="card highlight">
+        <h4 class="teal">v3 adds</h4>
+        <ul class="check">
+          <li>10 new semantic roles (pill, badge, modal radius, icon.nav-selected, banner.overlay, banner.on-surface)</li>
+          <li>Promotes Component aliases to a named layer</li>
+          <li>4 new alias packs (menu-row, view-all, nav, header, cta-context)</li>
+          <li>CTA Radius becomes context-scoped (form / card / wallet / landing)</li>
+          <li>Marketing-designer permission matrix</li>
+          <li>Intentional-splits README convention</li>
+        </ul>
+        <p style="margin-top: 14px;"><a href="design-token-reference-v3.html" style="color: var(--teal);">→ Open Token Reference v3</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15: OPEN QUESTIONS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <span class="tag warn">Open questions</span>
+    </div>
+    <h2>Things worth deciding before rollout.</h2>
+
+    <div class="grid-2">
+      <div class="card warn-card">
+        <h4 class="warn">Do we expose Jurisdiction to marketing?</h4>
+        <p class="card-note">Today collection 5 is DS + compliance only. Some campaigns may need jurisdiction-specific overrides (e.g. NL requires bonus-cap disclosures inline). Decide: do they fork brand modes or jurisdiction modes?</p>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Deprecate <code class="inline">Sub Menu/*</code> borrowing?</h4>
+        <p class="card-note">Once Pill is rewired, should we aggressively delete pill usage of <code class="inline">Sub Menu/*</code> or leave the old bindings for one release as a safety net?</p>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">"ViewAll" as a component or a style?</h4>
+        <p class="card-note">Make it a proper component (reusable, versionable) or leave it as a pattern with a named style pair? Trade-off: component = strict consistency; style = more flexibility for editorial placement.</p>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">How do we document intentional splits?</h4>
+        <p class="card-note">README frame inside Figma? Separate Confluence page? Inline description on each token? Propose: a README frame inside the Figma file is closest to the work; Confluence is a secondary source.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 16: CLOSE ============ -->
+<section class="slide title-slide">
+  <div class="orb" style="width: 480px; height: 480px; top: -140px; left: -140px;"></div>
+  <div class="orb teal" style="width: 320px; height: 320px; bottom: -80px; right: -80px;"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">End of v3 · 2026-04-20</div>
+    <h1>Ready for <span class="title-underline"><span class="accent">implementation</span></span>.</h1>
+    <p class="subtitle" style="margin: 18px auto 0;">9 brands audited. 10 new roles. 4 new alias packs. One non-breaking path to rollout. The next step is the Figma variables work.</p>
+    <div style="margin-top: 40px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <a href="brand-audit.html" class="pill-chip brand" style="padding: 8px 16px; text-decoration: none;">Brand Audit</a>
+      <a href="component-hex-audit.html" class="pill-chip brand" style="padding: 8px 16px; text-decoration: none;">Component Audit</a>
+      <a href="design-token-reference-v3.html" class="pill-chip" style="padding: 8px 16px; text-decoration: none;">Reference v3</a>
+      <a href="design-token-architecture-v2.html" class="pill-chip" style="padding: 8px 16px; text-decoration: none; background: rgba(108,92,231,0.1); color: var(--purple-light); border-color: rgba(108,92,231,0.3);">Architecture v2</a>
+      <a href="index.html" class="pill-chip" style="padding: 8px 16px; text-decoration: none; background: rgba(253,203,110,0.1); color: var(--warning); border-color: rgba(253,203,110,0.3);">Home</a>
+    </div>
+    <p class="dim" style="margin-top: 40px; font-size: 0.85rem;">Design System · ComeOn · v3 builds on v2 · based on Figma file <code>qnPOhVnKHuYo7t0g6PgrcS</code></p>
+  </div>
+</section>
+
+</div>
+
+<script>
+  const deck = document.getElementById('deck');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function update() {
+    const y = deck.scrollTop;
+    const h = deck.scrollHeight - deck.clientHeight;
+    progress.style.width = ((y / h) * 100) + '%';
+    let current = 1;
+    slides.forEach((s, i) => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) current = i + 1;
+    });
+    counter.textContent = String(current).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  }
+  deck.addEventListener('scroll', update);
+  update();
+
+  document.addEventListener('keydown', (e) => {
+    const active = document.activeElement;
+    if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); deck.scrollBy({ top: window.innerHeight, behavior: 'smooth' }); }
+    if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); deck.scrollBy({ top: -window.innerHeight, behavior: 'smooth' }); }
+    if (e.key === 'Home') { e.preventDefault(); deck.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (e.key === 'End') { e.preventDefault(); deck.scrollTo({ top: deck.scrollHeight, behavior: 'smooth' }); }
+  });
+</script>
+
+</body>
+</html>

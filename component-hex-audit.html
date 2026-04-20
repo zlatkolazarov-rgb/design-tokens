@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Hex Audit — Tokenisation gaps in the component library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --teal: #00d4b4; --teal-soft: rgba(0, 212, 180, 0.12);
+    --text: #eceaf5; --text-muted: #8a86a8;
+    --warning: #fdcb6e; --error: #e17055; --success: #00b894;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.875em; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { color: var(--purple-light); }
+
+  .topbar { position: sticky; top: 0; z-index: 10; background: rgba(11, 10, 26, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar .back { color: var(--text-muted); font-size: 0.88rem; }
+  .topbar .back:hover { color: var(--teal); }
+  .topbar .tag { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: var(--teal-soft); border: 1px solid rgba(0, 212, 180, 0.28); padding: 4px 10px; border-radius: 999px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 120px; }
+  header.hero { margin-bottom: 40px; }
+  header.hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 14px; }
+  header.hero h1 .accent { color: var(--purple-light); }
+  header.hero p { color: var(--text-muted); font-size: 1.02rem; max-width: 780px; }
+
+  section { margin-bottom: 48px; }
+  section h2 { font-size: 1.45rem; font-weight: 700; margin-bottom: 10px; }
+  section h2 .num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-weight: 500; margin-right: 12px; font-size: 0.92em; }
+  section > p.lead { color: var(--text-muted); margin-bottom: 22px; max-width: 820px; }
+
+  .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; }
+  .panel h3 { font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .status { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+  .status.ok { color: var(--success); border: 1px solid rgba(0, 184, 148, 0.35); background: rgba(0, 184, 148, 0.08); }
+  .status.partial { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.35); background: rgba(253, 203, 110, 0.08); }
+  .status.gap { color: var(--error); border: 1px solid rgba(225, 112, 85, 0.35); background: rgba(225, 112, 85, 0.08); }
+  .panel .lib { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
+  .panel p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px; }
+  .panel ul { font-size: 0.92rem; margin: 10px 0 6px 18px; }
+  .panel ul li { padding: 3px 0; }
+  .panel ul code { color: var(--purple-light); background: rgba(108, 92, 231, 0.1); padding: 1px 6px; border-radius: 3px; }
+  .panel .todo { background: var(--bg-code); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; color: var(--text); margin-top: 10px; white-space: pre-wrap; }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; font-size: 0.82rem; color: var(--text-muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .summary { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; }
+  .summary h3 { font-size: 1rem; margin-bottom: 10px; }
+  .summary ul { list-style: none; padding: 0; font-size: 0.93rem; }
+  .summary ul li { padding: 4px 0; color: var(--text); display: flex; gap: 10px; }
+  .summary ul li .dot { flex: 0 0 6px; height: 6px; border-radius: 999px; background: var(--teal); margin-top: 9px; }
+
+  footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="index.html">← Design Tokens home</a>
+    <span class="tag">Audit · v3 input</span>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <h1>Component Hex <span class="accent">Audit</span></h1>
+      <p>Which master components in the WEB Design System are fully tokenised, which have gaps, and what v3 needs to add or rewire. Derived from the 9 brand instances in the Token Explorations file — if a fill/radius comes through as a variable in <code>get_variable_defs</code> for all brands, it's tokenised; if it varies without an explaining token, it's a literal.</p>
+    </header>
+
+    <div class="legend">
+      <span><span class="status ok">Tokenised</span> every fill/radius resolves to a brand-mode variable</span>
+      <span><span class="status partial">Partial</span> primary fills tokenised, sub-elements or a state hard-coded</span>
+      <span><span class="status gap">Missing tokens</span> no semantic role exists yet; fills reach to borrowed tokens</span>
+    </div>
+
+    <div class="summary">
+      <h3>TL;DR</h3>
+      <ul>
+        <li><span class="dot"></span>Buttons, Headers, Landing, Bottom Navbar, Banner — tokenised and healthy.</li>
+        <li><span class="dot"></span>Menu Item — tokenised but needs component aliases so <b>icon ≠ action-icon</b> can diverge without editing the master.</li>
+        <li><span class="dot"></span>Pill / Filter Pill / Navigation Pill — the biggest gap. No <code>pill.surface</code> / <code>pill.on-surface</code> / <code>pill.border</code>; today pills borrow from <code>Sub Menu/*</code> or <code>Main/Badge</code>, causing cross-brand drift.</li>
+        <li><span class="dot"></span>"View all" — has no dedicated component; the pattern is assembled from Typography + Icon with different tokens on each screen.</li>
+        <li><span class="dot"></span>CTA Radius — already mode-switchable per context (form / card / wallet / landing), but the contexts aren't named.</li>
+      </ul>
+    </div>
+
+    <section>
+      <h2><span class="num">01</span>Component-by-component findings</h2>
+      <p class="lead">Components are from <span class="mono">WEB Design System (Brandtokens)</span> — library key <span class="mono">lk-46d42c00…</span>. Findings below are observed via brand-instance variable resolution, not direct master inspection (master files sit in a separate library and are read-only from this vantage point).</p>
+
+      <div class="panel">
+        <h3>Button / Default <span class="status ok">Tokenised</span></h3>
+        <div class="lib">component_set · key 8c1f6e9e538abe54d6151844ba11a3876de5849b</div>
+        <p>Fill = <code>Main/Primary</code>, label = <code>Main/On-Primary</code>, radius = <code>Extras/CTA Radius</code>. All 9 brands resolve cleanly. Secondary / tertiary button variants use <code>Main/Surface-1-Sidebar</code> and <code>Main/Text</code> — all tokenised.</p>
+        <ul>
+          <li>Gap to address in v3: context-specific CTA radii (form vs. wallet vs. landing) need to be named modes rather than implicit overrides.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Menu Item <span class="status partial">Partial</span></h3>
+        <div class="lib">component_set · key 6e615bb17f10e539f5924acd77876151fd39404d</div>
+        <p>Three fills: leading icon (<code>Main/Icons</code>), label (<code>Main/Text</code>), trailing chevron (<code>Main/Action-Icons</code>). All tokenised — but the master binds leading icon and chevron to two <b>different</b> semantic tokens, not to aliased component tokens. That means marketing designers who want to split them must first understand the whole semantic layer.</p>
+        <ul>
+          <li>Proposal v3: add component aliases <code>menu-row.icon → color.icon.descriptive</code> and <code>menu-row.action → color.icon.action</code>. Master repointed to these aliases; designers flip them in brand mode.</li>
+          <li>Evidence of split in the wild: getlucky (pink / orange), reviant-A (brown / red), lyllo (orange / pink).</li>
+        </ul>
+        <div class="todo">// v3 master rewire
+menu-row.icon        = color.icon.descriptive   // default alias
+menu-row.action      = color.icon.action        // default alias
+menu-row.label       = text.primary
+menu-row.label-muted = text.supportive</div>
+      </div>
+
+      <div class="panel">
+        <h3>Pill (and variants: Filter / Navigation / Small / segmented) <span class="status gap">Missing tokens</span></h3>
+        <div class="lib">component_set · key ecd16be07167361a6034d7ec298bec449269811b (Pill)<br>+ Filter Pill fc9ca8a6…, Navigation Pill 823de0bb…, Small Pill 9c443177…, segmented pill aaf35b82…</div>
+        <p>No <code>pill.*</code> semantic family exists. Today the Pill component reaches for <code>Sub Menu/*</code> (default/selected colours) or for <code>Main/Badge</code> and <code>Lobby Header/Surface-Secondary</code> depending on the instance. That's why pills look different across brands in ways the brand team didn't plan.</p>
+        <ul>
+          <li>Proposal v3: introduce <code>pill.surface</code>, <code>pill.on-surface</code>, <code>pill.border</code>, <code>pill.surface.selected</code>, <code>pill.on-surface.selected</code>, and use <code>Extras/Pill Radius</code> (already exists, resolves correctly).</li>
+          <li>Default the new tokens as aliases to the current values so nothing changes visually on day-one; flip brand-mode values only where pill identity should diverge.</li>
+        </ul>
+        <div class="todo">// v3 semantic additions
+pill.surface              // today: Sub Menu/Default or Main/Badge
+pill.on-surface           // today: Sub Menu/On-Default or On-Badge
+pill.border               // NEW for outline-pill brands (reviant-B)
+pill.surface.selected     // today: Sub Menu/Selected
+pill.on-surface.selected  // today: Sub Menu/On-Selected</div>
+      </div>
+
+      <div class="panel">
+        <h3>Lobby Header <span class="status ok">Tokenised</span></h3>
+        <p>Lives in its own namespace (<code>Lobby Header/Background</code>, <code>Surface-1</code>, <code>Surface-2</code>, <code>Surface-Primary</code>, <code>Surface-Secondary</code>, <code>On-Surface-1/2/Primary/Secondary</code>, <code>Text</code>, <code>Active-Selected</code>, <code>IOS-Bar</code>). All 9 brands resolve independently.</p>
+        <ul>
+          <li>Lightweight audit: confirm no shape <i>inside</i> the header fills from <code>Main/*</code> — if so it'll pick up the page-primary rather than the header-primary and break snabbare's blue-header-green-brand split.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Bottom Navbar <span class="status ok">Tokenised</span></h3>
+        <p><code>Bottom Navbar/Background</code>, <code>Default</code>, <code>Selected-Icon</code>, <code>Selected-Text</code>. All 9 brands resolve. The only brand that splits <code>Selected-Icon</code> ≠ <code>Selected-Text</code> today is reviant-A — no action needed beyond documenting the split as intentional.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Banner / Hero <span class="status partial">Partial</span></h3>
+        <p><code>Banner/Background</code> and <code>Banner/Stroke</code> tokens exist per brand. Stroke is #00000000 on 8 brands, #ff4655 on reviant-B (the only brand with a visible banner border).</p>
+        <ul>
+          <li>Gap: landing-specific banner content (hero imagery, text overlays) may still use inline fills. Needs a direct inspection of the Landing component master, beyond what brand-instance variables expose.</li>
+          <li>Proposal v3: keep <code>banner.surface</code> / <code>banner.stroke</code> as-is; add <code>banner.overlay</code> and <code>banner.on-surface</code> so marketing can re-skin hero cards without forking.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Landing (screen-level, not a single component) <span class="status ok">Tokenised</span></h3>
+        <p>Already has its own mini-collection: <code>Landing/Primary CTA</code>, <code>On-Primary CTA</code>, <code>Secondary CTA</code>, <code>On-Secondary CTA</code>, <code>Icon CTA</code> (tertiary outline), <code>On-Icon CTA</code>, <code>Tag</code>, <code>On-Tag</code>, <code>Text</code>. <code>Extras/CTA Radius</code> and <code>Extras/Pill Radius</code> resolve per brand. This is the cleanest part of the system today.</p>
+        <ul>
+          <li>Every landing-tag brand uses a third accent — keep <code>Landing/Tag</code> as its own role, not an alias to primary.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>"View all" link <span class="status gap">Missing tokens</span></h3>
+        <p>Not a dedicated component — appears inline in Section headers on Casino Lobby. Today the label uses <code>Main/Text-Primary</code> and the chevron uses <code>Main/Action-Icons</code>; fine, but the <i>pattern</i> isn't named, so designers don't realise the divergence is expected.</p>
+        <ul>
+          <li>Proposal v3: create a "ViewAll" component (or at minimum a well-named style) with component aliases.</li>
+        </ul>
+        <div class="todo">// v3 component aliases
+view-all.label = text.primary    // can diverge from primary
+view-all.icon  = icon.action     // can diverge from label</div>
+      </div>
+
+      <div class="panel">
+        <h3>Badge <span class="status partial">Partial</span></h3>
+        <p><code>Main/Badge</code> exists per brand (values: #f02884 / #ef7171 / #c2185b / #c3ff00 / #ffee00 / #e26591 / #e71f00 / #ffffff / #5330ff). But there's no <code>badge.radius</code>, <code>badge.on-surface</code>, or <code>badge.border</code>. Currently the badge component inherits badge-surface and invents on-surface.</p>
+        <ul>
+          <li>Proposal v3: formalise <code>badge.surface</code> (alias to <code>Main/Badge</code>), add <code>badge.on-surface</code>, <code>badge.radius</code>.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Modal / Dialog <span class="status gap">Missing tokens</span></h3>
+        <p>Not visible in the 9 sampled screens, but user reported that rounded-corners "differ between brands" and some brands use square modals (reviant-B). Likely uses <code>Extras/Card Radius</code> today which is wrong — a card radius of 12 on modals that want sharp edges would get overridden inline.</p>
+        <ul>
+          <li>Proposal v3: add <code>radius.modal</code> with per-brand values, independent of Card radius.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Input / Form field <span class="status ok">Tokenised</span></h3>
+        <p><code>Extras/Input Radius</code> is already independent of CTA / Card / Nav radius. reviant-B sets it to 0 while Card is also 0; most other brands set it to 3. Fills route through <code>Main/Background-Sidebar</code> and <code>Main/Text</code>.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Sub-menu / Dropdown <span class="status partial">Partial</span></h3>
+        <p><code>Sub Menu/Background</code>, <code>Default</code>, <code>On-Default</code>, <code>Selected</code>, <code>On-Selected</code> all resolve. But these tokens are currently also being <i>borrowed</i> by pills (as noted above). v3 should make these strictly sub-menu-scoped and let Pill get its own family.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">02</span>Next steps</h2>
+      <p class="lead">What I can verify from here vs. what has to happen inside Figma.</p>
+      <div class="panel">
+        <h3>From the Figma MCP (read-only)</h3>
+        <ul>
+          <li>Pull <code>get_design_context</code> on the Pill and Menu Item masters to confirm literal hexes vs. tokens — needs the master file keys from the Library.</li>
+          <li>Compare <code>get_variable_defs</code> on every brand-instance permutation to catch silent drift.</li>
+          <li>Screenshot each brand × each screen for a visual regression baseline before the v3 rewire.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Inside Figma (manual / plugin)</h3>
+        <ul>
+          <li>Add the new semantic roles (<code>pill.*</code>, <code>badge.*</code>, <code>radius.modal</code>, <code>banner.overlay/on-surface</code>).</li>
+          <li>Add the component aliases (<code>menu-row.*</code>, <code>view-all.*</code>, <code>nav.selected-*</code>).</li>
+          <li>Default all new tokens as aliases to today's values, then override per brand only where a deliberate split is required.</li>
+          <li>Repoint Pill / Filter Pill / Navigation Pill masters from <code>Sub Menu/*</code> to the new <code>pill.*</code> tokens.</li>
+          <li>Lock Primitives (collection 1) + Component aliases (collection 3) as read-only for marketing designers; give them edit rights on Brand Modes (collection 4) only.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      Evidence base: 9 Casino Lobby + 5 Payment/Wallet + 9 Landing variable dumps, pulled 2026-04-20 from file <code>qnPOhVnKHuYo7t0g6PgrcS</code>. See <a href="brand-audit.html">Brand Audit</a> for the per-brand evidence and <a href="design-token-architecture-v3.html">Architecture v3</a> for how these findings are absorbed.
+    </footer>
+  </div>
+</body>
+</html>

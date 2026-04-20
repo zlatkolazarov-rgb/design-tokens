@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Audit — Per-brand edge cases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-card-hover: #1f1c3e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --teal: #00d4b4; --teal-soft: rgba(0, 212, 180, 0.12);
+    --text: #eceaf5; --text-muted: #8a86a8; --text-dim: #5c587a;
+    --warning: #fdcb6e; --error: #e17055;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.875em; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { color: var(--purple-light); }
+
+  .topbar { position: sticky; top: 0; z-index: 10; background: rgba(11, 10, 26, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar .back { color: var(--text-muted); font-size: 0.88rem; }
+  .topbar .back:hover { color: var(--teal); }
+  .topbar .tag { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: var(--teal-soft); border: 1px solid rgba(0, 212, 180, 0.28); padding: 4px 10px; border-radius: 999px; }
+
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 40px 24px 120px; }
+  header.hero { margin-bottom: 48px; }
+  header.hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 14px; }
+  header.hero h1 .accent { color: var(--purple-light); }
+  header.hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 760px; }
+
+  section { margin-bottom: 56px; }
+  section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; }
+  section h2 .num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-weight: 500; margin-right: 12px; font-size: 0.92em; }
+  section > p { color: var(--text-muted); margin-bottom: 24px; max-width: 820px; }
+
+  /* summary table */
+  .overview { border: 1px solid var(--border); border-radius: 14px; overflow-x: auto; background: var(--bg-alt); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); background: var(--bg-card); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(108, 92, 231, 0.04); }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(255,255,255,0.12); }
+  .flag { color: var(--warning); font-weight: 600; }
+
+  /* brand cards */
+  .brand-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .brand-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; }
+  .brand-card header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .brand-card header h3 { font-size: 1.3rem; }
+  .brand-card header .web { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+  .brand-card header .chips { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--purple-light); background: rgba(108, 92, 231, 0.08); }
+  .chip.warn { border-color: rgba(253, 203, 110, 0.4); color: var(--warning); background: rgba(253, 203, 110, 0.08); }
+  .brand-card .body { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .brand-card .body { grid-template-columns: 1fr; } }
+  .brand-card h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+  .brand-card ul { list-style: none; padding: 0; font-size: 0.92rem; }
+  .brand-card ul li { padding: 4px 0; color: var(--text); }
+  .brand-card ul li code { color: var(--purple-light); background: rgba(108, 92, 231, 0.1); padding: 1px 6px; border-radius: 3px; }
+  .brand-card .edge { background: rgba(253, 203, 110, 0.08); border-left: 3px solid var(--warning); padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 14px; font-size: 0.9rem; color: var(--text); }
+  .brand-card .edge strong { color: var(--warning); display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+
+  /* pattern cards */
+  .pattern-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+  .pattern { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+  .pattern h3 { font-size: 1.08rem; margin-bottom: 8px; }
+  .pattern p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 10px; }
+  .pattern .evidence { font-size: 0.84rem; color: var(--text); background: var(--bg-code); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; line-height: 1.6; }
+  .pattern .evidence b { color: var(--teal); font-weight: 500; }
+
+  footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="index.html">← Design Tokens home</a>
+    <span class="tag">Audit · v3 input</span>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <h1>Brand <span class="accent">Audit</span></h1>
+      <p>Per-brand evidence of the differences and edge cases that need to be absorbed into Token Architecture v3. Data pulled directly from the <i>Token Explorations</i> Figma file (canvas <code>156:9095</code>), 9 brand rows × 9 screens, with Payment/Wallet, Casino Lobby, and Landing Page sampled in depth.</p>
+    </header>
+
+    <section>
+      <h2><span class="num">01</span>Overview — 9 brands, same component set</h2>
+      <p>Values below are what each brand resolves for a handful of semantic roles. Bolded cells are the outliers driving the edge cases that follow.</p>
+      <div class="overview">
+        <table>
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th>Primary</th>
+              <th>Text-Primary</th>
+              <th>Action-Icons</th>
+              <th>Big-Icons</th>
+              <th>Icons</th>
+              <th>Card r</th>
+              <th>CTA r*</th>
+              <th>Pill r</th>
+              <th>Nav r</th>
+              <th>Header bg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>lyllo.com</td><td><span class="swatch" style="background:#f02884"></span>#f02884</td><td class="flag"><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td><span class="swatch" style="background:#f02884"></span>#f02884</td><td><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td><span class="swatch" style="background:#fd6a00"></span>#fd6a00</td><td>12</td><td class="flag">100</td><td>100</td><td>0</td><td>#ffffff</td></tr>
+            <tr><td>snabbare.se</td><td><span class="swatch" style="background:#12ce67"></span>#12ce67</td><td>#10b75b</td><td><span class="swatch" style="background:#12ce67"></span>#12ce67</td><td>—</td><td>—</td><td>12</td><td>3</td><td>100</td><td>0</td><td class="flag">#0086ff</td></tr>
+            <tr><td>mobilebet.com</td><td><span class="swatch" style="background:#57b902"></span>#57b902</td><td>#57b902</td><td><span class="swatch" style="background:#57b902"></span>#57b902</td><td>—</td><td>—</td><td>12</td><td>3</td><td>100</td><td>0</td><td>#1e2021</td></tr>
+            <tr><td>comeon.com</td><td><span class="swatch" style="background:#39f56a"></span>#39f56a</td><td>#39f56a</td><td><span class="swatch" style="background:#39f56a"></span>#39f56a</td><td>—</td><td>—</td><td>12</td><td>3</td><td>100</td><td>0</td><td>#1a1e1a =page</td></tr>
+            <tr><td>mobilespin.com</td><td><span class="swatch" style="background:#d6112b"></span>#d6112b</td><td>#d6112b</td><td class="flag"><span class="swatch" style="background:#212121"></span>#212121</td><td>#212121</td><td>#212121</td><td>12</td><td>3</td><td>100</td><td>0</td><td>#d6112b</td></tr>
+            <tr><td>getlucky.com</td><td><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td class="flag"><span class="swatch" style="background:#e26591"></span>#e26591</td><td><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td>#333333</td><td><span class="swatch" style="background:#ff993d"></span>#ff993d</td><td>12</td><td>3</td><td>100</td><td>0</td><td>#ff993d</td></tr>
+            <tr><td>reviant.com (A)</td><td><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td>#e71f00</td><td><span class="swatch" style="background:#e71f00"></span>#e71f00</td><td>#2e3236</td><td class="flag">#b18378</td><td>12</td><td>3</td><td>100</td><td class="flag">12</td><td>#ffffff</td></tr>
+            <tr><td>888.nl</td><td><span class="swatch" style="background:#fce403"></span>#fce403</td><td>#fce403</td><td class="flag"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td>#ffffff</td><td>#ffffff</td><td>12</td><td>3</td><td>100</td><td>0</td><td>#000000</td></tr>
+            <tr><td>reviant.com (B)</td><td><span class="swatch" style="background:#ff4655"></span>#ff4655</td><td>#ff4655</td><td><span class="swatch" style="background:#ff4655"></span>#ff4655</td><td class="flag"><span class="swatch" style="background:#5330ff"></span>#5330ff</td><td>#ff878f</td><td class="flag">0</td><td class="flag">0</td><td class="flag">0</td><td>0</td><td>#ffffff</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: 14px; font-size: 0.85rem;">*<b>Footnote on CTA Radius:</b> the token resolves to different values depending on the screen context — lyllo's Button component shows <code>CTA Radius = 3</code> but the Payment/Wallet and Landing CTAs both resolve to <code>100</code>. This proves the token is already context-mode-switchable; we just need to name and document the contexts.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">02</span>Per-brand breakdown</h2>
+      <p>One card per brand. "Intentional splits" are the ones marketing designers will be tempted to "fix" — don't.</p>
+
+      <div class="brand-grid">
+
+        <div class="brand-card">
+          <header>
+            <h3>lyllo</h3>
+            <span class="web">lyllo.com</span>
+            <div class="chips"><span class="chip warn">Dual-brand palette</span><span class="chip">Pill CTA</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#f02884"></span>#f02884 (pink)</li>
+                <li><code>Main/Text-Primary</code> <span class="swatch" style="background:#fd6a00"></span>#fd6a00 (orange)</li>
+                <li><code>Main/Big-Icons</code> <span class="swatch" style="background:#fd6a00"></span>#fd6a00 (orange)</li>
+                <li><code>Main/Icons</code> <span class="swatch" style="background:#fd6a00"></span>#fd6a00 (orange)</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#f02884"></span>#f02884 (pink)</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Radii in context</h4>
+              <ul>
+                <li><code>Extras/CTA Radius</code> (Button cmp) = 3</li>
+                <li><code>Extras/CTA Radius</code> (Wallet/Landing) = <span class="flag">100</span></li>
+                <li><code>Extras/Card Radius</code> = 12</li>
+                <li><code>Extras/Pill Radius</code> = 100</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            Menu-row icon is orange, chevron is pink — orange is the text/content colour, pink is the action colour. "View all" → orange label + pink chevron. Landing/Wallet CTAs are fully rounded (pill), but form/button-component CTAs are radius 3. The context switch is real and wanted.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>snabbare</h3>
+            <span class="web">snabbare.se</span>
+            <div class="chips"><span class="chip warn">Two brand colours</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#12ce67"></span>#12ce67 (green)</li>
+                <li><code>Lobby Header/Background</code> <span class="swatch" style="background:#0086ff"></span>#0086ff (blue)</li>
+                <li><code>Lobby Header/Surface-Primary</code> <span class="swatch" style="background:#12ce67"></span>#12ce67 (green)</li>
+                <li><code>Landing/Tag</code> <span class="swatch" style="background:#ef7171"></span>#ef7171 (coral)</li>
+                <li><code>Banner/Background</code> <span class="swatch" style="background:#006bcc"></span>#006bcc (deep blue)</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Header lives in blue.</li>
+                <li>Brand CTAs (everywhere else) live in green.</li>
+                <li>Landing tags use a third coral accent.</li>
+                <li>Nothing on the page should derive "brand green" from the header.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            Header is its own identity (blue) distinct from brand-primary (green). Never let a component pull its accent from <code>Lobby Header/*</code> when it sits outside the header; it must go through <code>color.primary</code> / <code>Main/Primary</code>.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>mobilebet</h3>
+            <span class="web">mobilebet.com</span>
+            <div class="chips"><span class="chip">Dark theme</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#57b902"></span>#57b902 (green)</li>
+                <li><code>Main/Background</code> <span class="swatch" style="background:#0f1010"></span>#0f1010</li>
+                <li><code>Main/On-Primary</code> <span class="swatch" style="background:#0f1010"></span>#0f1010 (dark text on green)</li>
+                <li><code>Lobby Header/Background</code> <span class="swatch" style="background:#1e2021"></span>#1e2021</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Dark brand with bright-green CTAs.</li>
+                <li>On-primary flips to dark text (unlike the default white).</li>
+                <li>Header has its own "surface-2" elevation instead of matching page.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Note</strong>
+            No splits — a clean mode where every role resolves predictably. Useful as the "canonical" brand for regression-testing the architecture.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>comeon</h3>
+            <span class="web">comeon.com</span>
+            <div class="chips"><span class="chip warn">Header = page</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#39f56a"></span>#39f56a (neon)</li>
+                <li><code>Main/Background</code> <span class="swatch" style="background:#1a1e1a"></span>#1a1e1a</li>
+                <li><code>Lobby Header/Background</code> <span class="swatch" style="background:#1a1e1a"></span>#1a1e1a (same as page)</li>
+                <li><code>Landing/Tag</code> <span class="swatch" style="background:#c3ff00"></span>#c3ff00 (acid green)</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Only brand where header bg matches page bg.</li>
+                <li>Sub-menu <b>inverts</b> on selection (mint text/icon ↔ dark bg).</li>
+                <li>Secondary tags (landing) use a third accent (acid green #c3ff00).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            The "header equals page" look is deliberate — don't force a different <code>Lobby Header/Background</code>. The component should still keep its own token so the other 8 brands can vary.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>mobilespin</h3>
+            <span class="web">mobilespin.com</span>
+            <div class="chips"><span class="chip warn">Black chevrons</span><span class="chip">Yellow-on-red CTA</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#d6112b"></span>#d6112b (red)</li>
+                <li><code>Main/On-Primary</code> <span class="swatch" style="background:#ffee00"></span>#ffee00 (yellow text on red)</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#212121"></span>#212121 (black chevrons)</li>
+                <li><code>Main/Big-Icons</code> / <code>Icons</code> = #212121</li>
+                <li><code>Bottom Navbar/Background</code> <span class="swatch" style="background:#212121"></span>#212121</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Brand red is reserved for CTAs and selected states.</li>
+                <li>All icons go black — chevrons, menu icons, content illustrations.</li>
+                <li>Yellow is the on-primary contrast (not white).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            Do NOT tint chevrons red "for consistency" — it would flood the UI. Keep <code>color.icon.action = #212121</code> and let red appear only on CTAs and selected tabs.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>getlucky</h3>
+            <span class="web">getlucky.com</span>
+            <div class="chips"><span class="chip warn">Dual-brand palette</span><span class="chip">Blue landing tag</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#ff993d"></span>#ff993d (orange)</li>
+                <li><code>Main/Text-Primary</code> <span class="swatch" style="background:#e26591"></span>#e26591 (pink)</li>
+                <li><code>Main/Icons</code> <span class="swatch" style="background:#ff993d"></span>#ff993d (orange)</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#ff993d"></span>#ff993d (orange)</li>
+                <li><code>Main/Big-Icons</code> <span class="swatch" style="background:#333333"></span>#333333 (dark)</li>
+                <li><code>Landing/Tag</code> <span class="swatch" style="background:#639bf4"></span>#639bf4 (blue)</li>
+                <li><code>Banner/Background</code> <span class="swatch" style="background:#e26591"></span>#e26591 (pink)</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Orange for action (CTAs, icons, chevrons).</li>
+                <li>Pink for text-accent and banner backgrounds.</li>
+                <li>Big content icons stay dark grey (not orange) for legibility.</li>
+                <li>Landing has a third brand-blue accent on tags.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            "View all" here reads pink label + orange chevron. This is the cleanest example of why <code>view-all.label</code> and <code>view-all.icon</code> must be separate tokens. Landing tag blue is a <i>third</i> brand colour — keep <code>Landing/Tag</code> as its own token, not aliased to primary.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>reviant (A)</h3>
+            <span class="web">reviant.com · nav-radius variant</span>
+            <div class="chips"><span class="chip warn">Bottom-nav split</span><span class="chip">Elevated nav</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#e71f00"></span>#e71f00 (red)</li>
+                <li><code>Main/Big-Icons</code> <span class="swatch" style="background:#2e3236"></span>#2e3236 (dark)</li>
+                <li><code>Main/Icons</code> <span class="swatch" style="background:#b18378"></span>#b18378 (muted brown)</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#e71f00"></span>#e71f00 (red)</li>
+                <li><code>Bottom Navbar/Selected-Icon</code> <span class="swatch" style="background:#e71f00"></span>#e71f00</li>
+                <li><code>Bottom Navbar/Selected-Text</code> <span class="swatch" style="background:#2e3236"></span>#2e3236</li>
+                <li><code>Extras/Navigation Radius</code> = 12</li>
+                <li><code>Extras/Navigation Shadow</code> = #0000001a</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Three distinct icon colours in the same screen (dark / muted / red).</li>
+                <li>Only brand that splits bottom-nav selected icon ≠ text.</li>
+                <li>Only brand with a rounded, elevated bottom nav.</li>
+                <li>Landing tag is muted brown (#b18378) — the "softer" accent.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            Bottom-nav selected-icon = red / selected-text = dark. This is the brand signature — keep <code>nav.selected-icon</code> and <code>nav.selected-text</code> as separate tokens across all brands so reviant can split without the others having to.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>888.nl</h3>
+            <span class="web">888.nl</span>
+            <div class="chips"><span class="chip warn">Light chevrons</span><span class="chip">Yellow brand</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#fce403"></span>#fce403 (yellow)</li>
+                <li><code>Main/Background</code> <span class="swatch" style="background:#171717"></span>#171717</li>
+                <li><code>Main/On-Primary</code> <span class="swatch" style="background:#0a0a0a"></span>#0a0a0a</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#f8f9fd"></span>#f8f9fd (near-white)</li>
+                <li><code>Main/Big-Icons</code> / <code>Icons</code> = #ffffff</li>
+                <li><code>Lobby Header/Background</code> <span class="swatch" style="background:#000000"></span>#000000</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Rule</h4>
+              <ul>
+                <li>Yellow too low-contrast for small icons → all icons go white / off-white.</li>
+                <li>Yellow reserved for CTAs and selected states only.</li>
+                <li>Header uses pure black, page uses near-black — subtle elevation.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            This is the canonical "primary ≠ icon" case — don't assume <code>color.icon.action = color.primary</code>. The icon tokens must be independently settable in brand mode.
+          </div>
+        </div>
+
+        <div class="brand-card">
+          <header>
+            <h3>reviant (B) · sharp-edge variant</h3>
+            <span class="web">reviant.com</span>
+            <div class="chips"><span class="chip warn">Zero radius</span><span class="chip warn">Three-icon split</span><span class="chip">Three brand colours</span></div>
+          </header>
+          <div class="body">
+            <div>
+              <h4>Palette</h4>
+              <ul>
+                <li><code>Main/Primary</code> <span class="swatch" style="background:#ff4655"></span>#ff4655 (red)</li>
+                <li><code>Main/Big-Icons</code> <span class="swatch" style="background:#5330ff"></span>#5330ff (purple)</li>
+                <li><code>Main/Icons</code> <span class="swatch" style="background:#ff878f"></span>#ff878f (light red)</li>
+                <li><code>Main/Action-Icons</code> <span class="swatch" style="background:#ff4655"></span>#ff4655 (red)</li>
+                <li><code>Landing/Tag</code> <span class="swatch" style="background:#5330ff"></span>#5330ff (purple)</li>
+                <li><code>Banner/Stroke</code> <span class="swatch" style="background:#ff4655"></span>#ff4655 (only brand with a non-transparent banner stroke)</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Radii</h4>
+              <ul>
+                <li><code>Extras/Card Radius</code> = <span class="flag">0</span></li>
+                <li><code>Extras/Input Radius</code> = <span class="flag">0</span></li>
+                <li><code>Extras/Pill Radius</code> = <span class="flag">0</span></li>
+                <li><code>Extras/CTA Radius</code> = <span class="flag">0</span> (even landing)</li>
+                <li>Nav radius = 0, Navigation shadow = transparent</li>
+              </ul>
+            </div>
+          </div>
+          <div class="edge">
+            <strong>Intentional splits</strong>
+            Sharp-edges identity — everything is radius 0 except where 100 is used for true circles (pill-text badges are flat rectangles here). Three-colour icon system (purple content / light-red descriptive / red action). Banner has a visible stroke unique to this brand.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">03</span>Cross-brand patterns to absorb into v3</h2>
+      <p>The recurring edge-case categories. Each one maps to a token-architecture change in v3.</p>
+      <div class="pattern-grid">
+        <div class="pattern">
+          <h3>Three-icon split is real</h3>
+          <p>Big / Descriptive / Action icons already have distinct tokens but only 4 of 9 brands actually diverge them.</p>
+          <div class="evidence">
+            reviant(B): <b>#5330ff / #ff878f / #ff4655</b><br>
+            reviant(A): <b>#2e3236 / #b18378 / #e71f00</b><br>
+            getlucky:   <b>#333333 / #ff993d / #ff993d</b><br>
+            lyllo:      #fd6a00 / #fd6a00 / <b>#f02884</b>
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>Menu row: icon ≠ chevron</h3>
+          <p>User-reported concern. The primary-icon and action-icon tokens are independent; we need a component alias so designers can split without editing the Menu Item master.</p>
+          <div class="evidence">
+            menu-row.icon → color.icon.descriptive<br>
+            menu-row.action → <b>color.icon.action</b><br>
+            lyllo / getlucky = split<br>
+            mobilespin / 888.nl = merged (equal)
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>CTA radius is context-scoped</h3>
+          <p>Same brand, different radius depending on whether the CTA is in a form, in a card, or on landing. Not a bug — the design system intends it.</p>
+          <div class="evidence">
+            lyllo Button component: <b>3</b><br>
+            lyllo Wallet CTA:        <b>100</b><br>
+            lyllo Landing CTA:       <b>100</b><br>
+            mobilespin everywhere:   <b>3</b>
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>Bottom-nav split</h3>
+          <p>Only reviant(A) splits selected-icon ≠ selected-text today. The tokens exist everywhere; we should keep the split as a first-class option.</p>
+          <div class="evidence">
+            8 brands: <b>icon === text</b><br>
+            reviant(A): icon <b>#e71f00</b> ≠ text <b>#2e3236</b>
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>Header is its own namespace</h3>
+          <p><code>Lobby Header/*</code> tokens are rightly isolated from <code>Main/*</code>. The gap is components inside the header that still reach for <code>Main/Primary</code> instead of <code>Lobby Header/Surface-Primary</code>.</p>
+          <div class="evidence">
+            snabbare: page-CTA green, header-accent green, <b>header-bg blue</b><br>
+            reviant(B): header-bg white, <b>header-surface-1 red</b>
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>Landing has its own mini-system</h3>
+          <p><code>Landing/Primary CTA</code>, <code>Landing/Secondary CTA</code>, <code>Landing/Icon CTA</code> (tertiary outline), <code>Landing/Tag</code> — all brand-mode overridable. <code>Extras/Pill Radius</code> lives here too.</p>
+          <div class="evidence">
+            getlucky Landing/Tag = <b>#639bf4 blue</b><br>
+            reviant(B) Landing/Tag = <b>#5330ff purple</b><br>
+            reviant(A) Landing/Tag = <b>#b18378 brown</b><br>
+            → third-colour brand accents are common on landing
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>Pills have no semantic tokens</h3>
+          <p><code>Extras/Pill Radius</code> exists, but pill surface/on-surface/border colours today are plumbed through <code>Sub Menu/*</code> or <code>Main/Badge</code> inconsistently.</p>
+          <div class="evidence">
+            mobilespin pill looks yellow-on-red<br>
+            lyllo pill is pink-on-light<br>
+            comeon pill is mint-on-dark<br>
+            → <b>pill.surface / pill.on-surface / pill.border</b> needed
+          </div>
+        </div>
+        <div class="pattern">
+          <h3>View all: label vs icon</h3>
+          <p>"View all" can be one colour or two, per brand. Must be a pair of aliased tokens at the component layer.</p>
+          <div class="evidence">
+            view-all.label → text.primary<br>
+            view-all.icon  → icon.action<br>
+            lyllo: orange label / <b>pink icon</b><br>
+            getlucky: pink label / <b>orange icon</b><br>
+            most others: same colour on both
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Data sourced from Figma file <code>qnPOhVnKHuYo7t0g6PgrcS</code> (Token Explorations) · canvas <code>156:9095</code> · 9 brand rows × 9 screens. See <a href="design-token-architecture-v3.html">Architecture v3</a> for how these findings translate to token changes.
+    </footer>
+  </div>
+</body>
+</html>
