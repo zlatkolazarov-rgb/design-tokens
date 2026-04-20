@@ -1699,19 +1699,141 @@
 </section>
 
 <!-- ============================================================
-     COLLECTION 5 — COMPONENT
+     COLLECTION 5 — COMPONENT  (expanded in v3)
      ============================================================ -->
-<h2 id="c5">Collection 5 · Component <span class="pill" style="font-size: 0.7rem; vertical-align: middle;">global · &lt;10 tokens</span></h2>
-<div class="section-intro">Last resort. Only add here if a token genuinely cannot live in Semantic or Primitives. Most v1 Component entries migrated to <code class="inline">layout/*</code> or <code class="inline">z-index/*</code> in Primitives.</div>
+<h2 id="c5">Collection 5 · Component <span class="pill" style="font-size: 0.7rem; vertical-align: middle;">global · ~35 tokens</span> <span class="v3-badge newv3">expanded in v3</span></h2>
+<div class="section-intro">In v2 this was a last-resort bucket (&lt;10 tokens). <strong>v3 expands it</strong> into proper alias packs that match the component masters in the WEB Design System. Every pack aliases through Semantic tokens — brand-mode changes on Collection 1 cascade here automatically. Marketing designers never edit this collection; they change brand-mode values on Collection 1 and see the result.</div>
+
+<section id="c-menu-row">
+<h3>5.1 · menu-row.* <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— Menu Item master alias pack</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Binds the Menu Item master shape-by-shape. Defaults align icon-and-action-icon; brand modes can split them (lyllo, getlucky, reviant-A). Answers the "icon ≠ chevron" edge case from the brand audit.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Splits in</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">menu-row/icon</td><td class="t-color">Color</td><td class="mono-dim">color/icon/descriptive</td><td class="note">lyllo · getlucky · reviant-A</td></tr>
+    <tr><td class="mono">menu-row/action-icon</td><td class="t-color">Color</td><td class="mono-dim">color/icon/action</td><td class="note">lyllo · getlucky · reviant-A</td></tr>
+    <tr><td class="mono">menu-row/label</td><td class="t-color">Color</td><td class="mono-dim">text/primary</td><td class="note">—</td></tr>
+    <tr><td class="mono">menu-row/label-muted</td><td class="t-color">Color</td><td class="mono-dim">text/secondary</td><td class="note">Supporting label</td></tr>
+    <tr><td class="mono">menu-row/surface</td><td class="t-color">Color</td><td class="mono-dim">surface/raised</td><td class="note">comeon inverts on selection</td></tr>
+    <tr><td class="mono">menu-row/surface-selected</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-50 <em>or</em> color/brand/primary-700</td><td class="note">comeon</td></tr>
+    <tr><td class="mono">menu-row/surface-hover</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-50</td><td class="note"></td></tr>
+    <tr><td class="mono">menu-row/divider</td><td class="t-color">Color</td><td class="mono-dim">divide/color</td><td class="note"></td></tr>
+    <tr><td class="mono">menu-row/padding-y</td><td class="t-num">Number</td><td class="mono-dim">spacing/3 · 12px</td><td class="note"></td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="c-view-all">
+<h3>5.2 · view-all.* <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— "View all" / inline-link alias pair</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Addresses the "label colour ≠ chevron colour" case. Evolves v2's <code class="inline">interactive/viewall/*</code> into an explicit label/icon split so the divergence is discoverable in brand-mode editing.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Splits in</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">view-all/label</td><td class="t-color">Color</td><td class="mono-dim">text/link/default</td><td class="note">lyllo orange · getlucky pink</td></tr>
+    <tr><td class="mono">view-all/label-hover</td><td class="t-color">Color</td><td class="mono-dim">text/link/hover</td><td class="note"></td></tr>
+    <tr><td class="mono">view-all/icon</td><td class="t-color">Color</td><td class="mono-dim">color/icon/action</td><td class="note">lyllo pink · getlucky orange</td></tr>
+    <tr><td class="mono">view-all/icon-hover</td><td class="t-color">Color</td><td class="mono-dim">color/icon/action</td><td class="note"></td></tr>
+    <tr><td class="mono">view-all/underline</td><td class="t-str">String</td><td class="mono-dim">none <em>or</em> underline</td><td class="note">Brand variation</td></tr>
+    <tr><td class="mono">view-all/gap</td><td class="t-num">Number</td><td class="mono-dim">spacing/1 · 4px</td><td class="note">Label-to-icon gap</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="c-nav">
+<h3>5.3 · nav.* <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— Bottom-navbar alias pack, with icon/text split</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Every nav state is two tokens: one for the icon, one for the text, defaulting equal. reviant-A splits selected-icon (red) from selected-text (dark); all other brands keep them matched.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Splits in</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">nav/background</td><td class="t-color">Color</td><td class="mono-dim">surface/raised <em>or</em> color/always/black</td><td class="note">Brand choice</td></tr>
+    <tr><td class="mono">nav/default-icon</td><td class="t-color">Color</td><td class="mono-dim">text/muted</td><td class="note">—</td></tr>
+    <tr><td class="mono">nav/default-text</td><td class="t-color">Color</td><td class="mono-dim">text/muted</td><td class="note">—</td></tr>
+    <tr><td class="mono">nav/selected-icon</td><td class="t-color">Color</td><td class="mono-dim">color/icon/nav-selected</td><td class="note">reviant-A diverges from text</td></tr>
+    <tr><td class="mono">nav/selected-text</td><td class="t-color">Color</td><td class="mono-dim">nav/selected-icon</td><td class="note">reviant-A: text/primary while icon is red</td></tr>
+    <tr><td class="mono">nav/hover-icon</td><td class="t-color">Color</td><td class="mono-dim">text/primary</td><td class="note"></td></tr>
+    <tr><td class="mono">nav/disabled-icon</td><td class="t-color">Color</td><td class="mono-dim">text/disabled</td><td class="note"></td></tr>
+    <tr><td class="mono">nav/radius</td><td class="t-num">Number</td><td class="mono-dim">radius/navigation</td><td class="note">reviant-A: 12</td></tr>
+    <tr><td class="mono">nav/shadow</td><td class="t-str">String</td><td class="mono-dim">shadow/none</td><td class="note">reviant-A: shadow/sm (elevated)</td></tr>
+    <tr><td class="mono">nav/height</td><td class="t-num">Number</td><td class="mono-dim">56 · 3.5rem</td><td class="note"></td></tr>
+    <tr><td class="mono">nav/safe-area-bottom</td><td class="t-num">Number</td><td class="mono-dim">env(safe-area-inset-bottom)</td><td class="note">iOS home indicator</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="c-header">
+<h3>5.4 · header.* <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— Lobby Header master alias pack</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Formalises the <code class="inline">Lobby Header/*</code> primitives into a component-layer namespace. Prevents shapes inside the header from ever reaching for <code class="inline">color.primary</code> directly — crucial for snabbare's blue-header / green-brand identity.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">header/surface</td><td class="t-color">Color</td><td class="mono-dim">surface/header</td><td class="note">snabbare blue · comeon = page</td></tr>
+    <tr><td class="mono">header/surface-1</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600</td><td class="note">Elevated surface (pill-in-header)</td></tr>
+    <tr><td class="mono">header/surface-2</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-700</td><td class="note">Further-elevated surface</td></tr>
+    <tr><td class="mono">header/accent-surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-500</td><td class="note">Primary accent inside header</td></tr>
+    <tr><td class="mono">header/secondary-surface</td><td class="t-color">Color</td><td class="mono-dim">color/brand/secondary-500</td><td class="note">Secondary accent</td></tr>
+    <tr><td class="mono">header/on-surface</td><td class="t-color">Color</td><td class="mono-dim">nav/header/text</td><td class="note">Default text/icon</td></tr>
+    <tr><td class="mono">header/on-accent</td><td class="t-color">Color</td><td class="mono-dim">color/always/white</td><td class="note">Text on accent</td></tr>
+    <tr><td class="mono">header/active-selected</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-500</td><td class="note">Active-state indicator (tab underline, chip)</td></tr>
+    <tr><td class="mono">header/scrolled-surface</td><td class="t-color">Color</td><td class="mono-dim">surface/header-scrolled</td><td class="note">After scroll</td></tr>
+    <tr><td class="mono">header/logo-bg</td><td class="t-color">Color</td><td class="mono-dim">color/always/transparent</td><td class="note"></td></tr>
+    <tr><td class="mono">header/ios-bar</td><td class="t-color">Color</td><td class="mono-dim">color/always/black <em>or</em> color/always/white</td><td class="note">iOS status bar tint</td></tr>
+    <tr><td class="mono">header/height</td><td class="t-num">Number</td><td class="mono-dim">layout/header-height</td><td class="note"></td></tr>
+    <tr><td class="mono">header/border-bottom</td><td class="t-color">Color</td><td class="mono-dim">border/default <em>or</em> transparent</td><td class="note"></td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="c-cta">
+<h3>5.5 · cta.* with context variants <span class="v3-badge newv3">v3</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— Button / CTA master alias pack + 4 component variants</span></h3>
+<p class="dim" style="font-size: 0.9rem;">The CTA component has a <b>"Context" variant property</b> with values <code class="inline">form</code> · <code class="inline">card</code> · <code class="inline">wallet</code> · <code class="inline">landing</code>. Each variant binds <code class="inline">cta.radius</code> to a different Primitive-backed role, so the same CTA component picks the right radius based on where the designer drops it. This is a Figma component-variant axis, <strong>not a mode axis</strong>.</p>
+<table>
+  <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Default alias</th><th class="col-notes">Notes</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">cta/primary/surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/primary/bg-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/primary/surface-hover</td><td class="t-color">Color</td><td class="mono-dim">interactive/primary/bg-hover</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/primary/surface-pressed</td><td class="t-color">Color</td><td class="mono-dim">interactive/primary/bg-pressed</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/primary/surface-disabled</td><td class="t-color">Color</td><td class="mono-dim">interactive/primary/bg-disabled</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/primary/on-surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/primary/text-default</td><td class="note">mobilespin: yellow on red</td></tr>
+    <tr><td class="mono">cta/primary/icon</td><td class="t-color">Color</td><td class="mono-dim">cta/primary/on-surface</td><td class="note">Can split from label</td></tr>
+    <tr><td class="mono">cta/secondary/surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/secondary/bg-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/secondary/on-surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/secondary/text-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/secondary/border</td><td class="t-color">Color</td><td class="mono-dim">interactive/secondary/border-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/tertiary/surface</td><td class="t-color">Color</td><td class="mono-dim">color/always/transparent</td><td class="note">Outline / ghost</td></tr>
+    <tr><td class="mono">cta/tertiary/on-surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/tertiary/text-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/tertiary/border</td><td class="t-color">Color</td><td class="mono-dim">color/brand/primary-600</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/destructive/surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/destructive/bg-default</td><td class="note">Delete / close account</td></tr>
+    <tr><td class="mono">cta/destructive/on-surface</td><td class="t-color">Color</td><td class="mono-dim">interactive/destructive/text-default</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/label</td><td class="t-color">Color</td><td class="mono-dim">cta/primary/on-surface</td><td class="note">Split when CTA has leading icon</td></tr>
+    <tr><td class="mono">cta/leading-icon</td><td class="t-color">Color</td><td class="mono-dim">cta/label</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/trailing-icon</td><td class="t-color">Color</td><td class="mono-dim">cta/label</td><td class="note">Arrow / chevron</td></tr>
+    <tr><td class="mono">cta/height</td><td class="t-num">Number</td><td class="mono-dim">layout/input-height</td><td class="note">Matches input when in forms</td></tr>
+    <tr><td class="mono">cta/padding-x</td><td class="t-num">Number</td><td class="mono-dim">spacing/4 · 16px</td><td class="note"></td></tr>
+    <tr><td class="mono">cta/gap</td><td class="t-num">Number</td><td class="mono-dim">spacing/2 · 8px</td><td class="note">Icon ↔ label</td></tr>
+    <tr><td class="mono">cta/focus-ring</td><td class="t-color">Color</td><td class="mono-dim">border/focus</td><td class="note"></td></tr>
+  </tbody>
+</table>
+<h4>Context variants</h4>
+<p class="dim" style="font-size: 0.9rem;">A Figma component variant property. Each value of "Context" binds <code class="inline">cta.radius</code> to a different Primitive-backed radius. No new modes; just four variants of the same master.</p>
+<table>
+  <thead><tr><th class="col-token">Variant</th><th>cta/radius resolves to</th><th>Typical value</th><th class="col-notes">When to use</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">context = form</td><td class="mono-dim">radius/input <em>or</em> radius/sm</td><td>3–4 px</td><td class="note">Inside a form, next to text inputs</td></tr>
+    <tr><td class="mono">context = card</td><td class="mono-dim">radius/card</td><td>8–12 px</td><td class="note">Inside a card; matches card corners</td></tr>
+    <tr><td class="mono">context = wallet</td><td class="mono-dim">radius/full</td><td>9999 px</td><td class="note">Deposit / withdraw — pill-shaped on 6 of 9 audited brands</td></tr>
+    <tr><td class="mono">context = landing</td><td class="mono-dim">radius/full</td><td>9999 px</td><td class="note">Marketing hero CTAs — pill-shaped</td></tr>
+  </tbody>
+</table>
+</section>
 
 <section id="c-tokens">
-<h3>5.1 · Component overrides</h3>
+<h3>5.6 · Last-resort overrides <span class="v3-badge stable">stable</span> <span class="dim" style="font-size: 0.8rem; font-weight: 400;">— keep under 5</span></h3>
+<p class="dim" style="font-size: 0.9rem;">Reserved for brand-specific overrides that genuinely can't live in Primitives or Semantic. Most v1/v2 Component entries migrated to <code class="inline">layout/*</code> or <code class="inline">z-index/*</code> in Primitives. If this subsection grows, audit the semantic layer first.</p>
 <table>
   <thead><tr><th class="col-token">Token</th><th class="col-type">Type</th><th class="col-value">Example value</th><th class="col-notes">Why it exists here</th></tr></thead>
   <tbody>
     <tr><td class="mono">component/modal/backdrop-opacity-override</td><td class="t-num">Number</td><td class="mono-dim">brand-defined</td><td class="note">Rare brand-specific legal/UX spec above theme default</td></tr>
-    <tr><td class="mono">component/card/border-radius-override</td><td class="t-num">Number</td><td class="mono-dim">brand-defined</td><td class="note">Only if a brand varies card radius at component level specifically, not system-wide</td></tr>
-    <tr><td colspan="4" class="note"><strong>Budget:</strong> keep under 10. If this collection grows, Semantic is under-specified — audit before adding.</td></tr>
+    <tr><td class="mono">component/card/border-radius-override</td><td class="t-num">Number</td><td class="mono-dim">brand-defined</td><td class="note">Only if a brand varies card radius at component level specifically</td></tr>
+    <tr><td colspan="4" class="note"><strong>Budget:</strong> keep under 5. The v3 alias packs above absorb most of what historically ended up here.</td></tr>
   </tbody>
 </table>
 </section>
