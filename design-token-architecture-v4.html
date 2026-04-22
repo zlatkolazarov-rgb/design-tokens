@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Token Architecture v4 — Brand modes on Semantic, Primitives flattened</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-card-hover: #1f1c3e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --purple-dark: #4a3db8;
+    --teal: #00d4b4; --teal-soft: rgba(0, 212, 180, 0.12);
+    --text: #eceaf5; --text-muted: #8a86a8; --text-dim: #5c587a;
+    --success: #00b894; --warning: #fdcb6e; --error: #e17055; --info: #74b9ff;
+    --white: #ffffff;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; width: 100vw; height: 100vh; font-feature-settings: 'cv11', 'ss01'; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  .deck { display: flex; flex-direction: column; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+  .deck::-webkit-scrollbar { display: none; }
+
+  .slide { min-height: 100vh; width: 100vw; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 56px 72px 72px; position: relative; overflow: hidden; }
+  .slide-inner { width: 100%; max-width: 1240px; }
+
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--purple), var(--teal)); z-index: 100; transition: width 0.3s ease; }
+  .slide-counter { position: fixed; bottom: 18px; right: 28px; font-size: 0.82rem; color: var(--text-muted); font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', monospace; z-index: 100; }
+  .nav-hint { position: fixed; bottom: 18px; left: 28px; font-size: 0.72rem; color: var(--text-dim); z-index: 100; letter-spacing: 0.04em; }
+
+  h1 { font-family: 'Sora', sans-serif; font-size: 3.8rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
+  h2 { font-family: 'Sora', sans-serif; font-size: 2.3rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.6rem; }
+  h4 { font-size: 0.92rem; font-weight: 600; line-height: 1.4; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+  p, li { font-size: 1.04rem; line-height: 1.6; color: var(--text); }
+  .subtitle { font-size: 1.18rem; color: var(--text-muted); line-height: 1.55; max-width: 820px; }
+  .lead { font-size: 1.18rem; color: var(--text); line-height: 1.55; max-width: 920px; }
+  .accent { color: var(--purple-light); }
+  .teal { color: var(--teal); }
+  .warn { color: var(--warning); }
+  .dim { color: var(--text-muted); }
+  strong { color: var(--white); font-weight: 600; }
+
+  .tag { display: inline-block; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: var(--white); font-size: 0.72rem; font-weight: 700; padding: 6px 14px; border-radius: 4px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.4rem; }
+  .tag.teal { background: linear-gradient(135deg, var(--teal) 0%, #00a88e 100%); color: #04140f; }
+  .tag.warn { background: linear-gradient(135deg, #c93838 0%, #8a1f1f 100%); color: var(--white); }
+
+  .orb { position: absolute; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--purple) 0%, transparent 70%); opacity: 0.18; pointer-events: none; filter: blur(1px); }
+  .orb.teal { background: radial-gradient(circle at 30% 30%, var(--teal) 0%, transparent 70%); opacity: 0.12; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; transition: transform 0.25s ease, border-color 0.25s ease; }
+  .card:hover { border-color: var(--border-strong); }
+  .card.highlight { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.06) 100%); }
+  .card.warn-card { border-color: rgba(253, 203, 110, 0.4); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.05) 100%); }
+  .card h3 { color: var(--white); }
+  .card-note { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: 100%; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  th { color: var(--purple-light); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
+  tr:last-child td { border-bottom: none; }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text); }
+  tr:hover td { background: rgba(108, 92, 231, 0.04); }
+
+  pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.6; color: var(--text); overflow-x: auto; white-space: pre; width: 100%; }
+  pre .k { color: var(--purple-light); } pre .s { color: var(--teal); } pre .c { color: var(--text-dim); } pre .v { color: var(--warning); }
+  code.inline { background: var(--bg-code); border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px; font-size: 0.88em; color: var(--purple-light); }
+
+  ul.check, ul.arrow, ul.bul { list-style: none; padding: 0; }
+  ul.check li, ul.arrow li, ul.bul li { padding-left: 26px; position: relative; margin-bottom: 8px; font-size: 0.98rem; }
+  ul.check li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+  ul.arrow li::before { content: '→'; position: absolute; left: 0; color: var(--purple-light); font-weight: 700; }
+  ul.bul li::before { content: '·'; position: absolute; left: 8px; color: var(--text-muted); font-weight: 700; font-size: 1.4em; top: -4px; }
+
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(255,255,255,0.14); }
+
+  .pill-chip { display: inline-block; padding: 3px 10px; background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.3); border-radius: 999px; font-size: 0.76rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+  .pill-chip.brand { background: rgba(108, 92, 231, 0.12); color: var(--purple-light); border-color: rgba(108, 92, 231, 0.3); }
+  .pill-chip.warn { background: rgba(253, 203, 110, 0.1); color: var(--warning); border-color: rgba(253, 203, 110, 0.3); }
+  .pill-chip.new { background: rgba(0, 212, 180, 0.22); color: var(--teal); border-color: var(--teal); font-weight: 700; }
+
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: var(--teal); letter-spacing: 0.08em; }
+
+  .arch { display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.92rem; width: 100%; }
+  .arch-box { width: 100%; padding: 14px 22px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .arch-box.highlight { border-color: var(--teal); background: linear-gradient(90deg, var(--bg-card), var(--teal-soft)); }
+  .arch-box.new { border-color: var(--warning); background: linear-gradient(90deg, var(--bg-card), rgba(253, 203, 110, 0.06)); }
+  .arch-label { font-weight: 600; color: var(--white); font-family: 'Sora', sans-serif; font-size: 1.02rem; }
+  .arch-modes { font-size: 0.82rem; color: var(--text-muted); }
+  .arch-badge { font-size: 0.66rem; padding: 2px 8px; border-radius: 999px; background: rgba(253, 203, 110, 0.15); color: var(--warning); margin-left: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .arch-badge.brand { background: rgba(108, 92, 231, 0.15); color: var(--purple-light); }
+  .arch-badge.ok { background: rgba(0, 212, 180, 0.14); color: var(--teal); }
+
+  .title-slide { text-align: center; align-items: center; }
+  .title-kicker { font-size: 0.88rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 22px; font-weight: 600; }
+  .title-underline { display: inline-block; padding-bottom: 8px; border-bottom: 4px solid var(--teal); }
+
+  .kbd { display: inline-block; padding: 2px 8px; background: var(--bg-code); border: 1px solid var(--border); border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--purple-light); }
+
+  .divider-line { height: 1px; background: var(--border); width: 100%; margin: 22px 0; }
+
+  /* flow diagram */
+  .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 6px; align-items: stretch; width: 100%; font-family: 'JetBrains Mono', monospace; }
+  .flow .node { padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); display: flex; flex-direction: column; gap: 4px; text-align: center; justify-content: center; }
+  .flow .node.hl { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, var(--teal-soft) 100%); }
+  .flow .node.new { border-color: var(--warning); }
+  .flow .node .t { font-family: 'Sora', sans-serif; font-size: 0.95rem; color: var(--white); font-weight: 600; }
+  .flow .node .m { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.04em; }
+  .flow .arr { color: var(--purple-light); font-size: 1.6rem; align-self: center; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; }
+  .compare .col { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+  .compare .col.before { border-color: rgba(225, 112, 85, 0.35); }
+  .compare .col.after  { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.04) 100%); }
+  .compare .col h4.before-h { color: var(--error); }
+  .compare .col h4.after-h  { color: var(--teal); }
+  .compare .col ol { padding-left: 20px; }
+  .compare .col ol li { margin-bottom: 6px; font-size: 0.96rem; line-height: 1.5; }
+
+  .diff-table th, .diff-table td { font-size: 0.86rem; }
+  .diff-table td.a { color: var(--error); }
+  .diff-table td.b { color: var(--teal); }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 28px; }
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.7rem; }
+    .grid-2, .grid-3, .grid-4, .compare { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow .arr { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="slide-counter" id="counter">01 / 14</div>
+<div class="nav-hint">↑ ↓ <span class="dim">navigate</span> &nbsp;·&nbsp; <span class="kbd">Space</span></div>
+
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<section class="slide title-slide">
+  <div class="orb" style="width: 520px; height: 520px; top: -160px; right: -160px;"></div>
+  <div class="orb teal" style="width: 340px; height: 340px; bottom: -90px; left: -90px;"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">Option D · 20-Brand White Label · ComeOn · 2026-04-22</div>
+    <h1>
+      Design Token<br>
+      <span class="title-underline">Architecture</span> <span class="accent">v4</span>
+    </h1>
+    <p class="subtitle" style="margin: 18px auto 0;">Move brand modes down to Semantic where designers and devs actually bind. Flatten Primitives into a clean, unmoded palette library. Keep Theme, Regulatory, and Component exactly where they are. One mode axis per collection, no magic, no drift.</p>
+    <div style="margin-top: 40px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      <span class="pill-chip new">brand on semantic</span>
+      <span class="pill-chip new">primitives flat</span>
+      <span class="pill-chip">5 collections</span>
+      <span class="pill-chip">9–20 brand modes</span>
+      <span class="pill-chip">2 themes</span>
+      <span class="pill-chip">7 jurisdictions</span>
+      <span class="pill-chip brand">~990 flat primitives</span>
+    </div>
+    <p style="margin-top: 40px;">
+      <a href="design-token-reference-v4.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Token Reference v4</a>
+      <a href="design-token-architecture-v3.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--purple-light); border-radius: 999px; color: var(--purple-light); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Compare with v3 (Option A)</a>
+      <a href="brand-audit.html" style="display: inline-block; padding: 9px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; margin: 4px;">→ Brand Audit</a>
+    </p>
+    <p class="dim" style="margin-top: 18px; font-size: 0.85rem;">v4 is a <strong>proposal</strong>. v3.1 is the current shipped architecture — kept live on the <a href="index.html" style="color: var(--text-muted); border-bottom: 1px dotted var(--text-muted);">landing page</a> as Option A.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: WHY v4 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="tag">Why v4</span>
+    </div>
+    <h2>v3.1 works. But modes live where nobody <span class="accent">binds</span>.</h2>
+    <p class="lead" style="margin-bottom: 28px;">After v3.1 shipped, both devs and designers pushed back that brand modes sit on the wrong collection. They bind to Semantic. The brand switch is two collections away. The complaint is one sentence, from two angles:</p>
+
+    <div class="grid-2">
+      <div class="card warn-card">
+        <h4 class="warn">Designer</h4>
+        <p style="margin-top: 6px;"><em>"I bind a button to <code class="inline">interactive/primary/bg</code> — that's Semantic. I want to preview it on Snabbare. But the brand mode switch is on Primitives, a collection I don't normally touch. Why isn't it where I work?"</em></p>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Developer</h4>
+        <p style="margin-top: 6px;"><em>"I consume Semantic via Tailwind. My bundle is one flat CSS file. All nine brands run through it, so where's the brand variation? Nowhere — I'm hand-writing <code class="inline">theme.css</code>."</em></p>
+      </div>
+    </div>
+
+    <div class="card highlight" style="margin-top: 24px;">
+      <h4 class="teal">What v4 changes</h4>
+      <ul class="check" style="margin-top: 8px;">
+        <li>Brand mode axis <strong>moves from Primitives to Semantic</strong>. Designers switch brand on the layer they bind to.</li>
+        <li>Primitives <strong>flatten</strong> into an unmoded palette: <code class="inline">color/lyllo/primary-600</code>, <code class="inline">color/snabbare/primary-600</code>, etc. One canonical location per hex.</li>
+        <li>Theme stays at 2 modes (light/dark). Regulatory stays at 7 (jurisdictions). Component stays unmoded.</li>
+        <li>Each mode axis lives in <strong>exactly one</strong> collection. No cross-collection mode-matching. No naming lint.</li>
+        <li>Dev export pipeline emits one CSS bundle per brand × theme, replacing the hand-written <code class="inline">theme.css</code>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: THE MODEL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="tag teal">The 5-collection model</span>
+    </div>
+    <h2>Same five collections. <span class="accent">Modes redistributed.</span></h2>
+    <p class="lead" style="margin-bottom: 20px;">Two collections change shape. Three stay identical to v3.1. The number of collections is unchanged.</p>
+
+    <div class="arch" style="margin-top: 16px;">
+      <div class="arch-box new">
+        <div><span class="arch-label">1 · Primitives</span> <span class="arch-badge">★ flatten · no modes</span></div>
+        <span class="arch-modes">brand-prefixed flat names · <code class="inline" style="font-size: 0.78rem;">color/&lt;brand&gt;/&lt;ramp&gt;</code> · ~990 tokens</span>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">2 · Theme</span> <span class="arch-badge brand">2 modes · light / dark</span></div>
+        <span class="arch-modes">unchanged · ~28 neutral-flip tokens · surface · text · border · overlay</span>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">3 · Semantic</span> <span class="arch-badge">★ 9–20 brand modes · NEW</span></div>
+        <span class="arch-modes">text.* · surface.* · icon.* · pill.* · badge.* · radius.* · interactive.* · ~340 role tokens, each aliases its mode's brand-prefixed primitive</span>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">4 · Regulatory</span> <span class="arch-badge brand">7 jurisdiction modes</span></div>
+        <span class="arch-modes">unchanged · default · SE · DK · MT · ON · NL · PL · ~22 tokens</span>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">5 · Component</span> <span class="arch-badge ok">no modes · locked</span></div>
+        <span class="arch-modes">unchanged · ~35 alias packs · <code class="inline" style="font-size: 0.78rem;">cta.*</code> · <code class="inline" style="font-size: 0.78rem;">header.*</code> · <code class="inline" style="font-size: 0.78rem;">menu-row.*</code> · marketing-locked</span>
+      </div>
+    </div>
+
+    <p class="dim" style="margin-top: 22px; font-size: 0.92rem;">★ = changed from v3.1. Brand is <strong>the mode axis on Semantic</strong>, not on Primitives. Primitives becomes a flat palette library. Every hex lives in exactly one place.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: v3 vs v4 diff ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="tag warn">Diff · v3.1 → v4</span>
+    </div>
+    <h2>What actually changes, in a table.</h2>
+    <p class="lead" style="margin-bottom: 20px;">Five collections, two rows changed.</p>
+
+    <table class="diff-table">
+      <thead>
+        <tr><th>Collection</th><th>v3.1 (Option A · shipped)</th><th>v4 (Option B · proposal)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1 · Primitives</strong></td>
+          <td class="a mono">20 brand modes · ~110 tokens each · ~2200 values</td>
+          <td class="b mono">★ unmoded · flat names · ~990 tokens</td>
+        </tr>
+        <tr>
+          <td><strong>2 · Theme</strong></td>
+          <td class="mono">2 modes (light/dark) · ~28 tokens</td>
+          <td class="mono">unchanged</td>
+        </tr>
+        <tr>
+          <td><strong>3 · Semantic</strong></td>
+          <td class="a mono">no modes · ~340 tokens, aliases Primitives + Theme</td>
+          <td class="b mono">★ 9–20 brand modes · ~340 tokens per mode</td>
+        </tr>
+        <tr>
+          <td><strong>4 · Regulatory</strong></td>
+          <td class="mono">7 jurisdiction modes · ~22 tokens</td>
+          <td class="mono">unchanged</td>
+        </tr>
+        <tr>
+          <td><strong>5 · Component</strong></td>
+          <td class="mono">no modes · ~35 alias packs · locked</td>
+          <td class="mono">unchanged</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="grid-2" style="margin-top: 26px;">
+      <div class="card">
+        <h4>Where each mode axis lives</h4>
+        <table style="margin-top: 8px;">
+          <thead><tr><th>Axis</th><th>v3.1</th><th>v4</th></tr></thead>
+          <tbody>
+            <tr><td>Brand</td><td class="mono dim">Primitives</td><td class="mono teal">Semantic</td></tr>
+            <tr><td>Theme</td><td class="mono dim">Theme</td><td class="mono dim">Theme</td></tr>
+            <tr><td>Jurisdiction</td><td class="mono dim">Regulatory</td><td class="mono dim">Regulatory</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card highlight">
+        <h4 class="teal">The invariant v4 establishes</h4>
+        <p style="margin-top: 6px; font-size: 0.98rem;">Each mode axis lives in <strong>exactly one</strong> collection. No cross-collection mode-matching. No "Primitives and Semantic both have a brand mode named Lyllo, please stay in sync." Just aliases that explicitly name their target.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: HOW THE COLLECTIONS LINK ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="tag teal">How the 5 collections link</span>
+    </div>
+    <h2>The alias chain, end to end.</h2>
+    <p class="lead" style="margin-bottom: 24px;">Values flow right to left through the chain. A consumer binds to Component (or Semantic); Figma walks backward through the aliases to land on a hex in Primitives.</p>
+
+    <div class="flow">
+      <div class="node"><span class="t">1 · Primitives</span><span class="m">unmoded · flat hex</span></div>
+      <div class="arr">→</div>
+      <div class="node"><span class="t">2 · Theme</span><span class="m">2 modes · light/dark</span></div>
+      <div class="arr">→</div>
+      <div class="node hl"><span class="t">3 · Semantic</span><span class="m">★ brand modes</span></div>
+      <div class="arr">→</div>
+      <div class="node"><span class="t">5 · Component</span><span class="m">no modes · locked</span></div>
+    </div>
+
+    <p class="dim" style="margin-top: 14px; font-size: 0.88rem; text-align: center;">Reading: <strong>A → B</strong> means B aliases from A. Regulatory (4) sits beside Semantic as a narrow override layer for compliance tokens only.</p>
+
+    <div class="grid-2" style="margin-top: 30px;">
+      <div class="card">
+        <h4>The one rule of Component</h4>
+        <p style="margin-top: 6px;"><strong>Component aliases Semantic only.</strong> Never reaches around to Primitives directly. Never touches Theme directly. That's why Component doesn't need modes of its own — all brand variation is resolved by the time the alias lands in Semantic.</p>
+      </div>
+      <div class="card">
+        <h4>Cross-collection rules</h4>
+        <ul class="bul" style="margin-top: 6px;">
+          <li>Primitives → nothing. Holds raw hex.</li>
+          <li>Theme → Primitives. Per light/dark.</li>
+          <li>Semantic → Primitives + Theme. Per brand.</li>
+          <li>Regulatory → Primitives + Semantic. Per jurisdiction.</li>
+          <li>Component → Semantic only.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: WORKED EXAMPLE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="tag teal">Worked example</span>
+    </div>
+    <h2>CTA background · Snabbare · dark.</h2>
+    <p class="lead" style="margin-bottom: 20px;">One button. One hex answer. Traced through every collection in v4.</p>
+
+    <pre><span class="c"># Frame: &lt;button&gt; fill binds to a Component token</span>
+
+Component (no modes):
+  <span class="k">cta/primary/bg</span>   →   <span class="s">Semantic.interactive/primary/bg</span>
+
+Semantic (mode = <span class="v">snabbare</span>):
+  <span class="k">interactive/primary/bg</span>   →   <span class="s">Primitives.color/snabbare/primary-600</span>
+
+Primitives (unmoded):
+  <span class="k">color/snabbare/primary-600</span>   =   <span class="v">#1e8f3e</span>   <span class="c"># Snabbare green</span>
+
+<span class="c"># Frame renders: #1e8f3e</span></pre>
+
+    <p class="dim" style="margin-top: 18px; font-size: 0.92rem;">Switch Semantic's mode to <code class="inline">lyllo</code> — the Component bind stays identical. Semantic's alias, per its <code class="inline">lyllo</code> mode, now points at <code class="inline">color/lyllo/primary-600 = #ff6699</code>. The button becomes Lyllo pink. No magic: each mode has an explicit alias target.</p>
+
+    <div class="card highlight" style="margin-top: 24px;">
+      <h4 class="teal">Why this trace matters</h4>
+      <p style="margin-top: 6px;">At no point does Figma have to "match modes across collections by name." Semantic's <code class="inline">snabbare</code> mode just contains an explicit alias: "point at <code class="inline">color/snabbare/primary-600</code> in Primitives." Primitives is unmoded, so there's nothing to match — it returns the one hex it holds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: DESIGNER BEFORE/AFTER ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="tag">Designer workflow</span>
+    </div>
+    <h2>Before / after · previewing a CTA across brands.</h2>
+
+    <div class="compare" style="margin-top: 20px;">
+      <div class="col before">
+        <h4 class="before-h">BEFORE · v3.1</h4>
+        <ol>
+          <li>Drop a frame.</li>
+          <li>Rectangle → fill binds to <code class="inline">interactive/primary/bg</code> (Semantic).</li>
+          <li>To preview Snabbare: switch the <strong>Primitives</strong> collection's mode to <code class="inline">snabbare</code>.</li>
+          <li>To preview dark: switch the <strong>Theme</strong> collection's mode to <code class="inline">dark</code>.</li>
+          <li>⚠ You're operating on a collection (Primitives) that you never bind to. Easy to forget. Easy to mis-click.</li>
+        </ol>
+      </div>
+      <div class="col after">
+        <h4 class="after-h">AFTER · v4</h4>
+        <ol>
+          <li>Drop a frame.</li>
+          <li>Rectangle → fill binds to <code class="inline">cta/primary/bg</code> (Component) or <code class="inline">interactive/primary/bg</code> (Semantic).</li>
+          <li>To preview Snabbare: switch the <strong>Semantic</strong> collection's mode to <code class="inline">snabbare</code>.</li>
+          <li>To preview dark: switch the <strong>Theme</strong> collection's mode to <code class="inline">dark</code>.</li>
+          <li>✓ Brand mode lives on the collection you bind to. Two switches. Both on layers you already work with.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h4>What does <strong>not</strong> change for designers</h4>
+      <ul class="bul" style="margin-top: 6px;">
+        <li>The tokens you bind to keep their names (<code class="inline">interactive/primary/bg</code>, <code class="inline">text/primary</code>, <code class="inline">cta/primary/bg</code>, etc.).</li>
+        <li>Component is still locked from marketing.</li>
+        <li>Regulatory is still a separate switch for compliance flows.</li>
+        <li>Primitives remains available if you ever need to reference a raw hex — just unmoded and brand-prefixed.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: DEV BEFORE/AFTER ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="tag">Developer workflow</span>
+    </div>
+    <h2>Before / after · shipping Snabbare Dark.</h2>
+
+    <div class="compare" style="margin-top: 20px;">
+      <div class="col before">
+        <h4 class="before-h">BEFORE · v3.1</h4>
+        <ol>
+          <li>Open hand-written <code class="inline">theme.css</code>.</li>
+          <li>Copy / adapt values for Snabbare's palette.</li>
+          <li>Keep a parallel file per brand. Manually sync when Figma changes.</li>
+          <li>⚠ Drift is guaranteed over time. Token-to-CSS transcription is manual.</li>
+        </ol>
+      </div>
+      <div class="col after">
+        <h4 class="after-h">AFTER · v4 + pipeline</h4>
+        <ol>
+          <li>Style Dictionary walks Semantic under each mode combination.</li>
+          <li>Emits <code class="inline">dist/tokens/&lt;brand&gt;-&lt;theme&gt;.css</code> per combo — 18 bundles for 9 brands × 2 themes.</li>
+          <li>App shell sets <code class="inline">&lt;html data-brand="snabbare" class="dark"&gt;</code>.</li>
+          <li>Tailwind v4 <code class="inline">@theme</code> block maps CSS vars to utility classes. Components keep using <code class="inline">bg-interactive-primary</code>.</li>
+          <li>✓ Updates propagate by rebuild, not transcription.</li>
+        </ol>
+      </div>
+    </div>
+
+    <pre style="margin-top: 20px;"><span class="c">/* Auto-generated · dist/tokens/snabbare-dark.css */</span>
+[data-brand="snabbare"] {
+  <span class="k">--color-interactive-primary-bg</span>: <span class="v">#1e8f3e</span>;
+  <span class="k">--color-text-primary</span>: <span class="v">#0a0a0a</span>;
+  <span class="c">/* ... */</span>
+}
+[data-brand="snabbare"].dark {
+  <span class="k">--color-interactive-primary-bg</span>: <span class="v">#1e8f3e</span>;
+  <span class="k">--color-text-primary</span>: <span class="v">#ffffff</span>;
+}</pre>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: COMPONENT EXPLAINED ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="tag">Component</span>
+    </div>
+    <h2>Why Component exists (and stays <span class="accent">unmoded</span>).</h2>
+    <p class="lead" style="margin-bottom: 20px;">Semantic is <strong>generic roles</strong>. Component is <strong>specific UI elements</strong> that can't be expressed by a generic role alone. Three real examples:</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>Snabbare's isolated header</h4>
+        <p style="margin-top: 6px; font-size: 0.94rem;">Snabbare's header is <em>not</em> brand primary. Using <code class="inline">interactive/primary/bg</code> paints the wrong colour. Component pins it:</p>
+        <pre style="margin-top: 10px; font-size: 0.78rem;"><span class="k">header/bg</span>
+  → <span class="s">Semantic.chrome/header/bg</span>
+  → <span class="s">Primitives.color/snabbare/header-chrome</span>
+  = <span class="v">#0b5ed7</span></pre>
+      </div>
+      <div class="card">
+        <h4>Menu-row icon split</h4>
+        <p style="margin-top: 6px; font-size: 0.94rem;">Designers wanted action icons and chevrons themed independently. Semantic's generic <code class="inline">icon/action</code> couldn't split. Component does:</p>
+        <pre style="margin-top: 10px; font-size: 0.78rem;"><span class="k">menu-row/action-icon</span>
+  → <span class="s">Semantic.icon/action</span>
+<span class="k">menu-row/chevron</span>
+  → <span class="s">Semantic.icon/chevron</span></pre>
+      </div>
+      <div class="card">
+        <h4>CTA context variants</h4>
+        <p style="margin-top: 6px; font-size: 0.94rem;">CTA radius differs by context: form / card / wallet / landing. One Semantic role can't carry four radius values. Component does:</p>
+        <pre style="margin-top: 10px; font-size: 0.78rem;"><span class="k">cta/primary/bg</span>
+  → <span class="s">Semantic.interactive/primary/bg</span>
+<span class="k">cta/form/radius</span>     = 8
+<span class="k">cta/wallet/radius</span>   = 4
+<span class="k">cta/landing/radius</span>  = 999</pre>
+      </div>
+    </div>
+
+    <div class="card highlight" style="margin-top: 22px;">
+      <h4 class="teal">Why Component needs no modes</h4>
+      <p style="margin-top: 6px;">Component tokens alias Semantic. When Semantic's brand mode changes, Semantic resolves to a different Primitive. Component's aliases to Semantic automatically resolve through that. <strong>Brand variation propagates through the chain without Component participating.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: MIGRATION ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="tag warn">Migration</span>
+    </div>
+    <h2>The shape of the work.</h2>
+    <p class="lead" style="margin-bottom: 20px;">Four phases. Each one verifiable on its own. Global Search prototype at <code class="inline">localhost:5180</code> is the validation surface throughout.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>Phase 1 · Pre-work</h4>
+        <ul class="bul" style="margin-top: 6px;">
+          <li><strong>Brand-collapse audit</strong> against <code class="inline">brand-audit.html</code>.</li>
+          <li>Identify brands ≥95% Lyllo-identical (candidates: reviant-A, reviant-B, 888.nl).</li>
+          <li>Outcome: ~12 "real" brands + sub-brands overriding 3–8 accent tokens each.</li>
+          <li>Cuts rename surface by ~40%.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Phase 2 · Flatten Primitives</h4>
+        <ul class="bul" style="margin-top: 6px;">
+          <li>Throwaway Figma branch from <code class="inline">AcbohbUnh3brJw52d3YlY6</code>.</li>
+          <li>Start with Snabbare (99.5% hex parity already). Rename moded → flat form.</li>
+          <li>Verify byte-for-byte hex parity per brand.</li>
+          <li>Delete the Brand mode axis on Primitives.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Phase 3 · Add Semantic brand modes</h4>
+        <ul class="bul" style="margin-top: 6px;">
+          <li>Add <code class="inline">lyllo</code> (default) + <code class="inline">snabbare</code> modes first.</li>
+          <li>For each Semantic token, bind each mode's alias to the correct brand-prefixed Primitive.</li>
+          <li>~290 brand-identical tokens copy the same alias across modes. ~50 diverge.</li>
+          <li>Scale out; sub-brands inherit, overriding 3–8 aliases.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Phase 4 · Dev pipeline &amp; cut-over</h4>
+        <ul class="bul" style="margin-top: 6px;">
+          <li>Wire Style Dictionary against Figma REST export.</li>
+          <li>Emit per-bundle CSS under <code class="inline">dist/tokens/</code>.</li>
+          <li>Swap Global Search Casino off hand-written <code class="inline">theme.css</code>.</li>
+          <li>Validate <code class="inline">&lt;html data-brand&gt;</code> + <code class="inline">.dark</code> at <code class="inline">localhost:5180</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: TRADE-OFFS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="tag">Trade-offs</span>
+    </div>
+    <h2>What you gain. What you pay.</h2>
+
+    <div class="grid-2" style="margin-top: 18px;">
+      <div class="card highlight">
+        <h4 class="teal">Upsides</h4>
+        <ul class="check" style="margin-top: 8px;">
+          <li>Each axis lives in exactly one collection. Simple mental model.</li>
+          <li>No cross-collection mode-matching. No naming lint needed.</li>
+          <li>Primitives becomes a clean inspectable palette library.</li>
+          <li>Modes live where designers and devs bind — complaint resolved.</li>
+          <li>Explicit aliases · no magic Figma behaviour to rely on.</li>
+          <li>Dev CSS export is deterministic and per-brand.</li>
+        </ul>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Downsides accepted</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li>Primitives library grows from ~110 moded tokens to ~990 flat ones. Longer list, but searchable.</li>
+          <li>Large one-time migration: every Primitive renamed.</li>
+          <li>Each Semantic brand mode has to explicitly bind ~340 aliases (much of it copy-paste across modes).</li>
+          <li>Lyllo-preserved constraint needs a byte-for-byte hex check during rename.</li>
+          <li>The "20 future brand slots" goes away — add brand tokens when you add a brand, not ahead of time.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 22px;">
+      <h4>Locked decisions</h4>
+      <ul class="bul" style="margin-top: 6px;">
+        <li><strong>Regulatory stays separate</strong> (7 jurisdiction modes, 22 tokens). Independent of brand/theme.</li>
+        <li><strong>Brand-collapse audit runs first</strong>, read-only, before any Figma rename.</li>
+        <li><strong>Lyllo hex values preserved byte-for-byte.</strong></li>
+        <li><strong>Component collection stays.</strong> It's the locked overrides layer for UI-specific binds.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: AFTER v4 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="tag teal">After v4 ships</span>
+    </div>
+    <h2>Adding a new brand, a new theme, a new jurisdiction.</h2>
+    <p class="lead" style="margin-bottom: 20px;">Because each axis owns exactly one collection, each kind of addition touches one place.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>Add a new brand</h4>
+        <ol style="padding-left: 20px; margin-top: 8px;">
+          <li>Add <code class="inline">color/&lt;newbrand&gt;/*</code> to Primitives (~110 new flat tokens).</li>
+          <li>Add a new mode to Semantic; bind ~340 aliases (mostly copy-paste).</li>
+          <li>Pipeline rebuilds; <code class="inline">&lt;newbrand&gt;-light.css</code> and <code class="inline">&lt;newbrand&gt;-dark.css</code> appear in <code class="inline">dist/</code>.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h4>Add a sub-brand</h4>
+        <ol style="padding-left: 20px; margin-top: 8px;">
+          <li>Add 3–8 <code class="inline">color/&lt;subbrand&gt;/accent*</code> to Primitives.</li>
+          <li>Add one Semantic mode overriding only the 3–8 accent tokens. Inherit the rest.</li>
+          <li>Pipeline rebuilds.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h4>Add a third theme (e.g. high-contrast)</h4>
+        <ol style="padding-left: 20px; margin-top: 8px;">
+          <li>Add a third mode to Theme (<code class="inline">high-contrast</code>).</li>
+          <li>Bind the ~28 Theme tokens for that mode.</li>
+          <li>Pipeline rebuilds; every brand × theme combo gets a new bundle.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 22px;">
+      <h4>Marketing permissions (unchanged)</h4>
+      <p style="margin-top: 6px;">Marketing can edit Primitives (raw hex) only. Semantic, Theme, Regulatory, Component stay locked to the design system team. Same permission matrix as v3.1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: VERIFICATION ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <span class="tag">Verification</span>
+    </div>
+    <h2>How we know v4 <span class="accent">actually works</span>.</h2>
+    <p class="lead" style="margin-bottom: 20px;">Every phase produces a checkable artefact. No "looks good in Figma" — everything lands in a prototype or a CSS bundle that can be diffed.</p>
+
+    <table>
+      <thead><tr><th>Phase</th><th>Check</th><th>Pass condition</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Snabbare flatten</td>
+          <td class="mono">hex parity vs v3.1 export</td>
+          <td class="mono teal">byte-for-byte identical</td>
+        </tr>
+        <tr>
+          <td>Two-brand Semantic</td>
+          <td class="mono">CTA renders correctly on 4 combos<br>(lyllo/snabbare × light/dark)</td>
+          <td class="mono teal">matches visual regression baseline</td>
+        </tr>
+        <tr>
+          <td>Pipeline output</td>
+          <td class="mono">Style Dictionary → <code class="inline">snabbare-dark.css</code><br>diffed against hand-written <code class="inline">theme.css</code></td>
+          <td class="mono teal">zero semantic differences · hex-equivalent</td>
+        </tr>
+        <tr>
+          <td>Prototype integration</td>
+          <td class="mono">Global Search at <code class="inline">localhost:5180</code><br><code class="inline">&lt;html data-brand="snabbare"&gt;</code> + <code class="inline">.dark</code></td>
+          <td class="mono teal">Snabbare green primary · correct dark chrome</td>
+        </tr>
+        <tr>
+          <td>Full system</td>
+          <td class="mono">9 brands × 2 themes = 18 bundles</td>
+          <td class="mono teal">all pass visual regression</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: CLOSING ============ -->
+<section class="slide title-slide">
+  <div class="orb" style="width: 480px; height: 480px; top: -140px; left: -140px;"></div>
+  <div class="orb teal" style="width: 320px; height: 320px; bottom: -80px; right: -80px;"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">End of v4 proposal · 2026-04-22</div>
+    <h1>Proposal for <span class="title-underline"><span class="accent">v4</span></span>.</h1>
+    <p class="subtitle" style="margin: 18px auto 0;">Modes where designers bind. Primitives flat where devs inspect. Theme, Regulatory, Component preserved. One axis per collection. No magic.</p>
+    <div style="margin-top: 40px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <a href="design-token-reference-v4.html" class="pill-chip new" style="padding: 8px 16px; text-decoration: none;">Token Reference v4</a>
+      <a href="design-token-architecture-v3.html" class="pill-chip brand" style="padding: 8px 16px; text-decoration: none;">Compare · v3 (Option A)</a>
+      <a href="design-token-reference-v3.1.html" class="pill-chip" style="padding: 8px 16px; text-decoration: none;">Reference v3.1</a>
+      <a href="brand-audit.html" class="pill-chip" style="padding: 8px 16px; text-decoration: none;">Brand Audit</a>
+      <a href="index.html" class="pill-chip warn" style="padding: 8px 16px; text-decoration: none;">Home</a>
+    </div>
+    <p class="dim" style="margin-top: 40px; font-size: 0.85rem;">Design System · ComeOn · v4 is a proposal, not shipped · based on Figma file <code>AcbohbUnh3brJw52d3YlY6</code></p>
+  </div>
+</section>
+
+</div>
+
+<script>
+  const deck = document.getElementById('deck');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function update() {
+    const y = deck.scrollTop;
+    const h = deck.scrollHeight - deck.clientHeight;
+    progress.style.width = ((y / h) * 100) + '%';
+    let current = 1;
+    slides.forEach((s, i) => {
+      const rect = s.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) current = i + 1;
+    });
+    counter.textContent = String(current).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  }
+  deck.addEventListener('scroll', update);
+  update();
+
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); deck.scrollBy({ top: window.innerHeight, behavior: 'smooth' }); }
+    if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); deck.scrollBy({ top: -window.innerHeight, behavior: 'smooth' }); }
+    if (e.key === 'Home') { e.preventDefault(); deck.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (e.key === 'End') { e.preventDefault(); deck.scrollTo({ top: deck.scrollHeight, behavior: 'smooth' }); }
+  });
+</script>
+
+</body>
+</html>
