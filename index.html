@@ -89,38 +89,48 @@
     <header class="hero">
       <span class="tag">20-brand white label · ComeOn</span>
       <h1>Design Token <span class="accent">Architecture</span></h1>
-      <p class="lead">A 5-collection, multi-axis Figma Variables system for brand, theme, jurisdiction, and iGaming-specific surfaces — built on a 4-point scale linked to a 16px body.</p>
-      <p class="meta">Current reference: v3.1 · Architecture: v3 · Based on the 9-brand edge-case audit · 2026-04-20</p>
+      <p class="lead">A 5-collection, multi-axis Figma Variables system for brand, theme, jurisdiction, and iGaming-specific surfaces — built on a 4-point scale linked to a 16px body. Two architectures live on this page: <strong style="color: var(--teal);">Option A (v3.1)</strong> is the shipped current architecture; <strong style="color: var(--warning);">Option B (v4)</strong> is the proposal that moves brand modes onto Semantic and flattens Primitives.</p>
+      <p class="meta">Option A · v3.1 (shipped, 2026-04-20) &nbsp;·&nbsp; Option B · v4 (proposal, 2026-04-22)</p>
     </header>
 
     <section>
-      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">current</span></h2>
-      <p class="desc">The current design-token architecture. v3 is standalone — it stands on its own, not in combination with v2.</p>
-      <div class="cards">
-        <a class="card primary" href="design-token-architecture-v3.html" style="grid-column: 1 / -1;">
-          <div class="meta"><span>Deck · 19 slides</span><span class="v">· 2026-04-20</span><span class="badge v3">current</span></div>
+      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">compare options</span></h2>
+      <p class="desc">Two architectures side by side. Option A is what's in Figma today. Option B moves the brand mode axis down to Semantic and flattens Primitives into an unmoded palette library — each axis owns exactly one collection.</p>
+      <div class="cards two">
+        <a class="card primary" href="design-token-architecture-v3.html">
+          <div class="meta"><span>Deck · 19 slides</span><span class="v">· 2026-04-20</span><span class="badge shipped">shipped</span></div>
+          <span class="option-tag a">Option A · v3</span>
           <h3>Architecture v3</h3>
-          <p>The standalone architecture. Five collections (Primitives with 20 brand modes · Theme · Semantic · Regulatory · Component). Nine-brand edge-case audit absorbed into the semantic + component layers. Implementation diagram shows the full token-resolution chain. Marketing-designer permission matrix and intentional-splits documentation convention.</p>
+          <p>The current architecture. Five collections. Primitives carries the 20-brand mode axis; Theme carries light/dark; Semantic and Component are global (no modes). Implementation diagram shows the full token-resolution chain. Marketing-designer permission matrix and intentional-splits documentation convention.</p>
+          <span class="arrow">Open deck →</span>
+        </a>
+        <a class="card proposal-card" href="design-token-architecture-v4.html">
+          <div class="meta"><span>Deck · 14 slides</span><span class="v">· 2026-04-22</span><span class="badge proposal">proposal</span></div>
+          <span class="option-tag b">Option B · v4</span>
+          <h3>Architecture v4</h3>
+          <p>Proposal. Brand mode axis moves from Primitives to Semantic — designers switch brand where they bind. Primitives flattens into an unmoded palette library (<code>color/&lt;brand&gt;/&lt;ramp&gt;</code>). Theme, Regulatory, and Component unchanged. Each axis lives in exactly one collection. No cross-collection name-matching.</p>
           <span class="arrow">Open deck →</span>
         </a>
       </div>
     </section>
 
     <section>
-      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">current catalogue</span></h2>
-      <p class="desc">Every token that needs to exist in Figma, across all five collections. v3.1 narrows the Semantic and Component layers against 9-brand audit evidence; Primitives stay untouched from v3.</p>
-      <div class="cards">
-        <a class="card primary" href="design-token-reference-v3.1.html" style="grid-column: 1 / -1;">
-          <div class="meta"><span>Reference · ~525 active (+ ~60 deferred)</span><span class="v">· 2026-04-20</span><span class="badge v3">current</span></div>
+      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">token catalogues</span></h2>
+      <p class="desc">The token catalogues under each architecture. v3.1 is the current shipped reference. v4 is the proposed catalogue under Option B — structural walkthrough with representative tokens per collection, with a v3.1 → v4 migration map.</p>
+      <div class="cards two">
+        <a class="card primary" href="design-token-reference-v3.1.html">
+          <div class="meta"><span>Reference · ~525 active</span><span class="v">· 2026-04-20</span><span class="badge shipped">shipped</span></div>
+          <span class="option-tag a">Option A · v3.1</span>
           <h3>Token Reference v3.1</h3>
-          <p>Narrowed catalogue. Retires the <code>interactive/viewall/*</code> subgroup (superseded by the Component pack, which supports label ≠ chevron for lyllo / getlucky) and defers <code>launcher/*</code> and <code>platform/*</code> to a backlog appendix — no audited brand exercises them yet. Full v3 coverage preserved for Primitives, Theme, Regulatory, and the rest of Semantic + Component. Evidence trace on every deferred pack.</p>
+          <p>Narrowed catalogue against the 9-brand audit. Retires <code>interactive/viewall/*</code> in favour of the Component pack; defers <code>launcher/*</code> and <code>platform/*</code>. Full v3 coverage preserved for Primitives, Theme, Regulatory, and the rest of Semantic + Component.</p>
           <span class="arrow">Open reference →</span>
         </a>
-        <a class="card archived" href="design-token-reference-v3.html" style="grid-column: 1 / -1;">
-          <div class="meta"><span>Reference · ~585 tokens</span><span class="v">· 2026-04-20</span><span class="badge v2">prior version</span></div>
-          <h3>Token Reference v3</h3>
-          <p>The v3 catalogue in full — everything that was promoted from v2 plus the v3 additions (pill/badge/banner, icon roles, expanded Component packs). Kept as a baseline; use v3.1 above for the current narrowed version.</p>
-          <span class="arrow">Open prior reference →</span>
+        <a class="card proposal-card" href="design-token-reference-v4.html">
+          <div class="meta"><span>Reference · structural</span><span class="v">· 2026-04-22</span><span class="badge proposal">proposal</span></div>
+          <span class="option-tag b">Option B · v4</span>
+          <h3>Token Reference v4</h3>
+          <p>Proposed catalogue. Primitives restructured to flat brand-prefixed names (~990 tokens, unmoded). Semantic gains 9–20 brand modes; ~290 of ~340 tokens are brand-identical across modes, ~50 diverge per brand. Includes Theme, Regulatory, Component as unchanged sections, plus a v3.1 → v4 migration map.</p>
+          <span class="arrow">Open reference →</span>
         </a>
       </div>
     </section>
