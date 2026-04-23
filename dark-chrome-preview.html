@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark-mode chrome preview — v4 tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e;
+    --border: rgba(108, 92, 231, 0.18); --border-strong: rgba(108, 92, 231, 0.45);
+    --purple: #6c5ce7; --purple-light: #a29bfe; --teal: #00d4b4;
+    --text: #eceaf5; --text-muted: #8a86a8; --text-dim: #5c587a;
+    --white: #ffffff;
+  }
+  html { font-size: 16px; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.55;
+    padding: 48px 56px 120px; max-width: 1400px; margin: 0 auto;
+  }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+  h1 { font-family: 'Sora', sans-serif; font-size: 2.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+  h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; margin: 48px 0 16px; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 600; margin: 28px 0 10px; color: var(--white); }
+  p { color: var(--text-muted); margin-bottom: 10px; }
+  .lede { font-size: 1.05rem; color: var(--text); max-width: 780px; margin-bottom: 8px; }
+  .meta { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 24px; }
+  .meta code { background: var(--bg-card); padding: 1px 6px; border-radius: 4px; color: var(--purple-light); font-size: 0.82rem; }
+
+  .brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 24px 0; }
+  .brand-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .brand-label {
+    padding: 14px 18px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.95rem;
+    letter-spacing: 0.02em; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand-label .tint { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; font-family: 'Inter', sans-serif; }
+
+  /* phone mock */
+  .mock {
+    padding: 16px;
+    display: flex; justify-content: center;
+  }
+  .mock-screen {
+    width: 100%; max-width: 260px; border-radius: 22px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+  .mock-status {
+    padding: 8px 16px 4px; font-size: 0.68rem; display: flex; justify-content: space-between;
+    font-weight: 600; letter-spacing: 0.02em;
+  }
+  .mock-header {
+    padding: 10px 16px 14px; display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 0.95rem;
+  }
+  .mock-header .burger { font-size: 1.1rem; opacity: 0.9; }
+  .mock-header .title { flex: 1; }
+  .mock-header .avatar { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+  .mock-surface-row { display: flex; gap: 6px; padding: 10px 16px; }
+  .mock-chip {
+    flex: 1; padding: 8px 10px; border-radius: 6px; font-size: 0.68rem;
+    text-align: center; font-weight: 600;
+  }
+  .mock-menu-row {
+    padding: 12px 16px; font-size: 0.82rem; display: flex; justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .mock-menu-row .label { font-weight: 500; }
+  .mock-menu-row .meta-label { font-size: 0.72rem; }
+  .mock-nav {
+    display: flex; justify-content: space-around; padding: 10px 0 14px;
+    font-size: 0.68rem; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .mock-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: 0.85; }
+  .mock-nav-item .icon { font-size: 1rem; }
+  .mock-nav-item.active { opacity: 1; }
+
+  /* swatch table */
+  .swatches { padding: 0 18px 18px; }
+  .swatches table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .swatches td { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+  .swatches td:first-child { color: var(--text-muted); }
+  .swatches td:last-child { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text); }
+  .chip-inline {
+    display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle;
+    margin-right: 6px; border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* comparison strip */
+  .compare-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 36px; }
+  .compare-cell { height: 80px; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 10px; }
+  .compare-cell .tag { font-size: 0.68rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  /* notes */
+  .note-box {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 22px; margin: 16px 0;
+  }
+  .note-box h3 { margin-top: 0; }
+  .note-box ul { padding-left: 20px; }
+  .note-box li { color: var(--text-muted); margin: 6px 0; font-size: 0.92rem; }
+  .note-box li strong { color: var(--text); font-weight: 600; }
+
+  .legend { font-size: 0.8rem; color: var(--text-dim); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>Dark-mode chrome preview</h1>
+<p class="lede">Brand-tinted dark chrome for Lyllo, Snabbare, Mobilespin. Each brand gets a subtle tint on neutral dark greys — no loud color, just a hue shift that reads as "brand-aware chrome". Landed in Semantic (brand-moded) with raw hex per brand; Theme Dark aliases rewired; Primitives untouched.</p>
+<p class="meta">v4 file <code>Zfh3eGX8SSWsGf3IFN8j7I</code> · 2026-04-23 · <strong style="color:#00d4b4;">✓ SHIPPED</strong> — 14 Semantic <code>*-dark</code> vars created (brand-moded), Theme Dark aliases rewired, Primitives untouched (364 → 364)</p>
+
+<h2>Side-by-side preview</h2>
+<p>Phone mocks built from the 8 chrome tokens only. Body area (white space) intentionally left blank — this preview is about chrome, not content.</p>
+
+<div class="brand-grid">
+
+  <!-- LYLLO -->
+  <div class="brand-card">
+    <div class="brand-label">Lyllo <span class="tint">pink-grey · hue 330</span></div>
+    <div class="mock" style="background: #0a060a;">
+      <div class="mock-screen" style="background:#1a141a; color:#f2ecf0;">
+        <div class="mock-status"><span>9:41</span><span>●●●● 5G</span></div>
+        <div class="mock-header" style="background:#1a141a; color:#f2ecf0;">
+          <span class="burger">☰</span><span class="title">Casino</span><span class="avatar"></span>
+        </div>
+        <div class="mock-surface-row">
+          <div class="mock-chip" style="background:#221a21; color:#f2ecf0;">Live</div>
+          <div class="mock-chip" style="background:#2a2028; color:#f2ecf0;">Slots</div>
+        </div>
+        <div style="height: 70px; background: #0a060a;"></div>
+        <div class="mock-menu-row" style="background:#1a141a; color:#e5dbe3;">
+          <span class="label">My Account</span><span class="meta-label" style="color:#968893;">Balance €0.00</span>
+        </div>
+        <div class="mock-nav" style="background:#1a141a; color:#e5dbe3;">
+          <div class="mock-nav-item active"><span class="icon">⌂</span>Home</div>
+          <div class="mock-nav-item"><span class="icon">♡</span>Saved</div>
+          <div class="mock-nav-item"><span class="icon">⚲</span>Search</div>
+          <div class="mock-nav-item"><span class="icon">⚙</span>More</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <table>
+        <tr><td><span class="chip-inline" style="background:#1a141a;"></span>header-bg</td><td>#1a141a</td></tr>
+        <tr><td><span class="chip-inline" style="background:#f2ecf0;"></span>header-fg</td><td>#f2ecf0</td></tr>
+        <tr><td><span class="chip-inline" style="background:#221a21;"></span>header-surface-1</td><td>#221a21</td></tr>
+        <tr><td><span class="chip-inline" style="background:#2a2028;"></span>header-surface-2</td><td>#2a2028</td></tr>
+        <tr><td><span class="chip-inline" style="background:#1a141a;"></span>nav-bg</td><td>#1a141a</td></tr>
+        <tr><td><span class="chip-inline" style="background:#e5dbe3;"></span>nav-fg</td><td>#e5dbe3</td></tr>
+        <tr><td><span class="chip-inline" style="background:#f2ecf0;"></span>ios-bar-fg</td><td>#f2ecf0</td></tr>
+        <tr><td><span class="chip-inline" style="background:#968893;"></span>menu-row-on-label</td><td>#968893</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SNABBARE -->
+  <div class="brand-card">
+    <div class="brand-label">Snabbare <span class="tint">blue-grey · hue 215</span></div>
+    <div class="mock" style="background: #060810;">
+      <div class="mock-screen" style="background:#0f1620; color:#e8edf5;">
+        <div class="mock-status"><span>9:41</span><span>●●●● 5G</span></div>
+        <div class="mock-header" style="background:#0f1620; color:#e8edf5;">
+          <span class="burger">☰</span><span class="title">Sport</span><span class="avatar"></span>
+        </div>
+        <div class="mock-surface-row">
+          <div class="mock-chip" style="background:#161e2a; color:#e8edf5;">Live</div>
+          <div class="mock-chip" style="background:#1e2736; color:#e8edf5;">Football</div>
+        </div>
+        <div style="height: 70px; background: #060810;"></div>
+        <div class="mock-menu-row" style="background:#0f1620; color:#d8dde7;">
+          <span class="label">My Bets</span><span class="meta-label" style="color:#7a8599;">3 open</span>
+        </div>
+        <div class="mock-nav" style="background:#0f1620; color:#d8dde7;">
+          <div class="mock-nav-item active"><span class="icon">⌂</span>Home</div>
+          <div class="mock-nav-item"><span class="icon">♡</span>Saved</div>
+          <div class="mock-nav-item"><span class="icon">⚲</span>Search</div>
+          <div class="mock-nav-item"><span class="icon">⚙</span>More</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <table>
+        <tr><td><span class="chip-inline" style="background:#0f1620;"></span>header-bg</td><td>#0f1620</td></tr>
+        <tr><td><span class="chip-inline" style="background:#e8edf5;"></span>header-fg</td><td>#e8edf5</td></tr>
+        <tr><td><span class="chip-inline" style="background:#161e2a;"></span>header-surface-1</td><td>#161e2a</td></tr>
+        <tr><td><span class="chip-inline" style="background:#1e2736;"></span>header-surface-2</td><td>#1e2736</td></tr>
+        <tr><td><span class="chip-inline" style="background:#0f1620;"></span>nav-bg</td><td>#0f1620</td></tr>
+        <tr><td><span class="chip-inline" style="background:#d8dde7;"></span>nav-fg</td><td>#d8dde7</td></tr>
+        <tr><td><span class="chip-inline" style="background:#e8edf5;"></span>ios-bar-fg</td><td>#e8edf5</td></tr>
+        <tr><td><span class="chip-inline" style="background:#7a8599;"></span>menu-row-on-label</td><td>#7a8599</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MOBILESPIN -->
+  <div class="brand-card">
+    <div class="brand-label">Mobilespin <span class="tint">red-grey · hue 355</span></div>
+    <div class="mock" style="background: #0a0607;">
+      <div class="mock-screen" style="background:#1a1214; color:#f5ebec;">
+        <div class="mock-status"><span>9:41</span><span>●●●● 5G</span></div>
+        <div class="mock-header" style="background:#1a1214; color:#f5ebec;">
+          <span class="burger">☰</span><span class="title">Casino</span><span class="avatar"></span>
+        </div>
+        <div class="mock-surface-row">
+          <div class="mock-chip" style="background:#221618; color:#f5ebec;">Live</div>
+          <div class="mock-chip" style="background:#2a1c1e; color:#f5ebec;">Slots</div>
+        </div>
+        <div style="height: 70px; background: #0a0607;"></div>
+        <div class="mock-menu-row" style="background:#1a1214; color:#e8d8da;">
+          <span class="label">My Account</span><span class="meta-label" style="color:#967a7e;">Balance €0.00</span>
+        </div>
+        <div class="mock-nav" style="background:#1a1214; color:#e8d8da;">
+          <div class="mock-nav-item active"><span class="icon">⌂</span>Home</div>
+          <div class="mock-nav-item"><span class="icon">♡</span>Saved</div>
+          <div class="mock-nav-item"><span class="icon">⚲</span>Search</div>
+          <div class="mock-nav-item"><span class="icon">⚙</span>More</div>
+        </div>
+      </div>
+    </div>
+    <div class="swatches">
+      <table>
+        <tr><td><span class="chip-inline" style="background:#1a1214;"></span>header-bg</td><td>#1a1214</td></tr>
+        <tr><td><span class="chip-inline" style="background:#f5ebec;"></span>header-fg</td><td>#f5ebec</td></tr>
+        <tr><td><span class="chip-inline" style="background:#221618;"></span>header-surface-1</td><td>#221618</td></tr>
+        <tr><td><span class="chip-inline" style="background:#2a1c1e;"></span>header-surface-2</td><td>#2a1c1e</td></tr>
+        <tr><td><span class="chip-inline" style="background:#1a1214;"></span>nav-bg</td><td>#1a1214</td></tr>
+        <tr><td><span class="chip-inline" style="background:#e8d8da;"></span>nav-fg</td><td>#e8d8da</td></tr>
+        <tr><td><span class="chip-inline" style="background:#f5ebec;"></span>ios-bar-fg</td><td>#f5ebec</td></tr>
+        <tr><td><span class="chip-inline" style="background:#967a7e;"></span>menu-row-on-label</td><td>#967a7e</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<h2>Tint comparison — is it too subtle, just right, or too bold?</h2>
+<p>All three brands at <code class="mono">header-bg</code> strength, enlarged so the tint is visible. If any of these read as pure grey on your monitor, the tint needs a bump.</p>
+
+<div class="compare-strip">
+  <div class="compare-cell" style="background:#1a141a;"><span class="tag" style="color:#968893;">Lyllo · #1a141a</span></div>
+  <div class="compare-cell" style="background:#0f1620;"><span class="tag" style="color:#7a8599;">Snabbare · #0f1620</span></div>
+  <div class="compare-cell" style="background:#1a1214;"><span class="tag" style="color:#967a7e;">Mobilespin · #1a1214</span></div>
+</div>
+
+<p class="legend">Reference pure neutral at same lightness: <span style="display:inline-block; width:14px; height:14px; background:#161616; border-radius:3px; vertical-align:middle; border:1px solid #333;"></span> <code class="mono">#161616</code> — compare the three above against this to gauge tint strength.</p>
+
+<h2>Design rationale</h2>
+<div class="note-box">
+  <ul>
+    <li><strong>Neutral-first philosophy.</strong> Dark chrome shouldn't compete with content. Tints are ~5–8% saturation — enough to differentiate brands side-by-side, subtle enough that a single brand feels "dark grey" not "dark pink".</li>
+    <li><strong>Elevation ladder preserved.</strong> <code class="mono">header-bg &lt; surface-1 &lt; surface-2</code> each step ~6–8 L* lighter, so stacked surfaces still read as depth.</li>
+    <li><strong>Foregrounds tinted to match.</strong> Slightly warm FG on warm BG (Mobilespin, Lyllo), cool FG on cool BG (Snabbare). Avoids the "dirty white" effect.</li>
+    <li><strong>Lyllo included speculatively.</strong> Brand primary is pink, so a pink-grey chrome reads as coherent. Drop to pure neutral <code class="mono">#14141a</code> if brand prefers.</li>
+    <li><strong>Brand primaries unchanged.</strong> Lyllo pink stays Lyllo pink in dark mode — CTA/accent colors flow through untouched. This is Option B behavior.</li>
+  </ul>
+</div>
+
+<h2>Open questions</h2>
+<div class="note-box">
+  <ul>
+    <li>Should brand primary <strong>desaturate</strong> in dark mode, or stay at full saturation? Current proposal keeps brand ramps identical across modes.</li>
+    <li>Any brand-specific dark surfaces missing (e.g., Mobilespin "dark red card bg")? Would go into the v4 brand extras block.</li>
+    <li>Status colors (success/warning/error) — dark-mode tuning needed, or inherit from system ramp?</li>
+    <li>Are there dark-mode reference designs in Figma or Abstract/Zeplin we can hex-diff against? Current values are derived, not sampled.</li>
+  </ul>
+</div>
+
+<h2>Next steps</h2>
+<div class="note-box">
+  <ul>
+    <li>Eyeball preview · if tints feel right → ship as-is; if too subtle/bold → bump or drop S by 2-5 points in HSL.</li>
+    <li>Add 8 <code class="mono">color/chrome/*-dark</code> sibling primitives to Collection 1, brand-moded across Lyllo/Snabbare/Mobilespin.</li>
+    <li>Rewire Theme Dark aliases for those 8 tokens from <code class="mono">color/neutral/*</code> → <code class="mono">color/chrome/*-dark</code>. Other 23 Theme tokens untouched.</li>
+    <li>QA: throwaway copy of each brand frame set to Theme=Dark. Hex-diff against refs if available.</li>
+    <li>Update <code class="mono">project_token_architecture.md</code> + v3.1 token reference doc.</li>
+  </ul>
+</div>
+
+</body>
+</html>
