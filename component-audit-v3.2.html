@@ -630,9 +630,189 @@ System/Error  ·  System/Success  ·  System/Informative  ·  System/Orange  · 
     </article>
   </section>
 
+  <!-- ============ LAYOUT DEEP AUDIT ============ -->
+  <section id="layout-deep" aria-labelledby="ld-h">
+    <h2 id="ld-h"><span class="num">15</span>Auto-layout &amp; padding deep audit</h2>
+    <p class="lead">Second-pass structural audit run via the Figma Plugin API on 2026-04-30, after the user asked us to look harder at paddings, auto-layout, and element grouping. We walked the 11 highest-impact component masters and tagged every frame for layout-mode, padding values, item-spacing, sizing modes, asymmetry, group-vs-frame, and nesting depth. The aggregate is below; the table beneath it has per-group counts.</p>
+
+    <h3>15.1 · Aggregate across 11 masters</h3>
+    <p>The audit walked <strong>~70,683 nodes</strong> across <strong>28,695 frame-like containers</strong> in: Buttons, Inputs, Toggle, Modal Dialogs, Navigation, Cards, Headers, List Items, Banners, Pills, Notifications.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Aggregate findings — 11 component masters</caption>
+        <thead><tr><th scope="col">Finding</th><th scope="col">Count</th><th scope="col">% of frames</th><th scope="col">Severity</th><th scope="col">WCAG link</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Frames with <code class="inline">layoutMode = NONE</code> (no auto-layout)</th><td><strong>9,363</strong></td><td>~33%</td><td><span class="sev crit">Critical</span></td><td class="note">1.3.2 Meaningful Sequence — z-order export</td></tr>
+          <tr><th scope="row">Frames with off-grid padding (not a 4-pt scale stop)</th><td><strong>4,373</strong></td><td>~15%</td><td><span class="sev high">High</span></td><td class="note">v3.2 invariant · 1.4.10 Reflow risk</td></tr>
+          <tr><th scope="row">Frames with off-grid <code class="inline">itemSpacing</code></th><td><strong>5,022</strong></td><td>~18%</td><td><span class="sev high">High</span></td><td class="note">v3.2 invariant</td></tr>
+          <tr><th scope="row">Frames with asymmetric padding (top≠bottom or left≠right)</th><td><strong>4,120</strong></td><td>~14%</td><td><span class="sev med">Medium</span></td><td class="note">2.4.7 Focus Visible · 2.4.11 Focus Not Obscured</td></tr>
+          <tr><th scope="row">Adjacent interactive children with <code class="inline">itemSpacing = 0</code></th><td><strong>989</strong></td><td>—</td><td><span class="sev crit">Critical</span></td><td class="note">2.5.8 Target Size (Minimum)</td></tr>
+          <tr><th scope="row">GROUP nodes (vs Frames with auto-layout)</th><td><strong>800</strong></td><td>—</td><td><span class="sev high">High</span></td><td class="note">1.3.2 Meaningful Sequence</td></tr>
+          <tr><th scope="row">GROUP nodes nested inside an auto-layout parent</th><td><strong>429</strong></td><td>—</td><td><span class="sev crit">Critical</span></td><td class="note">1.3.2 + responsive break</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>15.2 · Per-master counts</h3>
+    <div class="table-wrap">
+      <table>
+        <caption>Layout findings — 11 component masters</caption>
+        <thead>
+          <tr>
+            <th scope="col">Master</th>
+            <th scope="col">Walked</th>
+            <th scope="col">Frames</th>
+            <th scope="col">No auto-layout</th>
+            <th scope="col">Off-grid pad</th>
+            <th scope="col">Off-grid gap</th>
+            <th scope="col">Asym pad</th>
+            <th scope="col">Zero-gap interactive</th>
+            <th scope="col">Groups</th>
+            <th scope="col">Group-in-AL</th>
+            <th scope="col">Max depth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Cards</th><td>24,627</td><td>9,832</td><td><strong>3,680</strong></td><td><strong>1,581</strong></td><td><strong>1,907</strong></td><td><strong>1,595</strong></td><td>291</td><td>310</td><td><strong>310</strong></td><td><strong>16</strong></td></tr>
+          <tr><th scope="row">Navigation</th><td>4,718</td><td>2,036</td><td>401</td><td>186</td><td>160</td><td>297</td><td><strong>135</strong></td><td>9</td><td>—</td><td>12</td></tr>
+          <tr><th scope="row">Headers</th><td>2,200</td><td>930</td><td>220</td><td>94</td><td>58</td><td>112</td><td>51</td><td>3</td><td>3</td><td>11</td></tr>
+          <tr><th scope="row">Modal Dialogs</th><td>1,925</td><td>720</td><td>145</td><td>151</td><td>153</td><td>64</td><td>24</td><td>33</td><td>33</td><td><strong>14</strong></td></tr>
+          <tr><th scope="row">List Items</th><td>1,809</td><td>771</td><td>203</td><td>110</td><td>257</td><td>24</td><td>6</td><td>20</td><td>20</td><td>12</td></tr>
+          <tr><th scope="row">Buttons</th><td>1,234</td><td>537</td><td>143</td><td>24</td><td>29</td><td>80</td><td>46</td><td>9</td><td>6</td><td>9</td></tr>
+          <tr><th scope="row">Banners</th><td>1,191</td><td>513</td><td>113</td><td>176</td><td>30</td><td>22</td><td>11</td><td>25</td><td>25</td><td>15</td></tr>
+          <tr><th scope="row">Notifications</th><td>722</td><td>290</td><td>56</td><td>7</td><td>25</td><td>36</td><td>16</td><td>7</td><td>7</td><td>10</td></tr>
+          <tr><th scope="row">Pills</th><td>579</td><td>249</td><td>42</td><td>20</td><td>22</td><td>41</td><td>16</td><td>5</td><td>5</td><td>9</td></tr>
+          <tr><th scope="row">Inputs</th><td>496</td><td>215</td><td>41</td><td>33</td><td>78</td><td>18</td><td>2</td><td>3</td><td>3</td><td>12</td></tr>
+          <tr><th scope="row">Toggle</th><td>54</td><td>17</td><td>5</td><td>3</td><td>4</td><td>1</td><td>0</td><td>6</td><td>6</td><td>7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>15.3 · Off-grid padding values that recur most</h3>
+    <p>The top off-grid padding values across the 6 deeply-counted masters (Cards · Headers · List Items · Banners · Pills · Notifications). Bulk-fixable by editing the underlying token alias once each.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Recurring off-grid padding values</caption>
+        <thead><tr><th scope="col">Value (px)</th><th scope="col">Occurrences</th><th scope="col">Closest 4-pt stop</th><th scope="col">Where</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">6</th><td><strong>2,411</strong></td><td><code class="inline">scale/4</code> or <code class="inline">scale/8</code></td><td class="note">Cards (1,952), Headers (147), List Items (42), Banners (222), Pills (40), Notifications (8)</td></tr>
+          <tr><th scope="row">2</th><td><strong>1,153</strong></td><td><code class="inline">scale/4</code></td><td class="note">Cards (783), Banners (308), Headers (58), Pills (2), Notifications (3)</td></tr>
+          <tr><th scope="row">15</th><td>870</td><td><code class="inline">scale/16</code></td><td class="note">Cards "Hover Overlay" (15/15/15/15)</td></tr>
+          <tr><th scope="row">5</th><td>784</td><td><code class="inline">scale/4</code></td><td class="note">Cards "Info Tag" (2/5/2/5), List Items "Number Badge" (0/5/0/5)</td></tr>
+          <tr><th scope="row">3</th><td>164</td><td><code class="inline">scale/4</code></td><td class="note">Cards (120), Banners (44) — Inputs "Payment Method" (3/0/3/0)</td></tr>
+          <tr><th scope="row">60</th><td>121</td><td><code class="inline">scale/56</code> or <code class="inline">scale/64</code></td><td class="note">Cards (111), Banners (10) — Banner content padding (12/60/12/60)</td></tr>
+          <tr><th scope="row">18</th><td>60+</td><td><code class="inline">scale/16</code> or <code class="inline">scale/20</code></td><td class="note">List Items "Bonus Widget", Pills "Filter Item / Filter Pill" (18/18/18/18) — also recurs in Inputs Credit Card / Amount Field</td></tr>
+          <tr><th scope="row">36</th><td>57</td><td><code class="inline">scale/32</code> or <code class="inline">scale/40</code></td><td class="note">Cards (53), Headers (4)</td></tr>
+          <tr><th scope="row">10</th><td>13+</td><td><code class="inline">scale/8</code> or <code class="inline">scale/12</code></td><td class="note">Headers Filter chips (6/8/6/8), Inputs "Container" (10/0/10/0)</td></tr>
+          <tr><th scope="row">14</th><td>40</td><td><code class="inline">scale/12</code> or <code class="inline">scale/16</code></td><td class="note">List Items, iOS Status Bar (12/14/12/21)</td></tr>
+          <tr><th scope="row">100</th><td>~4</td><td><code class="inline">scale/96</code></td><td class="note">Modal Dialogs "Campaign Modal" (100/100/100/100)</td></tr>
+          <tr><th scope="row">26</th><td>~6</td><td><code class="inline">scale/24</code> or <code class="inline">scale/28</code></td><td class="note">Modal "Content" (24/26/24/26) — mixes 24 and 26</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>15.4 · Off-grid <code class="inline">itemSpacing</code> values that recur most</h3>
+    <div class="table-wrap">
+      <table>
+        <caption>Recurring off-grid item-spacing values</caption>
+        <thead><tr><th scope="col">Value (px)</th><th scope="col">Occurrences</th><th scope="col">Closest 4-pt stop</th><th scope="col">Notes</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">10</th><td><strong>608+</strong></td><td><code class="inline">scale/8</code> or <code class="inline">scale/12</code></td><td class="note">Most common gap across every master</td></tr>
+          <tr><th scope="row">2</th><td>826</td><td><code class="inline">scale/4</code></td><td class="note">Cards-heavy</td></tr>
+          <tr><th scope="row">6</th><td>675</td><td><code class="inline">scale/4</code> or <code class="inline">scale/8</code></td><td class="note">All masters</td></tr>
+          <tr><th scope="row">50</th><td>~25</td><td><code class="inline">scale/48</code></td><td class="note">Section gaps in Buttons, Inputs, Toggle, Pills, Banners</td></tr>
+          <tr><th scope="row">30</th><td>~10</td><td><code class="inline">scale/28</code> or <code class="inline">scale/32</code></td><td class="note">Pills, Inputs</td></tr>
+          <tr><th scope="row">962</th><td>6</td><td><span class="warn">N/A — hack</span></td><td class="note">Headers — abuse of <code class="inline">itemSpacing</code> as "push to far edge" instead of <code class="inline">primaryAxisAlignItems = SPACE_BETWEEN</code></td></tr>
+          <tr><th scope="row">142</th><td>22</td><td><span class="warn">N/A — hack</span></td><td class="note">List Items — same anti-pattern</td></tr>
+          <tr><th scope="row">37</th><td>~5</td><td><code class="inline">scale/32</code> or <code class="inline">scale/40</code></td><td class="note">Toggle, Pills, Banners, Notifications, Headers</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>15.5 · Specific concerning patterns</h3>
+
+    <div class="note-card crit">
+      <h4>Toggle component variants have no auto-layout</h4>
+      <p style="margin: 0;">All three Toggle states (<code class="inline">Active=False, Disabled=False</code>, <code class="inline">Active=True, Disabled=False</code>, <code class="inline">Active=False, Disabled=True</code>) are <code class="inline">layoutMode = NONE</code>. The thumb is positioned absolutely inside the track. This is why hit-target measurement is fragile and why the Toggle screenshot shows inconsistent visual alignment between states. Migrate each state to <code class="inline">HORIZONTAL</code> auto-layout with <code class="inline">primaryAxisAlignItems = MIN</code> on the off state and <code class="inline">MAX</code> on the on state.</p>
+    </div>
+
+    <div class="note-card crit">
+      <h4>Cards is structurally compromised</h4>
+      <p style="margin: 0;">9,832 frames, <strong>3,680 without auto-layout (37%)</strong>, max nesting depth <strong>16</strong>, 310 GROUPs all sitting inside auto-layout parents (the worst-of-both pattern), 1,595 frames with asymmetric padding, 1,907 frames with off-grid <code class="inline">itemSpacing</code>. The most common off-grid pad is <code class="inline">6</code> (1,952 occurrences). Rebuild the game-tile family from scratch on auto-layout, with explicit <code class="inline">Card / Game Tile</code>, <code class="inline">Card / Promo</code>, <code class="inline">Card / Payment</code> bases — do not try to in-place fix.</p>
+    </div>
+
+    <div class="note-card crit">
+      <h4>Modal Dialogs depth-14 nesting</h4>
+      <p style="margin: 0;">"Campaign Modal" uses <code class="inline">[100, 100, 100, 100]</code> padding (off-grid). "Content" mixes <code class="inline">24</code> with <code class="inline">26</code>. Six "<em>Checckbox old</em>" GROUPs (sic — typo) at depth 11 indicate an in-flight migration that was abandoned. Modal Dialogs is the second-worst structural offender after Cards.</p>
+    </div>
+
+    <div class="note-card warn">
+      <h4>Recurring 6/12/6/12 padding on "_ System Component / Label"</h4>
+      <p style="margin: 0;">A shared base component appears across Buttons, Inputs, Toggle, Headers, List Items, Notifications with padding <code class="inline">[6, 12, 6, 12]</code>. The vertical 6 is off-grid; the horizontal 12 is on-grid. Single fix: edit the base component once, change vertical padding to <code class="inline">scale/8</code>; every consumer inherits.</p>
+    </div>
+
+    <div class="note-card warn">
+      <h4>Recurring 18/18/18/18 padding</h4>
+      <p style="margin: 0;">Used on Inputs "Credit Card" / "Amount Field", Pills "Filter Pill" / "Filter Item", List Items "Bonus Widget", Buttons "Social Button". 18 px is off-grid; round up to <code class="inline">scale/20</code> or down to <code class="inline">scale/16</code> per family. Treat as an auditable token: introduce <code class="inline">Semantic/spacing/card-inset</code> aliasing the chosen stop.</p>
+    </div>
+
+    <div class="note-card warn">
+      <h4>Anti-pattern: <code class="inline">itemSpacing = 962</code> and <code class="inline">142</code></h4>
+      <p style="margin: 0;">Headers and List Items use enormous <code class="inline">itemSpacing</code> values to push children to opposite ends of a row. The correct pattern is <code class="inline">primaryAxisAlignItems = SPACE_BETWEEN</code> with <code class="inline">layoutSizingHorizontal = FILL</code>. Replace 28 instances total. They will break responsive layouts at any width below the hard-coded gap.</p>
+    </div>
+
+    <div class="note-card warn">
+      <h4>"Payment Left" / "Payment Right" asymmetric padding</h4>
+      <p style="margin: 0;">A widely-used pattern: <code class="inline">[0, 0, 0, 12]</code> on the left half and <code class="inline">[0, 12, 0, 0]</code> on the right half — used to put a 12 px gap between two halves of a payment-method row. Replace with a single parent at <code class="inline">itemSpacing = 12</code> and zero padding on the children. Reduces wrapper count and removes the asymmetry signal.</p>
+    </div>
+
+    <div class="note-card warn">
+      <h4>"Error/Helper Message" left-only padding</h4>
+      <p style="margin: 0;">Inputs uses <code class="inline">[0, 0, 0, 12]</code> on every error/helper line — a 12 px indent so the message aligns under the input value, not the label. Functionally correct but encoded as asymmetric padding. Move to a stack-level auto-layout with <code class="inline">paddingLeft = 12</code> on the message frame, OR prefix the input + helper as a single column with consistent left padding.</p>
+    </div>
+
+    <h3>15.6 · GROUP node patterns to dismantle</h3>
+    <ul class="arrow">
+      <li><strong>Cards</strong> — 310 GROUPs, every single one inside an auto-layout parent. The dominant culprit.</li>
+      <li><strong>Modal Dialogs</strong> — 33 GROUPs, including six "Checckbox old" (typo) at depth 11.</li>
+      <li><strong>Banners</strong> — 25 GROUPs, all inside auto-layout.</li>
+      <li><strong>List Items</strong> — 20 GROUPs, all inside auto-layout.</li>
+      <li><strong>Toggle</strong> — 6 GROUPs in 17 total frames (35% group ratio); three are named "Old".</li>
+      <li><strong>Notifications</strong> — 7 GROUPs, all inside auto-layout.</li>
+      <li><strong>Buttons</strong> — 9 GROUPs; recurring "Gray Logo" pattern at depth 8 across Social Buttons.</li>
+    </ul>
+    <p>For every GROUP inside auto-layout: convert to a Frame with the same auto-layout direction. Where the GROUP wraps a single instance, unwrap it. The "Old" / "Checckbox old" GROUPs are leftover migration artefacts — delete after the new variant is signed off.</p>
+
+    <h3>15.7 · Adjacent interactive children with zero gap (WCAG 2.5.8)</h3>
+    <p>989 instances across the 11 masters where two interactive-looking children (<code class="inline">INSTANCE</code> nodes or items named <code class="inline">button</code> · <code class="inline">cta</code> · <code class="inline">chip</code> · <code class="inline">tab</code> · <code class="inline">item</code> · <code class="inline">link</code> · <code class="inline">toggle</code>) sit at <code class="inline">itemSpacing = 0</code>. WCAG 2.2 SC 2.5.8 (Target Size — Minimum, AA) allows targets smaller than 24×24 only if there is at least 24 px of spacing between centers — zero gap with small tap targets fails by both prongs.</p>
+    <p>Worst offenders:</p>
+    <ul class="arrow">
+      <li><strong>Navigation: 135</strong> — chip rows, sub-tabs, segmented buttons</li>
+      <li><strong>Cards: 291</strong> — game-tile + adjacent CTA buttons</li>
+      <li><strong>Headers: 51</strong> — chip filters, balance + Login pairings</li>
+      <li><strong>Buttons: 46</strong> — paired CTAs in Payment Method clusters</li>
+      <li><strong>Notifications: 16</strong> — Section message inline CTA pairs</li>
+      <li><strong>Pills: 16</strong> — filter / chip rows</li>
+    </ul>
+
+    <h3>15.8 · Refactor priorities for the layout pass</h3>
+    <ol style="padding-left: 22px;">
+      <li><strong>Toggle</strong> — convert 3 component variants to auto-layout. Tiny scope, immediate quality lift, blocks the larger Toggle target-size fix.</li>
+      <li><strong>"_ System Component / Label" base</strong> — change vertical padding from 6 → 8. Single edit, ripples to ~6 masters.</li>
+      <li><strong>"Payment Left" / "Payment Right" pattern</strong> — collapse asymmetric children into <code class="inline">itemSpacing</code> on the parent. Bulk-applicable across Buttons, Inputs, Modal Dialogs.</li>
+      <li><strong>"itemSpacing = 962 / 142" hacks</strong> — replace with <code class="inline">SPACE_BETWEEN</code>. 28 instances.</li>
+      <li><strong>GROUP-inside-auto-layout</strong> — 429 conversions to Frame. Cards is 310 of those; treat Cards as its own project.</li>
+      <li><strong>Recurring 18/18/18/18</strong> and <strong>15/15/15/15</strong> — introduce a Semantic alias and re-point.</li>
+      <li><strong>Modal "Campaign Modal"</strong> — replace <code class="inline">[100, 100, 100, 100]</code> with <code class="inline">scale/96</code> or rebuild on a viewport-relative wrapper. Single component.</li>
+      <li><strong>Cards rebuild</strong> — last; do this from scratch on auto-layout, splitting into named families. Do not try to fix in place.</li>
+    </ol>
+
+    <p class="dim" style="font-size: 0.9rem; margin-top: 18px;">Method: Plugin API walk via <code class="inline">use_figma</code>, <code class="inline">figma.skipInvisibleInstanceChildren = true</code>, BFS over each master root, recording <code class="inline">layoutMode</code>, <code class="inline">paddingTop/Right/Bottom/Left</code>, <code class="inline">itemSpacing</code>, <code class="inline">layoutSizingHorizontal/Vertical</code>, type, depth, and parent-LM context. Off-grid = not in the canonical 20-stop scale set. Read-only — no mutations.</p>
+  </section>
+
   <!-- ============ VERIFICATION ============ -->
   <section id="verification" aria-labelledby="verify-h">
-    <h2 id="verify-h"><span class="num">15</span>Verification plan</h2>
+    <h2 id="verify-h"><span class="num">16</span>Verification plan</h2>
     <p>After each phase, verify with read-only Plugin API (<code class="inline">use_figma</code> in dry-run mode):</p>
     <ol style="padding-left: 22px;">
       <li><strong>Token sweep audit</strong> — <code class="inline">getLocalVariablesAsync()</code> filtered to COLOR; assert every var outside <code class="inline">Global/*</code> and <code class="inline">Modes/color/{primary,secondary,neutral,tertiary}/*</code> resolves to <code class="inline">VARIABLE_ALIAS</code> in every mode. Zero raw hex tolerated.</li>
