@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Token Reference v3.2 — Final catalogue · 6 collections · 9 brand modes</title>
+<meta name="description" content="Token Reference v3.2 — final catalogue for ComeOn's white-label platform. Global, Modes, Theme, Semantic, Component Packs, Regulatory. Strict 4-point scale, raw-hex invariant, 9 brand modes, Light + Dark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.32); --border-strong: rgba(108, 92, 231, 0.55);
+    --purple: #6c5ce7; --purple-light: #b6afff; --purple-dark: #4a3db8;
+    --teal: #1de4c0; --teal-soft: rgba(29, 228, 192, 0.14);
+    --text: #eceaf5; --text-muted: #b1adc8;
+    --warning: #fdcb6e; --error: #ff8e74; --success: #00d4a8; --info: #74b9ff;
+    --white: #ffffff;
+    --focus: #ffd166;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; color-scheme: dark; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--text);
+    font-feature-settings: 'cv11', 'ss01';
+    line-height: 1.55;
+  }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+
+  .skip-link { position: absolute; left: -9999px; top: 0; padding: 12px 16px; background: var(--bg-card); color: var(--white); border: 2px solid var(--focus); border-radius: 8px; font-weight: 600; z-index: 1000; }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  /* layout */
+  .wrap { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+  aside {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: var(--bg-alt); border-right: 1px solid var(--border);
+    padding: 24px 20px; font-size: 0.9rem;
+  }
+  aside::-webkit-scrollbar { width: 6px; }
+  aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  main { padding: 48px 56px 120px; max-width: 1400px; }
+
+  /* toc */
+  .toc-brand { font-family: 'Sora', sans-serif; font-size: 1.08rem; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+  .toc-sub { font-size: 0.74rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px; font-weight: 600; }
+  .toc-link-block { display: block; padding: 10px 12px; margin: 4px -12px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.86rem; transition: background 0.15s, color 0.15s; min-height: 36px; }
+  .toc-link-block:hover { background: var(--bg-card); color: var(--text); }
+  .toc-link-block[aria-current="location"] { background: var(--bg-card); color: var(--white); border-left: 3px solid var(--teal); padding-left: 9px; font-weight: 600; }
+  .toc-group { margin-top: 18px; }
+  .toc-group-title { font-size: 0.72rem; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; padding: 0 12px; margin-bottom: 4px; }
+  .toc-external {
+    display: block; padding: 12px 14px; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--purple-light); text-decoration: none; font-size: 0.86rem;
+    margin-top: 18px; transition: border-color 0.15s, color 0.15s; min-height: 44px;
+  }
+  .toc-external:hover { border-color: var(--teal); color: var(--teal); }
+  .toc-external strong { display: block; color: var(--white); font-family: 'Sora', sans-serif; margin-bottom: 2px; }
+
+  /* typography */
+  h1 { font-family: 'Sora', sans-serif; font-size: 2.6rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 12px; }
+  h2 { font-family: 'Sora', sans-serif; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; margin: 56px 0 12px; padding-top: 24px; border-top: 1px solid var(--border); }
+  h2:first-of-type { border-top: none; padding-top: 0; margin-top: 40px; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 1.18rem; font-weight: 700; line-height: 1.3; margin: 32px 0 10px; color: var(--white); }
+  h4 { font-size: 0.84rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin: 20px 0 8px; }
+  p { color: var(--text); margin-bottom: 12px; }
+  .lead { font-size: 1.1rem; color: var(--text-muted); max-width: 860px; margin-bottom: 24px; }
+  .dim { color: var(--text-muted); }
+  .teal { color: var(--teal); }
+  .warn { color: var(--warning); }
+  .err { color: var(--error); }
+  strong { color: var(--white); font-weight: 600; }
+  a { color: var(--purple-light); }
+  a:hover { color: var(--teal); }
+
+  /* header + intro */
+  .kicker { font-size: 0.82rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 12px; }
+
+  .pill {
+    display: inline-block; padding: 4px 12px; background: var(--teal-soft); color: var(--teal);
+    border: 1px solid rgba(29, 228, 192, 0.4); border-radius: 999px;
+    font-size: 0.76rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  }
+  .pill.brand { background: rgba(108, 92, 231, 0.18); color: var(--purple-light); border-color: rgba(108, 92, 231, 0.45); }
+  .pill.warn { background: rgba(253, 203, 110, 0.14); color: var(--warning); border-color: rgba(253, 203, 110, 0.45); }
+  .pill.new { background: rgba(29, 228, 192, 0.18); color: var(--teal); }
+
+  .v-badge { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; }
+  .v-badge.stable { color: var(--text-muted); border: 1px solid var(--border); background: var(--bg-code); }
+  .v-badge.evo    { color: var(--teal); border: 1px solid rgba(29, 228, 192, 0.45); background: rgba(29, 228, 192, 0.1); }
+  .v-badge.new    { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.5); background: rgba(253, 203, 110, 0.12); }
+  .v-badge.final  { color: var(--white); border: 1px solid var(--purple-light); background: linear-gradient(135deg, rgba(29,228,192,0.18) 0%, rgba(108,92,231,0.22) 100%); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin: 24px 0 40px; }
+  @media (max-width: 1100px) { .stat-row { grid-template-columns: repeat(3, 1fr); } }
+  .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat dt { font-family: 'Sora', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--purple-light); line-height: 1; }
+  .stat dd { font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; font-weight: 600; }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin: 8px 0 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  caption { caption-side: top; text-align: left; padding: 4px 0 8px; font-weight: 600; color: var(--text-muted); font-size: 0.86rem; }
+  th { text-align: left; padding: 10px 14px; font-size: 0.74rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; background: var(--bg-alt); border-bottom: 1px solid var(--border); }
+  td { padding: 9px 14px; border-bottom: 1px solid rgba(108, 92, 231, 0.16); vertical-align: top; }
+  tr:hover td { background: rgba(108, 92, 231, 0.06); }
+  th[scope="row"] { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; font-weight: 500; text-transform: none; letter-spacing: 0; background: transparent; border-bottom: 1px solid rgba(108, 92, 231, 0.16); }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; color: var(--text); }
+  td.mono-dim { font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; color: var(--text-muted); }
+  td.note { color: var(--text-muted); font-size: 0.84rem; }
+  td.t-color { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--teal); white-space: nowrap; }
+  td.t-num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--info); }
+  td.t-str { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--warning); }
+  td.t-bool { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--purple-light); }
+  td.t-effect { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--success); }
+  .color-swatch { display: inline-block; width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 8px; border: 1px solid var(--border); }
+
+  /* note cards */
+  .note-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 0.94rem; }
+  .note-card.teal { border-color: var(--teal); }
+  .note-card.warn { border-color: rgba(253, 203, 110, 0.5); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.06) 100%); }
+  .note-card h4 { margin-top: 0; }
+
+  code.inline {
+    background: var(--bg-code); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 3px; font-size: 0.9em; color: var(--purple-light);
+  }
+
+  /* section intro */
+  .section-intro { background: var(--bg-card); border-left: 4px solid var(--teal); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.94rem; color: var(--text-muted); }
+
+  /* anchor spacing */
+  section { scroll-margin-top: 64px; }
+
+  /* page footer */
+  .page-footer { margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.86rem; }
+  .page-footer a { color: var(--purple-light); text-decoration: none; }
+  .page-footer a:hover { color: var(--teal); }
+
+  .jump-top {
+    position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; min-width: 44px; min-height: 44px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px;
+    color: var(--text-muted); text-decoration: none; font-size: 0.84rem; font-weight: 600;
+    transition: border-color 0.15s, color 0.15s; z-index: 50;
+  }
+  .jump-top:hover { border-color: var(--teal); color: var(--teal); }
+
+  @media (max-width: 960px) {
+    .wrap { grid-template-columns: 1fr; }
+    aside { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 32px 24px 80px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="wrap">
+
+<!-- ============ SIDEBAR TOC ============ -->
+<aside>
+  <div class="toc-brand">Token Reference <span class="v-badge final">v3.2</span></div>
+  <div class="toc-sub">Final catalogue · 9 brand modes</div>
+
+  <nav aria-label="Token reference sections">
+    <a href="#top" class="toc-link-block">Overview</a>
+    <a href="#legend" class="toc-link-block">How to read v3.2</a>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c1">
+      <div class="toc-group-title" id="tg-c1">1 · Global</div>
+      <a href="#g-color-base" class="toc-link-block">Color · Base</a>
+      <a href="#g-color-alpha" class="toc-link-block">Color · Alpha</a>
+      <a href="#g-color-system" class="toc-link-block">Color · System</a>
+      <a href="#g-scale" class="toc-link-block">Scale · 4-pt</a>
+      <a href="#g-typography" class="toc-link-block">Typography</a>
+      <a href="#g-stroke" class="toc-link-block">Stroke</a>
+      <a href="#g-breakpoint" class="toc-link-block">Breakpoint</a>
+      <a href="#g-elevation" class="toc-link-block">Elevation</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c2">
+      <div class="toc-group-title" id="tg-c2">2 · Modes <span class="pill new" style="vertical-align: middle;">9 modes</span></div>
+      <a href="#m-dna" class="toc-link-block">Brand DNA · primary/secondary/neutral/tertiary</a>
+      <a href="#m-brand" class="toc-link-block">Color · Brand alias</a>
+      <a href="#m-surface" class="toc-link-block">Color · Surface</a>
+      <a href="#m-text" class="toc-link-block">Color · Text</a>
+      <a href="#m-icon" class="toc-link-block">Color · Icon</a>
+      <a href="#m-border" class="toc-link-block">Color · Border</a>
+      <a href="#m-header" class="toc-link-block">Color · Header</a>
+      <a href="#m-banner-landing" class="toc-link-block">Banner / Landing</a>
+      <a href="#m-menu-nav" class="toc-link-block">Menu-row / Nav</a>
+      <a href="#m-radius" class="toc-link-block">Radius</a>
+      <a href="#m-typography" class="toc-link-block">Typography family + weight</a>
+      <a href="#m-meta-flag" class="toc-link-block">Meta + Flag</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c3">
+      <div class="toc-group-title" id="tg-c3">3 · Theme <span class="pill" style="vertical-align: middle;">Light + Dark</span></div>
+      <a href="#t-surface" class="toc-link-block">Surface</a>
+      <a href="#t-text" class="toc-link-block">Text</a>
+      <a href="#t-border" class="toc-link-block">Border</a>
+      <a href="#t-icon" class="toc-link-block">Icon</a>
+      <a href="#t-nav" class="toc-link-block">Nav</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c4">
+      <div class="toc-group-title" id="tg-c4">4 · Semantic</div>
+      <a href="#s-spacing" class="toc-link-block">Spacing <span class="v-badge new" style="margin: 0; padding: 1px 6px; font-size: 0.6rem;">v3.2</span></a>
+      <a href="#s-icon-size" class="toc-link-block">Icon size <span class="v-badge new" style="margin: 0; padding: 1px 6px; font-size: 0.6rem;">v3.2</span></a>
+      <a href="#s-color" class="toc-link-block">Color · all roles</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c5">
+      <div class="toc-group-title" id="tg-c5">5 · Component Packs</div>
+      <a href="#c-cta" class="toc-link-block">cta.*</a>
+      <a href="#c-menu-row" class="toc-link-block">menu-row.*</a>
+      <a href="#c-nav" class="toc-link-block">nav.*</a>
+      <a href="#c-header" class="toc-link-block">header.*</a>
+      <a href="#c-other" class="toc-link-block">other packs</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-c6">
+      <div class="toc-group-title" id="tg-c6">6 · Regulatory <span class="pill warn" style="vertical-align: middle;">7 modes</span></div>
+      <a href="#r-tokens" class="toc-link-block">All tokens</a>
+    </div>
+
+    <div class="toc-group" role="group" aria-labelledby="tg-app">
+      <div class="toc-group-title" id="tg-app">Appendix</div>
+      <a href="#migration" class="toc-link-block">v3.1 → v3.2 migration map</a>
+      <a href="#audit-rules" class="toc-link-block">Audit rules</a>
+    </div>
+  </nav>
+
+  <a href="design-token-architecture-v3.2.html" class="toc-external">
+    <strong>→ Architecture v3.2</strong>
+    <span>Why this architecture</span>
+  </a>
+  <a href="component-audit-v3.2.html" class="toc-external" style="margin-top: 10px;">
+    <strong>→ Component Audit</strong>
+    <span>Components vs v3.2 gap</span>
+  </a>
+  <a href="brand-audit.html" class="toc-external" style="margin-top: 10px;">
+    <strong>→ Brand Audit</strong>
+    <span>9-brand evidence base</span>
+  </a>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<main id="main">
+
+<header>
+  <div class="kicker">20-Brand White Label · Casino &amp; Sportsbook · v3.2 · 2026-04-30 · Final</div>
+  <h1 id="top">Design Token Reference v3.2</h1>
+  <p class="lead">The final catalogue. Six collections, two locked invariants, nine brand modes, Light + Dark theme. Live in Figma file <code class="inline">fysBbW10LRJUNgisaBKXJo</code> — landed 2026-04-29. See the <a href="design-token-architecture-v3.2.html">Architecture v3.2 deck</a> for rationale and the <a href="component-audit-v3.2.html">Component Audit</a> for the components-page gap analysis. Previous version: <a href="design-token-reference-v3.1.html">v3.1 reference</a>.</p>
+
+  <div style="display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 24px;">
+    <span class="pill">9 brand modes</span>
+    <span class="pill">Light + Dark</span>
+    <span class="pill brand">Figma Enterprise · native</span>
+    <span class="pill">strict 4-pt scale</span>
+    <span class="pill">hex invariant</span>
+    <span class="pill warn">marketing edits Modes DNA only</span>
+  </div>
+
+  <dl class="stat-row" aria-label="Token counts at a glance">
+    <div class="stat"><dt>116</dt><dd>Global vars</dd></div>
+    <div class="stat"><dt>140</dt><dd>Modes vars × 9</dd></div>
+    <div class="stat"><dt>31</dt><dd>Theme vars × 2</dd></div>
+    <div class="stat"><dt>53</dt><dd>Semantic vars</dd></div>
+    <div class="stat"><dt>38</dt><dd>Component Packs</dd></div>
+    <div class="stat"><dt>4</dt><dd>Regulatory × 7</dd></div>
+  </dl>
+</header>
+
+<section id="legend" aria-labelledby="legend-h">
+<h2 id="legend-h" style="margin-top: 16px;">How to read v3.2</h2>
+<div class="note-card teal">
+  <h4>Conventions</h4>
+  <p style="margin: 0 0 10px;"><strong>Token path</strong> is the Figma Variable name (slashes become groups). <strong>Type</strong> is the Figma Variable type (<code class="inline">Color</code>, <code class="inline">Number</code>, <code class="inline">String</code>, <code class="inline">Boolean</code>, <code class="inline">Effect</code>). <strong>Value / Alias</strong> shows the raw value or the alias target. Dimension Numbers are px in Figma; the export script converts to rem (<code class="inline">rem = px / 16</code>).</p>
+  <p style="margin: 0;"><strong>Status badges:</strong>
+    <span class="v-badge stable">stable</span> unchanged from v3.1 ·
+    <span class="v-badge evo">evolved</span> renamed or restructured ·
+    <span class="v-badge new">v3.2</span> introduced or promoted ·
+    <span class="v-badge final">final</span> the locked v3.2 form.
+  </p>
+</div>
+
+<div class="note-card warn">
+  <h4>Two locked invariants</h4>
+  <ul style="margin: 6px 0 0 18px; font-size: 0.94rem; line-height: 1.7;">
+    <li><strong>Hex invariant</strong> — raw hex lives in exactly two homes: <strong>Global</strong> (<code class="inline">color/black</code>, <code class="inline">/white</code>, <code class="inline">/black-alpha/*</code>, <code class="inline">/white-alpha/*</code>, <code class="inline">/system/*</code>) and <strong>Modes brand DNA</strong> (<code class="inline">color/{primary, secondary, neutral, tertiary}/{50..900}</code>). Every other colour token in every collection is an alias.</li>
+    <li><strong>Strict 4-point scale</strong> — <code class="inline">Global/scale/*</code> contains only <code class="inline">[0, 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 72, 80, 96, 112, 128, 144, 160]</code>. Twenty stops. Off-grid legacy values round to the closest stop (radii) or round up (typography).</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 1 — GLOBAL
+     ============================================================ -->
+<h2 id="c1">Collection 1 · Global <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">single Default mode</span></h2>
+<div class="section-intro">Brand-invariant raw values plus the canonical 4-point scale. 116 variables + 5 elevation Effect Styles. One of the two homes for raw hex.</div>
+
+<section id="g-color-base" aria-labelledby="g-color-base-h">
+<h3 id="g-color-base-h">1.1 · Color · Base <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— raw hex</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global color base tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Value</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/black</th><td class="t-color">Color</td><td class="mono-dim"><span class="color-swatch" style="background:#000"></span>#000000</td><td class="note">Pure black · invariant</td></tr>
+    <tr><th scope="row" class="mono">color/white</th><td class="t-color">Color</td><td class="mono-dim"><span class="color-swatch" style="background:#fff"></span>#FFFFFF</td><td class="note">Pure white · invariant</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-color-alpha" aria-labelledby="g-color-alpha-h">
+<h3 id="g-color-alpha-h">1.2 · Color · Alpha <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— overlay alphas</span></h3>
+<p class="dim" style="font-size: 0.92rem;">Ten stops each. Use these wherever a translucent black or white overlay is needed — replaces the legacy <code class="inline">Generic/Stroke 10</code>, <code class="inline">Stroke 30</code>, <code class="inline">Base/Base Black 10</code>, etc.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global alpha tokens</caption>
+  <thead><tr><th scope="col">Token family</th><th scope="col">Type</th><th scope="col">Stops</th><th scope="col">Use</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/black-alpha/{0,5,10,20,30,40,50,60,70,80,90}</th><td class="t-color">Color × 10</td><td class="mono-dim">#00000000 → #000000E6</td><td class="note">Borders, scrims, dim overlays on light surfaces</td></tr>
+    <tr><th scope="row" class="mono">color/white-alpha/{0,5,10,20,30,40,50,60,70,80,90}</th><td class="t-color">Color × 10</td><td class="mono-dim">#FFFFFF00 → #FFFFFFE6</td><td class="note">Highlights, soft strokes on dark surfaces</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-color-system" aria-labelledby="g-color-system-h">
+<h3 id="g-color-system-h">1.3 · Color · System <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— brand-invariant feedback</span></h3>
+<p class="dim" style="font-size: 0.92rem;">Status colours that should not vary across brands. Ten stops each per family. <strong>Use these on every brand</strong> — system semantics ride above brand identity.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global system color families</caption>
+  <thead><tr><th scope="col">Family</th><th scope="col">Type</th><th scope="col">Anchor (500)</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/system/success/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim"><span class="color-swatch" style="background:#00b894"></span>#00B894</td><td class="note">Confirmations, success notifications</td></tr>
+    <tr><th scope="row" class="mono">color/system/warning/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim"><span class="color-swatch" style="background:#fdcb6e"></span>#FDCB6E</td><td class="note">Caution; pair with dark text on light tints</td></tr>
+    <tr><th scope="row" class="mono">color/system/error/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim"><span class="color-swatch" style="background:#e17055"></span>#E17055</td><td class="note">Validation errors, destructive actions</td></tr>
+    <tr><th scope="row" class="mono">color/system/info/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim"><span class="color-swatch" style="background:#74b9ff"></span>#74B9FF</td><td class="note">Informational messages, neutral feedback</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-scale" aria-labelledby="g-scale-h">
+<h3 id="g-scale-h">1.4 · Scale · 4-point <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— strict, 20 stops</span></h3>
+<p class="dim" style="font-size: 0.92rem;">The single source of truth for every dimension token (radii, spacing, type, line-height, icon-size). All 20 stops below; nothing else.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global scale stops</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">px / rem</th><th scope="col">Common use</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">scale/0</th><td class="t-num">Number</td><td class="mono-dim">0</td><td class="note">No-spacing baseline</td></tr>
+    <tr><th scope="row" class="mono">scale/4</th><td class="t-num">Number</td><td class="mono-dim">4 · 0.25rem</td><td class="note">Hairline gap, small radii</td></tr>
+    <tr><th scope="row" class="mono">scale/8</th><td class="t-num">Number</td><td class="mono-dim">8 · 0.5rem</td><td class="note">Inline padding</td></tr>
+    <tr><th scope="row" class="mono">scale/12</th><td class="t-num">Number</td><td class="mono-dim">12 · 0.75rem</td><td class="note">Card radii, caption type</td></tr>
+    <tr><th scope="row" class="mono">scale/16</th><td class="t-num">Number</td><td class="mono-dim">16 · 1rem</td><td class="note">Body, icon-size sm</td></tr>
+    <tr><th scope="row" class="mono">scale/20</th><td class="t-num">Number</td><td class="mono-dim">20 · 1.25rem</td><td class="note">Heading 4, icon-size md</td></tr>
+    <tr><th scope="row" class="mono">scale/24</th><td class="t-num">Number</td><td class="mono-dim">24 · 1.5rem</td><td class="note">Heading 2, icon-size lg, lg spacing</td></tr>
+    <tr><th scope="row" class="mono">scale/28</th><td class="t-num">Number</td><td class="mono-dim">28 · 1.75rem</td><td class="note">Heading 1</td></tr>
+    <tr><th scope="row" class="mono">scale/32</th><td class="t-num">Number</td><td class="mono-dim">32 · 2rem</td><td class="note">Display body, icon-size xl, xl spacing</td></tr>
+    <tr><th scope="row" class="mono">scale/40</th><td class="t-num">Number</td><td class="mono-dim">40 · 2.5rem</td><td class="note">Heading 1 line-height</td></tr>
+    <tr><th scope="row" class="mono">scale/48</th><td class="t-num">Number</td><td class="mono-dim">48 · 3rem</td><td class="note">Display 2, 2xl spacing</td></tr>
+    <tr><th scope="row" class="mono">scale/56</th><td class="t-num">Number</td><td class="mono-dim">56 · 3.5rem</td><td class="note">Section padding</td></tr>
+    <tr><th scope="row" class="mono">scale/64</th><td class="t-num">Number</td><td class="mono-dim">64 · 4rem</td><td class="note">Display 2 line-height, 3xl spacing</td></tr>
+    <tr><th scope="row" class="mono">scale/72</th><td class="t-num">Number</td><td class="mono-dim">72 · 4.5rem</td><td class="note">Hero spacing</td></tr>
+    <tr><th scope="row" class="mono">scale/80</th><td class="t-num">Number</td><td class="mono-dim">80 · 5rem</td><td class="note">Page sections</td></tr>
+    <tr><th scope="row" class="mono">scale/96</th><td class="t-num">Number</td><td class="mono-dim">96 · 6rem</td><td class="note">Pill radius (legacy 100 rounds here)</td></tr>
+    <tr><th scope="row" class="mono">scale/112, 128, 144, 160</th><td class="t-num">Number × 4</td><td class="mono-dim">112 / 128 / 144 / 160</td><td class="note">Large layout, true-pill radius (160)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-typography" aria-labelledby="g-typography-h">
+<h3 id="g-typography-h">1.5 · Typography <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— Global scale aliases + raw letter-spacing</span></h3>
+<p class="dim" style="font-size: 0.92rem;">Every <code class="inline">size</code> and <code class="inline">line-height</code> aliases <code class="inline">scale/N</code>. Letter-spacing is the explicit exception to the 4-point rule — it lives in its own micro-scale.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global typography size, line-height, letter-spacing</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Aliases / value</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">typography/size/x-small</th><td class="t-num">Number</td><td class="mono-dim">→ scale/8</td><td class="note warn">Decorative only — fails text minimums for body</td></tr>
+    <tr><th scope="row" class="mono">typography/size/small</th><td class="t-num">Number</td><td class="mono-dim">→ scale/12</td><td class="note">Captions (rounded up from legacy 11)</td></tr>
+    <tr><th scope="row" class="mono">typography/size/caption</th><td class="t-num">Number</td><td class="mono-dim">→ scale/12</td><td class="note">Footnotes</td></tr>
+    <tr><th scope="row" class="mono">typography/size/label</th><td class="t-num">Number</td><td class="mono-dim">→ scale/16</td><td class="note">UI labels (rounded up from legacy 15)</td></tr>
+    <tr><th scope="row" class="mono">typography/size/body</th><td class="t-num">Number</td><td class="mono-dim">→ scale/16</td><td class="note">Body base</td></tr>
+    <tr><th scope="row" class="mono">typography/size/heading-5</th><td class="t-num">Number</td><td class="mono-dim">→ scale/16</td><td class="note">Smallest heading</td></tr>
+    <tr><th scope="row" class="mono">typography/size/heading-4</th><td class="t-num">Number</td><td class="mono-dim">→ scale/20</td><td class="note">(rounded up from legacy 17)</td></tr>
+    <tr><th scope="row" class="mono">typography/size/heading-3</th><td class="t-num">Number</td><td class="mono-dim">→ scale/20</td><td class="note">(rounded up from legacy 19)</td></tr>
+    <tr><th scope="row" class="mono">typography/size/heading-2</th><td class="t-num">Number</td><td class="mono-dim">→ scale/24</td><td class="note">(rounded up from legacy 22)</td></tr>
+    <tr><th scope="row" class="mono">typography/size/heading-1</th><td class="t-num">Number</td><td class="mono-dim">→ scale/28</td><td class="note">Page heading</td></tr>
+    <tr><th scope="row" class="mono">typography/size/display-3</th><td class="t-num">Number</td><td class="mono-dim">→ scale/32</td><td class="note">Display tier</td></tr>
+    <tr><th scope="row" class="mono">typography/size/display-2</th><td class="t-num">Number</td><td class="mono-dim">→ scale/48</td><td class="note">(rounded from legacy 50)</td></tr>
+    <tr><th scope="row" class="mono">typography/line-height/* (matched to size)</th><td class="t-num">Number × ~10</td><td class="mono-dim">→ scale/{14..64}</td><td class="note">All aliased to scale stops</td></tr>
+    <tr><th scope="row" class="mono">typography/letter-spacing/tight</th><td class="t-num">Number</td><td class="mono-dim">-0.02</td><td class="note warn">Raw FLOAT · explicit 4-pt exception</td></tr>
+    <tr><th scope="row" class="mono">typography/letter-spacing/normal</th><td class="t-num">Number</td><td class="mono-dim">0</td><td class="note warn">Raw FLOAT</td></tr>
+    <tr><th scope="row" class="mono">typography/letter-spacing/wide</th><td class="t-num">Number</td><td class="mono-dim">0.04</td><td class="note warn">Raw FLOAT</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-stroke" aria-labelledby="g-stroke-h">
+<h3 id="g-stroke-h">1.6 · Stroke <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of scale</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global stroke widths</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">stroke/hairline</th><td class="t-num">Number</td><td class="mono-dim">0.5</td><td class="note">Sub-pixel divider</td></tr>
+    <tr><th scope="row" class="mono">stroke/default</th><td class="t-num">Number</td><td class="mono-dim">1</td><td class="note">Standard border</td></tr>
+    <tr><th scope="row" class="mono">stroke/thick</th><td class="t-num">Number</td><td class="mono-dim">→ scale/4 (used as 2)</td><td class="note">Focus ring base</td></tr>
+    <tr><th scope="row" class="mono">stroke/strong</th><td class="t-num">Number</td><td class="mono-dim">→ scale/4</td><td class="note">Heavy emphasis</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-breakpoint" aria-labelledby="g-breakpoint-h">
+<h3 id="g-breakpoint-h">1.7 · Breakpoint <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— FLOAT</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global breakpoint thresholds</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Value</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">breakpoint/mobile</th><td class="t-num">Number</td><td class="mono-dim">360</td><td class="note">Smallest supported width</td></tr>
+    <tr><th scope="row" class="mono">breakpoint/tablet</th><td class="t-num">Number</td><td class="mono-dim">768</td><td class="note"></td></tr>
+    <tr><th scope="row" class="mono">breakpoint/desktop</th><td class="t-num">Number</td><td class="mono-dim">1024</td><td class="note"></td></tr>
+    <tr><th scope="row" class="mono">breakpoint/desktop-wide</th><td class="t-num">Number</td><td class="mono-dim">1440</td><td class="note">Promo / dashboard layouts</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="g-elevation" aria-labelledby="g-elevation-h">
+<h3 id="g-elevation-h">1.8 · Elevation <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— Effect Styles, 5 levels</span></h3>
+<p class="dim" style="font-size: 0.92rem;">Effect Styles, not Variables. Replace the legacy raw <code class="inline">DROP_SHADOW</code> patterns embedded inline in component masters.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Global elevation effect styles</caption>
+  <thead><tr><th scope="col">Style</th><th scope="col">Type</th><th scope="col">Composition</th><th scope="col">Use</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">elevation/0</th><td class="t-effect">EFFECT</td><td class="mono-dim">flat (no shadow)</td><td class="note">Inline content</td></tr>
+    <tr><th scope="row" class="mono">elevation/1</th><td class="t-effect">EFFECT</td><td class="mono-dim">y2, blur 4, alpha 8%</td><td class="note">Resting cards</td></tr>
+    <tr><th scope="row" class="mono">elevation/2</th><td class="t-effect">EFFECT</td><td class="mono-dim">y4, blur 12, alpha 12%</td><td class="note">Raised, dropdowns</td></tr>
+    <tr><th scope="row" class="mono">elevation/3</th><td class="t-effect">EFFECT</td><td class="mono-dim">y8, blur 24, alpha 16%</td><td class="note">Modals</td></tr>
+    <tr><th scope="row" class="mono">elevation/4</th><td class="t-effect">EFFECT</td><td class="mono-dim">y12, blur 36, alpha 20%</td><td class="note">Bottom sheets, hero overlays</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 2 — MODES
+     ============================================================ -->
+<h2 id="c2">Collection 2 · Modes <span class="pill brand" style="font-size: 0.74rem; vertical-align: middle;">9 brand modes</span></h2>
+<div class="section-intro">Brand DNA + brand-tinted alias chrome. 140 variables × 9 modes. The other home for raw hex (DNA only). Marketing edits only this collection.</div>
+
+<section id="m-dna" aria-labelledby="m-dna-h">
+<h3 id="m-dna-h">2.1 · Brand DNA <span class="v-badge final">final</span> <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— 4 ramps × 10 stops, raw hex per brand</span></h3>
+<p class="dim" style="font-size: 0.92rem;">The only place outside Global where raw hex is allowed. 40 raw hex tokens × 9 brand modes = 360 raw hex values.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes brand DNA ramps</caption>
+  <thead><tr><th scope="col">Token family</th><th scope="col">Type</th><th scope="col">Stops</th><th scope="col">Anchor (Lyllo / Snabarre / Mobilespin)</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/primary/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim">10 brand-defined</td><td class="note">#F02884 / green / #D6112B</td></tr>
+    <tr><th scope="row" class="mono">color/secondary/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim">10 brand-defined</td><td class="note">brand-defined per ramp</td></tr>
+    <tr><th scope="row" class="mono">color/neutral/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim">10 brand-tinted greys</td><td class="note">Each brand has its own tint</td></tr>
+    <tr><th scope="row" class="mono">color/tertiary/{50..900}</th><td class="t-color">Color × 10</td><td class="mono-dim">10 brand-defined</td><td class="note">Lyllo: #FD6A00 (orange) · Comeon: #C3FF00 (lime) · others mirror primary</td></tr>
+  </tbody>
+</table></div>
+<div class="note-card warn"><h4>Tertiary ramp added in v3.2</h4><p style="margin: 0;">Tertiary unblocks brands that need a third hue (Lyllo accent orange, Comeon lime). Brands without a third accent mirror primary as a placeholder so the alias chain stays valid.</p></div>
+</section>
+
+<section id="m-brand" aria-labelledby="m-brand-h">
+<h3 id="m-brand-h">2.2 · Color · Brand alias <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of DNA</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes brand alias tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/brand/primary</th><td class="t-color">Color</td><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">Single role-named anchor</td></tr>
+    <tr><th scope="row" class="mono">color/brand/primary-hover</th><td class="t-color">Color</td><td class="mono-dim">→ Modes/color/primary/600</td><td class="note">Hover state</td></tr>
+    <tr><th scope="row" class="mono">color/brand/primary-pressed</th><td class="t-color">Color</td><td class="mono-dim">→ Modes/color/primary/700</td><td class="note">Pressed state</td></tr>
+    <tr><th scope="row" class="mono">color/brand/secondary</th><td class="t-color">Color</td><td class="mono-dim">→ Modes/color/secondary/500</td><td class="note"></td></tr>
+    <tr><th scope="row" class="mono">color/brand/tertiary</th><td class="t-color">Color</td><td class="mono-dim">→ Modes/color/tertiary/500</td><td class="note">Accent</td></tr>
+    <tr><th scope="row" class="mono">color/brand/on-primary</th><td class="t-color">Color</td><td class="mono-dim">→ Global/color/white (most brands)</td><td class="note">Foreground on primary surfaces</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-surface" aria-labelledby="m-surface-h">
+<h3 id="m-surface-h">2.3 · Color · Surface <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of neutral DNA</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes surface tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases (Light)</th><th scope="col">Aliases (Dark)</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/surface/page</th><td class="mono-dim">→ neutral/100</td><td class="mono-dim">→ neutral/900</td></tr>
+    <tr><th scope="row" class="mono">color/surface/raised</th><td class="mono-dim">→ neutral/50</td><td class="mono-dim">→ neutral/800</td></tr>
+    <tr><th scope="row" class="mono">color/surface/sunken</th><td class="mono-dim">→ neutral/200</td><td class="mono-dim">→ neutral/950</td></tr>
+    <tr><th scope="row" class="mono">color/surface/sidebar</th><td class="mono-dim">→ neutral/100</td><td class="mono-dim">→ neutral/800</td></tr>
+    <tr><th scope="row" class="mono">color/surface/bottomsheet</th><td class="mono-dim">→ neutral/50</td><td class="mono-dim">→ neutral/800</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-text" aria-labelledby="m-text-h">
+<h3 id="m-text-h">2.4 · Color · Text <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of neutral / brand DNA</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes text color tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/text/primary</th><td class="mono-dim">→ neutral/900 (Light) / neutral/100 (Dark)</td><td class="note">Body text</td></tr>
+    <tr><th scope="row" class="mono">color/text/secondary</th><td class="mono-dim">→ neutral/700 (Light) / neutral/300 (Dark)</td><td class="note">Helper, supportive</td></tr>
+    <tr><th scope="row" class="mono">color/text/disabled</th><td class="mono-dim">→ neutral/400</td><td class="note">Use sparingly</td></tr>
+    <tr><th scope="row" class="mono">color/text/link</th><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">Brand-coloured links</td></tr>
+    <tr><th scope="row" class="mono">color/text/on-brand</th><td class="mono-dim">→ Global/color/white (most brands)</td><td class="note">Foreground on brand surfaces · brand can override (888 yellow uses black)</td></tr>
+    <tr><th scope="row" class="mono">color/text/on-surface-dark</th><td class="mono-dim">→ neutral/100</td><td class="note">Foreground on darker surfaces</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-icon" aria-labelledby="m-icon-h">
+<h3 id="m-icon-h">2.5 · Color · Icon <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— 3-way split</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes icon color tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/icon/content</th><td class="mono-dim">→ neutral/700</td><td class="note">Content icons (heading prefix, list bullets)</td></tr>
+    <tr><th scope="row" class="mono">color/icon/action</th><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">Tappable / interactive icons</td></tr>
+    <tr><th scope="row" class="mono">color/icon/descriptive</th><td class="mono-dim">→ neutral/600</td><td class="note">Decorative / informational</td></tr>
+    <tr><th scope="row" class="mono">color/icon/inverse</th><td class="mono-dim">→ neutral/100</td><td class="note">On dark surfaces</td></tr>
+  </tbody>
+</table></div>
+<p class="dim" style="font-size: 0.88rem;">Mobilespin overrides <code class="inline">action</code> to charcoal (DNA <code class="inline">neutral/900</code>) — black icons, red CTAs is the brand rule.</p>
+</section>
+
+<section id="m-border" aria-labelledby="m-border-h">
+<h3 id="m-border-h">2.6 · Color · Border <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of alpha or neutral</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes border tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/border/subtle</th><td class="mono-dim">→ Global/color/black-alpha/10 (Light) / white-alpha/10 (Dark)</td><td class="note">Faint dividers</td></tr>
+    <tr><th scope="row" class="mono">color/border/default</th><td class="mono-dim">→ neutral/300</td><td class="note">Standard borders</td></tr>
+    <tr><th scope="row" class="mono">color/border/strong</th><td class="mono-dim">→ Global/color/black-alpha/30</td><td class="note">Emphatic borders</td></tr>
+    <tr><th scope="row" class="mono">color/border/focus</th><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">Focus ring base · see WCAG 2.4.13</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-header" aria-labelledby="m-header-h">
+<h3 id="m-header-h">2.7 · Color · Header <span class="v-badge final">rule</span></h3>
+<div class="note-card warn">
+  <h4>Locked rule</h4>
+  <p style="margin: 0;"><code class="inline">color/header/active-selected</code> must <strong>not</strong> alias the same neutral stop as <code class="inline">color/header/surface-primary</code> for a brand. Pin <code class="inline">active-selected</code> to <code class="inline">primary/500</code> instead. This prevents invisible nav active state on coloured headers (e.g. Snabarre blue, Mobilespin red).</p>
+</div>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes header color tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/header/background</th><td class="mono-dim">→ surface/page or brand-specific</td><td class="note">Top-bar bg</td></tr>
+    <tr><th scope="row" class="mono">color/header/surface-primary</th><td class="mono-dim">→ neutral/600 (most) / brand override</td><td class="note">Header chip bg</td></tr>
+    <tr><th scope="row" class="mono">color/header/surface-secondary</th><td class="mono-dim">→ neutral/500</td><td class="note">Secondary chip</td></tr>
+    <tr><th scope="row" class="mono">color/header/active-selected</th><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">Selected nav state</td></tr>
+    <tr><th scope="row" class="mono">color/header/on-surface-primary</th><td class="mono-dim">→ neutral/100</td><td class="note">Foreground on chips</td></tr>
+    <tr><th scope="row" class="mono">color/header/text</th><td class="mono-dim">→ text/primary or text/on-brand</td><td class="note">Header label text</td></tr>
+    <tr><th scope="row" class="mono">color/header/cta</th><td class="mono-dim">→ Modes/color/primary/500</td><td class="note">CTA in header</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-banner-landing" aria-labelledby="m-bl-h">
+<h3 id="m-bl-h">2.8 · Banner / Landing <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias chrome</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes banner and landing tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/banner/background</th><td class="mono-dim">→ neutral/700 / brand override</td></tr>
+    <tr><th scope="row" class="mono">color/banner/text</th><td class="mono-dim">→ neutral/100</td></tr>
+    <tr><th scope="row" class="mono">color/banner/cta</th><td class="mono-dim">→ Modes/color/primary/500</td></tr>
+    <tr><th scope="row" class="mono">color/landing/icon-cta/bg</th><td class="mono-dim">→ neutral/100</td></tr>
+    <tr><th scope="row" class="mono">color/landing/icon-cta/icon</th><td class="mono-dim">→ Modes/color/primary/500</td></tr>
+    <tr><th scope="row" class="mono">color/landing/secondary-cta/bg</th><td class="mono-dim">→ Modes/color/tertiary/500</td></tr>
+    <tr><th scope="row" class="mono">color/landing/tag</th><td class="mono-dim">→ Modes/color/tertiary/500 (5 of 9 brands use a third accent here)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-menu-nav" aria-labelledby="m-mn-h">
+<h3 id="m-mn-h">2.9 · Menu-row / Nav</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes menu-row and nav tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/menu-row/surface</th><td class="mono-dim">→ surface/sidebar</td></tr>
+    <tr><th scope="row" class="mono">color/menu-row/label</th><td class="mono-dim">→ surface/raised</td></tr>
+    <tr><th scope="row" class="mono">color/menu-row/on-label</th><td class="mono-dim">→ text/primary</td></tr>
+    <tr><th scope="row" class="mono">color/menu-row/icon</th><td class="mono-dim">→ icon/content</td></tr>
+    <tr><th scope="row" class="mono">color/menu-row/chevron</th><td class="mono-dim">→ icon/action (brand action colour)</td></tr>
+    <tr><th scope="row" class="mono">color/nav/background</th><td class="mono-dim">→ surface/raised</td></tr>
+    <tr><th scope="row" class="mono">color/nav/default-icon</th><td class="mono-dim">→ icon/content</td></tr>
+    <tr><th scope="row" class="mono">color/nav/default-text</th><td class="mono-dim">→ text/secondary</td></tr>
+    <tr><th scope="row" class="mono">color/nav/selected-icon</th><td class="mono-dim">→ Modes/color/primary/500</td></tr>
+    <tr><th scope="row" class="mono">color/nav/selected-text</th><td class="mono-dim">→ Modes/color/primary/600 (or selected-icon — Reviant-A splits)</td></tr>
+    <tr><th scope="row" class="mono">color/nav/shadow</th><td class="mono-dim">→ Global/color/black-alpha/10 (Light) / 0 (Dark)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-radius" aria-labelledby="m-radius-h">
+<h3 id="m-radius-h">2.10 · Radius <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of Global/scale</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes radius tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">radius/base-3</th><td class="mono-dim">→ Global/scale/4</td><td class="note">Legacy 3 rounded up</td></tr>
+    <tr><th scope="row" class="mono">radius/cta</th><td class="mono-dim">→ Global/scale/4</td><td class="note">Default CTA · brand may override</td></tr>
+    <tr><th scope="row" class="mono">radius/input</th><td class="mono-dim">→ Global/scale/4</td><td class="note"></td></tr>
+    <tr><th scope="row" class="mono">radius/box</th><td class="mono-dim">→ Global/scale/8</td><td class="note">Legacy 6 rounded</td></tr>
+    <tr><th scope="row" class="mono">radius/card</th><td class="mono-dim">→ Global/scale/12</td><td class="note">Already on grid</td></tr>
+    <tr><th scope="row" class="mono">radius/large</th><td class="mono-dim">→ Global/scale/24</td><td class="note">Hero / promo</td></tr>
+    <tr><th scope="row" class="mono">radius/navigation</th><td class="mono-dim">→ Global/scale/12 (Reviant-A) / 0 (Reviant-B)</td><td class="note">Brand-divergent</td></tr>
+    <tr><th scope="row" class="mono">radius/pill</th><td class="mono-dim">→ Global/scale/96 (or 160 for true pill)</td><td class="note">Legacy 100 rounded down</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-typography" aria-labelledby="m-typo-h">
+<h3 id="m-typo-h">2.11 · Typography family + weight <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— STRING per brand</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes typography family and weight</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Example</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">typography/family/heading</th><td class="t-str">String</td><td class="mono-dim">brand-defined (Open Sauce One, etc.)</td></tr>
+    <tr><th scope="row" class="mono">typography/family/body</th><td class="t-str">String</td><td class="mono-dim">brand-defined</td></tr>
+    <tr><th scope="row" class="mono">typography/family/mono</th><td class="t-str">String</td><td class="mono-dim">JetBrains Mono / IBM Plex Mono</td></tr>
+    <tr><th scope="row" class="mono">typography/weight/regular .. extrabold</th><td class="t-str">String × ~5</td><td class="mono-dim">brand-defined</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="m-meta-flag" aria-labelledby="m-mf-h">
+<h3 id="m-mf-h">2.12 · Meta + Flag <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— STRING / BOOL per brand</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Modes meta and flag tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Example</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">meta/brand</th><td class="t-str">String</td><td class="mono-dim">"Lyllo" / "Snabarre" / …</td></tr>
+    <tr><th scope="row" class="mono">meta/web-address</th><td class="t-str">String</td><td class="mono-dim">"lyllo.com"</td></tr>
+    <tr><th scope="row" class="mono">meta/in-house-jackpots</th><td class="t-str">String</td><td class="mono-dim">"Jackpots" or alt name</td></tr>
+    <tr><th scope="row" class="mono">flag/grayscale</th><td class="t-bool">Boolean</td><td class="mono-dim">true / false</td></tr>
+    <tr><th scope="row" class="mono">flag/dark-color-scheme</th><td class="t-bool">Boolean</td><td class="mono-dim">true / false</td></tr>
+    <tr><th scope="row" class="mono">flag/logged-in</th><td class="t-bool">Boolean</td><td class="mono-dim">true / false</td></tr>
+    <tr><th scope="row" class="mono">flag/product-nav/{casino,sport,live}</th><td class="t-bool">Boolean × ~3</td><td class="mono-dim">brand-defined</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 3 — THEME
+     ============================================================ -->
+<h2 id="c3">Collection 3 · Theme <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">Light + Dark</span></h2>
+<div class="section-intro">31 variables × 2 modes. <strong>100% alias.</strong> Every Theme token chains through Modes back to brand DNA. Switching <code class="inline">Theme = Dark</code> at the frame swaps only the Theme leg.</div>
+
+<section id="t-surface" aria-labelledby="t-surface-h">
+<h3 id="t-surface-h">3.1 · Surface</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Theme surface tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">theme/surface/page</th><td class="mono-dim">→ Modes/color/surface/page</td><td class="mono-dim">→ Modes/color/surface/page (Dark stop)</td></tr>
+    <tr><th scope="row" class="mono">theme/surface/raised</th><td class="mono-dim">→ Modes/color/surface/raised</td><td class="mono-dim">→ Modes/color/surface/raised (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/surface/sunken</th><td class="mono-dim">→ Modes/color/surface/sunken</td><td class="mono-dim">→ Modes/color/surface/sunken (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/surface/sidebar</th><td class="mono-dim">→ Modes/color/surface/sidebar</td><td class="mono-dim">→ Modes/color/surface/sidebar (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/surface/bottomsheet</th><td class="mono-dim">→ Modes/color/surface/bottomsheet</td><td class="mono-dim">→ Modes/color/surface/bottomsheet (Dark)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="t-text" aria-labelledby="t-text-h">
+<h3 id="t-text-h">3.2 · Text</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Theme text tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">theme/text/primary</th><td class="mono-dim">→ Modes/color/text/primary</td><td class="mono-dim">→ Modes/color/text/primary (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/text/secondary</th><td class="mono-dim">→ Modes/color/text/secondary</td><td class="mono-dim">→ Modes/color/text/secondary (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/text/disabled</th><td class="mono-dim">→ Modes/color/text/disabled</td><td class="mono-dim">→ Modes/color/text/disabled (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/text/link</th><td class="mono-dim">→ Modes/color/text/link</td><td class="mono-dim">→ Modes/color/text/link (Dark)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="t-border" aria-labelledby="t-border-h">
+<h3 id="t-border-h">3.3 · Border</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Theme border tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">theme/border/subtle</th><td class="mono-dim">→ Global/color/black-alpha/10</td><td class="mono-dim">→ Global/color/white-alpha/10</td></tr>
+    <tr><th scope="row" class="mono">theme/border/default</th><td class="mono-dim">→ Modes/color/border/default</td><td class="mono-dim">→ Modes/color/border/default (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/border/strong</th><td class="mono-dim">→ Global/color/black-alpha/30</td><td class="mono-dim">→ Global/color/white-alpha/30</td></tr>
+    <tr><th scope="row" class="mono">theme/border/focus</th><td class="mono-dim">→ Modes/color/border/focus</td><td class="mono-dim">→ Modes/color/border/focus (Dark)</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="t-icon" aria-labelledby="t-icon-h">
+<h3 id="t-icon-h">3.4 · Icon</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Theme icon tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">theme/icon/content</th><td class="mono-dim">→ Modes/color/icon/content</td><td class="mono-dim">→ Modes/color/icon/content-dark</td></tr>
+    <tr><th scope="row" class="mono">theme/icon/action</th><td class="mono-dim">→ Modes/color/icon/action</td><td class="mono-dim">→ Modes/color/icon/action-dark</td></tr>
+    <tr><th scope="row" class="mono">theme/icon/descriptive</th><td class="mono-dim">→ Modes/color/icon/descriptive</td><td class="mono-dim">→ Modes/color/icon/descriptive-dark</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="t-nav" aria-labelledby="t-nav-h">
+<h3 id="t-nav-h">3.5 · Nav</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Theme nav tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">theme/nav/background</th><td class="mono-dim">→ Modes/color/nav/background</td><td class="mono-dim">→ Modes/color/nav/background (Dark)</td></tr>
+    <tr><th scope="row" class="mono">theme/nav/shadow</th><td class="mono-dim">→ Global/color/black-alpha/10</td><td class="mono-dim">→ Global/color/black-alpha/0</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 4 — SEMANTIC
+     ============================================================ -->
+<h2 id="c4">Collection 4 · Semantic <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">single mode · all aliases</span></h2>
+<div class="section-intro">53 variables. Role-named tokens for designers and developers. Spacing + icon-size are new in v3.2 — components consume these instead of free FLOATs.</div>
+
+<section id="s-spacing" aria-labelledby="s-spacing-h">
+<h3 id="s-spacing-h">4.1 · Spacing <span class="v-badge new">v3.2</span> <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of Global/scale</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Semantic spacing scale</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">px / rem</th><th scope="col">Use</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">spacing/xxs</th><td class="mono-dim">→ Global/scale/4</td><td class="mono-dim">4 / 0.25</td><td class="note">Hairline gap</td></tr>
+    <tr><th scope="row" class="mono">spacing/xs</th><td class="mono-dim">→ Global/scale/8</td><td class="mono-dim">8 / 0.5</td><td class="note">Inline padding</td></tr>
+    <tr><th scope="row" class="mono">spacing/sm</th><td class="mono-dim">→ Global/scale/12</td><td class="mono-dim">12 / 0.75</td><td class="note">List row gap</td></tr>
+    <tr><th scope="row" class="mono">spacing/md</th><td class="mono-dim">→ Global/scale/16</td><td class="mono-dim">16 / 1</td><td class="note">Card padding</td></tr>
+    <tr><th scope="row" class="mono">spacing/lg</th><td class="mono-dim">→ Global/scale/24</td><td class="mono-dim">24 / 1.5</td><td class="note">Section padding</td></tr>
+    <tr><th scope="row" class="mono">spacing/xl</th><td class="mono-dim">→ Global/scale/32</td><td class="mono-dim">32 / 2</td><td class="note">Hero padding</td></tr>
+    <tr><th scope="row" class="mono">spacing/2xl</th><td class="mono-dim">→ Global/scale/48</td><td class="mono-dim">48 / 3</td><td class="note">Large hero</td></tr>
+    <tr><th scope="row" class="mono">spacing/3xl</th><td class="mono-dim">→ Global/scale/64</td><td class="mono-dim">64 / 4</td><td class="note">Page sections</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="s-icon-size" aria-labelledby="s-icon-size-h">
+<h3 id="s-icon-size-h">4.2 · Icon size <span class="v-badge new">v3.2</span> <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— alias of Global/scale</span></h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Semantic icon sizes</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th><th scope="col">px</th><th scope="col">Use</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">icon-size/sm</th><td class="mono-dim">→ Global/scale/16</td><td class="mono-dim">16</td><td class="note">Inline with body</td></tr>
+    <tr><th scope="row" class="mono">icon-size/md</th><td class="mono-dim">→ Global/scale/20</td><td class="mono-dim">20</td><td class="note">Default UI icons</td></tr>
+    <tr><th scope="row" class="mono">icon-size/lg</th><td class="mono-dim">→ Global/scale/24</td><td class="mono-dim">24</td><td class="note">Touch-friendly · meets WCAG 2.5.8 minimum</td></tr>
+    <tr><th scope="row" class="mono">icon-size/xl</th><td class="mono-dim">→ Global/scale/32</td><td class="mono-dim">32</td><td class="note">Feature icons</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="s-color" aria-labelledby="s-color-h">
+<h3 id="s-color-h">4.3 · Color · all roles <span class="dim" style="font-size: 0.86rem; font-weight: 400;">— 36 aliases</span></h3>
+<p class="dim" style="font-size: 0.92rem;">Same shape as Modes color groups but consumed at the role level. Components prefer Semantic over Modes when the role does not need component-specific naming.</p>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Semantic color tokens summary</caption>
+  <thead><tr><th scope="col">Group</th><th scope="col">Tokens</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/brand/*</th><td class="mono-dim">primary, primary-hover, secondary, tertiary, on-brand</td><td class="mono-dim">→ Modes/color/brand/*</td></tr>
+    <tr><th scope="row" class="mono">color/surface/*</th><td class="mono-dim">page, raised, sunken, sidebar, bottomsheet</td><td class="mono-dim">→ Theme/surface/*</td></tr>
+    <tr><th scope="row" class="mono">color/text/*</th><td class="mono-dim">primary, secondary, disabled, link, on-brand</td><td class="mono-dim">→ Theme/text/*</td></tr>
+    <tr><th scope="row" class="mono">color/icon/*</th><td class="mono-dim">content, action, descriptive, inverse</td><td class="mono-dim">→ Theme/icon/*</td></tr>
+    <tr><th scope="row" class="mono">color/border/*</th><td class="mono-dim">subtle, default, strong, focus</td><td class="mono-dim">→ Theme/border/*</td></tr>
+    <tr><th scope="row" class="mono">color/system/*</th><td class="mono-dim">success, warning, error, info (× state)</td><td class="mono-dim">→ Global/color/system/*/500</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 5 — COMPONENT PACKS
+     ============================================================ -->
+<h2 id="c5">Collection 5 · Component Packs <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">38 vars · all aliases</span></h2>
+<div class="section-intro">Last-mile alias packs for component masters. Used when a component needs a token name that does not generalise to a Semantic role.</div>
+
+<section id="c-cta" aria-labelledby="c-cta-h">
+<h3 id="c-cta-h">5.1 · cta.*</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Component pack cta tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">cta/primary/background</th><td class="mono-dim">→ Semantic/color/brand/primary</td></tr>
+    <tr><th scope="row" class="mono">cta/primary/text</th><td class="mono-dim">→ Semantic/color/text/on-brand</td></tr>
+    <tr><th scope="row" class="mono">cta/primary/hover</th><td class="mono-dim">→ Modes/color/brand/primary-hover</td></tr>
+    <tr><th scope="row" class="mono">cta/secondary/background</th><td class="mono-dim">→ Semantic/color/surface/raised</td></tr>
+    <tr><th scope="row" class="mono">cta/secondary/border</th><td class="mono-dim">→ Modes/color/border/strong</td></tr>
+    <tr><th scope="row" class="mono">cta/disabled/background</th><td class="mono-dim">→ Modes/color/neutral/200</td></tr>
+    <tr><th scope="row" class="mono">cta/disabled/text</th><td class="mono-dim">→ Modes/color/neutral/500</td></tr>
+    <tr><th scope="row" class="mono">cta/radius</th><td class="mono-dim">→ Modes/radius/cta</td></tr>
+    <tr><th scope="row" class="mono">cta/padding-x</th><td class="mono-dim">→ Semantic/spacing/md</td></tr>
+    <tr><th scope="row" class="mono">cta/padding-y</th><td class="mono-dim">→ Semantic/spacing/sm</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="c-menu-row" aria-labelledby="c-menu-row-h">
+<h3 id="c-menu-row-h">5.2 · menu-row.*</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Component pack menu-row tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">menu-row/surface</th><td class="mono-dim">→ Modes/color/menu-row/surface</td></tr>
+    <tr><th scope="row" class="mono">menu-row/label</th><td class="mono-dim">→ Modes/color/menu-row/label</td></tr>
+    <tr><th scope="row" class="mono">menu-row/icon</th><td class="mono-dim">→ Modes/color/menu-row/icon</td></tr>
+    <tr><th scope="row" class="mono">menu-row/chevron</th><td class="mono-dim">→ Modes/color/menu-row/chevron</td></tr>
+    <tr><th scope="row" class="mono">menu-row/divider</th><td class="mono-dim">→ Theme/border/subtle</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="c-nav" aria-labelledby="c-nav-h">
+<h3 id="c-nav-h">5.3 · nav.*</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Component pack nav tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">nav/icon-default</th><td class="mono-dim">→ Modes/color/nav/default-icon</td></tr>
+    <tr><th scope="row" class="mono">nav/icon-selected</th><td class="mono-dim">→ Modes/color/nav/selected-icon</td></tr>
+    <tr><th scope="row" class="mono">nav/text-default</th><td class="mono-dim">→ Modes/color/nav/default-text</td></tr>
+    <tr><th scope="row" class="mono">nav/text-selected</th><td class="mono-dim">→ Modes/color/nav/selected-text</td></tr>
+    <tr><th scope="row" class="mono">nav/background</th><td class="mono-dim">→ Theme/nav/background</td></tr>
+    <tr><th scope="row" class="mono">nav/shadow</th><td class="mono-dim">→ Theme/nav/shadow</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="c-header" aria-labelledby="c-header-h">
+<h3 id="c-header-h">5.4 · header.*</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Component pack header tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">header/background</th><td class="mono-dim">→ Modes/color/header/background</td></tr>
+    <tr><th scope="row" class="mono">header/surface-primary</th><td class="mono-dim">→ Modes/color/header/surface-primary</td></tr>
+    <tr><th scope="row" class="mono">header/active-selected</th><td class="mono-dim">→ Modes/color/primary/500 <span class="warn">(brand colour, not neutral)</span></td></tr>
+    <tr><th scope="row" class="mono">header/on-surface-primary</th><td class="mono-dim">→ Modes/color/header/on-surface-primary</td></tr>
+    <tr><th scope="row" class="mono">header/text</th><td class="mono-dim">→ Modes/color/header/text</td></tr>
+    <tr><th scope="row" class="mono">header/cta</th><td class="mono-dim">→ Modes/color/header/cta</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="c-other" aria-labelledby="c-other-h">
+<h3 id="c-other-h">5.5 · other packs</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Other component packs</caption>
+  <thead><tr><th scope="col">Pack</th><th scope="col">Vars</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">view-all/*</th><td>3</td><td class="note">label, chevron, hover</td></tr>
+    <tr><th scope="row" class="mono">pill/*</th><td>4</td><td class="note">surface, on-surface, border, radius</td></tr>
+    <tr><th scope="row" class="mono">badge/*</th><td>3</td><td class="note">surface, on-surface, radius</td></tr>
+    <tr><th scope="row" class="mono">banner/*</th><td>3</td><td class="note">surface, on-surface, cta</td></tr>
+    <tr><th scope="row" class="mono">notification/*</th><td>4</td><td class="note">background, text, icon, dismiss · status × bg/text computed at use site</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     COLLECTION 6 — REGULATORY
+     ============================================================ -->
+<h2 id="c6">Collection 6 · Regulatory <span class="pill warn" style="font-size: 0.74rem; vertical-align: middle;">7 modes</span></h2>
+<div class="section-intro">4 variables × 7 jurisdictional modes (default, SE, DK, MT, ON, NL, PL). Compliance owns this collection.</div>
+
+<section id="r-tokens" aria-labelledby="r-tokens-h">
+<h3 id="r-tokens-h">6.1 · All tokens</h3>
+<div class="table-wrap"><table>
+  <caption class="sr-only">Regulatory tokens</caption>
+  <thead><tr><th scope="col">Token</th><th scope="col">Type</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">reg/rg/program-name</th><td class="t-str">String</td><td class="note">"Spelpaus" (SE), "ROFUS" (DK), "Cruks" (NL), "ConnexOntario" (ON), …</td></tr>
+    <tr><th scope="row" class="mono">reg/rg/program-url</th><td class="t-str">String</td><td class="note">Self-exclusion program URL</td></tr>
+    <tr><th scope="row" class="mono">reg/age-gate</th><td class="t-num">Number</td><td class="note">Minimum age (18 / 19 / 21)</td></tr>
+    <tr><th scope="row" class="mono">reg/bonus-disclaimer</th><td class="t-str">String</td><td class="note">Jurisdiction-specific disclaimer</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<!-- ============================================================
+     APPENDIX — MIGRATION
+     ============================================================ -->
+<h2 id="migration">Appendix · v3.1 → v3.2 migration map</h2>
+<div class="section-intro">Renames preserve binding IDs in Figma. Components pick up new names without per-instance edits.</div>
+
+<div class="table-wrap"><table>
+  <caption class="sr-only">v3.1 to v3.2 migration map</caption>
+  <thead><tr><th scope="col">v3.1 token / family</th><th scope="col">v3.2 location</th><th scope="col">Change</th></tr></thead>
+  <tbody>
+    <tr><th scope="row" class="mono">color/brand/primary-N</th><td class="mono-dim">Modes/color/primary/N</td><td class="note">Renamed · group flat</td></tr>
+    <tr><th scope="row" class="mono">color/brand/secondary-N</th><td class="mono-dim">Modes/color/secondary/N</td><td class="note">Renamed</td></tr>
+    <tr><th scope="row" class="mono">color/brand/tertiary-N</th><td class="mono-dim">Modes/color/tertiary/N</td><td class="note">Promoted from optional</td></tr>
+    <tr><th scope="row" class="mono">color/neutral-N</th><td class="mono-dim">Modes/color/neutral/N</td><td class="note">Brand-tinted, moved to Modes</td></tr>
+    <tr><th scope="row" class="mono">color/status/*</th><td class="mono-dim">Global/color/system/*</td><td class="note">Renamed · Global, brand-invariant</td></tr>
+    <tr><th scope="row" class="mono">color/always/{black,white}</th><td class="mono-dim">Global/color/{black,white}</td><td class="note">Flat in Global</td></tr>
+    <tr><th scope="row" class="mono">color/always/transparent</th><td class="mono-dim">Global/color/black-alpha/0</td><td class="note">Subsumed</td></tr>
+    <tr><th scope="row" class="mono">color/special/*</th><td class="mono-dim">case-by-case</td><td class="note">Pitch / jackpot / live-pulse map to Modes/color/tertiary or remain as raw if invariant</td></tr>
+    <tr><th scope="row" class="mono">spacing/N</th><td class="mono-dim">Global/scale/N + Semantic/spacing/{xxs..3xl}</td><td class="note">Two-layer · scale + named</td></tr>
+    <tr><th scope="row" class="mono">radius/{base-3,input,box,card,pill,navigation,large}</th><td class="mono-dim">Modes/radius/* → Global/scale/*</td><td class="note">All aliased to scale</td></tr>
+    <tr><th scope="row" class="mono">icon/sizes</th><td class="mono-dim">Semantic/icon-size/{sm,md,lg,xl}</td><td class="note">Promoted to Semantic</td></tr>
+    <tr><th scope="row" class="mono">elevation tokens</th><td class="mono-dim">Global/elevation/0..4 (Effect Style)</td><td class="note">Effect Styles · 5 levels</td></tr>
+    <tr><th scope="row" class="mono">launcher/* · platform/*</th><td>—</td><td class="note">Stays deferred · backlog</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================
+     APPENDIX — AUDIT RULES
+     ============================================================ -->
+<h2 id="audit-rules">Appendix · Audit rules</h2>
+<div class="section-intro">Run these checks any time. They make a v3.2 violation cheap to find and cheap to fix.</div>
+
+<div class="note-card teal">
+  <h4>Hex invariant audit</h4>
+  <p style="margin: 0;"><code class="inline">getLocalVariablesAsync()</code> filtered to <code class="inline">COLOR</code>; for each var, if collection is <strong>Modes</strong> and name does not match <code class="inline">color/(primary|secondary|neutral|tertiary)/*</code>, the value must be a <code class="inline">VARIABLE_ALIAS</code> in every mode. If collection is <strong>Theme / Semantic / Component Packs / Regulatory</strong>, same rule (no exceptions). The only places raw hex is allowed are <strong>Global/color/{black, white, black-alpha/*, white-alpha/*, system/*}</strong> and the four DNA ramps in Modes.</p>
+</div>
+
+<div class="note-card teal">
+  <h4>Strict 4-point scale audit</h4>
+  <p style="margin: 0;">For every <code class="inline">Global/scale/N</code>, assert <code class="inline">N</code> is in the canonical 20-stop set. For every other dimension consumer (<code class="inline">Modes/radius/*</code>, <code class="inline">Semantic/spacing/*</code>, <code class="inline">Semantic/icon-size/*</code>, <code class="inline">Global/typography/{size, line-height}/*</code>, <code class="inline">Global/stroke/*</code>), assert it aliases a <code class="inline">scale/N</code>. Letter-spacing is the explicit exception.</p>
+</div>
+
+<div class="note-card warn">
+  <h4>Header rule audit</h4>
+  <p style="margin: 0;">For each brand mode, resolve <code class="inline">Modes/color/header/active-selected</code> and <code class="inline">Modes/color/header/surface-primary</code>. If both resolve to the same <code class="inline">neutral/N</code> stop, fail — re-point active-selected to <code class="inline">primary/500</code>.</p>
+</div>
+
+<footer class="page-footer">
+  <p>Reference v3.2 · Final · 2026-04-30. Canonical Figma source: <code class="inline">fysBbW10LRJUNgisaBKXJo</code> page <code class="inline">61:61556</code>. <a href="design-token-architecture-v3.2.html">Architecture deck</a> · <a href="component-audit-v3.2.html">Component audit</a> · <a href="index.html">Home</a>.</p>
+  <p style="margin-top: 6px;">Served via GitHub Pages — every edit auto-commits and pushes; Pages rebuilds in ~1 minute.</p>
+</footer>
+
+</main>
+
+</div>
+
+<a href="#top" class="jump-top" aria-label="Back to top">↑ Top</a>
+
+<script>
+  (function(){
+    var links = document.querySelectorAll('aside nav a.toc-link-block');
+    var byHref = {};
+    links.forEach(function(a){
+      var h = a.getAttribute('href');
+      if (h && h.charAt(0) === '#') byHref[h.slice(1)] = a;
+    });
+    var sections = document.querySelectorAll('main section[id], main h2[id]');
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          var id = e.target.id;
+          links.forEach(function(a){ a.removeAttribute('aria-current'); });
+          if (byHref[id]) byHref[id].setAttribute('aria-current', 'location');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    sections.forEach(function(s){ io.observe(s); });
+
+    // anchor focus management
+    document.body.addEventListener('click', function(e){
+      var t = e.target.closest('a[href^="#"]');
+      if (!t) return;
+      var id = t.getAttribute('href').slice(1);
+      var dest = document.getElementById(id);
+      if (!dest) return;
+      setTimeout(function(){
+        if (!dest.hasAttribute('tabindex')) dest.setAttribute('tabindex', '-1');
+        dest.focus({ preventScroll: true });
+      }, 100);
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Token Architecture v3.2 — Final · 6 collections, two locked invariants, 9 brand modes</title>
+<meta name="description" content="Design Token Architecture v3.2: the final architecture for ComeOn's white-label platform. Six collections (Global, Modes, Theme, Semantic, Component Packs, Regulatory), strict 4-point scale, raw-hex invariant, 9 brand modes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-card-hover: #1f1c3e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.32); --border-strong: rgba(108, 92, 231, 0.55);
+    --purple: #6c5ce7; --purple-light: #b6afff; --purple-dark: #4a3db8;
+    --teal: #1de4c0; --teal-soft: rgba(29, 228, 192, 0.14);
+    --text: #eceaf5; --text-muted: #b1adc8;
+    --success: #00d4a8; --warning: #fdcb6e; --error: #ff8e74; --info: #74b9ff;
+    --white: #ffffff;
+    --focus: #ffd166;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; color-scheme: dark; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); width: 100vw; font-feature-settings: 'cv11', 'ss01'; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* skip link */
+  .skip-link { position: absolute; left: -9999px; top: 0; padding: 12px 16px; background: var(--bg-card); color: var(--white); border: 2px solid var(--focus); border-radius: 8px; font-weight: 600; z-index: 1000; }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  /* focus-visible global */
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+  /* sr-only utility */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  .deck { display: flex; flex-direction: column; min-height: 100vh; scroll-snap-type: y mandatory; }
+
+  .slide { min-height: 100vh; width: 100%; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 64px 72px 96px; position: relative; overflow: hidden; }
+  .slide-inner { width: 100%; max-width: 1280px; }
+
+  .progress-bar-wrap { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.06); z-index: 100; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--purple), var(--teal)); transition: width 0.3s ease; width: 0%; }
+  .slide-counter { position: fixed; bottom: 20px; right: 28px; font-size: 0.84rem; color: var(--text-muted); font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', monospace; z-index: 100; padding: 6px 10px; background: rgba(11,10,26,0.7); border: 1px solid var(--border); border-radius: 6px; backdrop-filter: blur(8px); }
+  .nav-hint { position: fixed; bottom: 20px; left: 28px; font-size: 0.78rem; color: var(--text-muted); z-index: 100; letter-spacing: 0.04em; padding: 6px 10px; background: rgba(11,10,26,0.7); border: 1px solid var(--border); border-radius: 6px; backdrop-filter: blur(8px); }
+
+  h1 { font-family: 'Sora', sans-serif; font-size: 3.6rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
+  h2 { font-family: 'Sora', sans-serif; font-size: 2.3rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.6rem; }
+  h4 { font-size: 0.92rem; font-weight: 700; line-height: 1.4; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+  p, li { font-size: 1.04rem; line-height: 1.6; color: var(--text); }
+  .subtitle { font-size: 1.18rem; color: var(--text-muted); line-height: 1.55; max-width: 880px; }
+  .lead { font-size: 1.18rem; color: var(--text); line-height: 1.55; max-width: 960px; }
+  .accent { color: var(--purple-light); }
+  .teal { color: var(--teal); }
+  .warn { color: var(--warning); }
+  .dim { color: var(--text-muted); }
+  strong { color: var(--white); font-weight: 600; }
+
+  .tag { display: inline-block; background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%); color: var(--white); font-size: 0.74rem; font-weight: 700; padding: 6px 14px; border-radius: 4px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.4rem; }
+  .tag.teal { background: linear-gradient(135deg, var(--teal) 0%, #0fb59c 100%); color: #04140f; }
+  .tag.warn { background: linear-gradient(135deg, #d44f3c 0%, #8a1f1f 100%); color: var(--white); }
+  .tag.final { background: linear-gradient(135deg, var(--teal) 0%, var(--purple) 100%); color: var(--white); }
+
+  .orb { position: absolute; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--purple) 0%, transparent 70%); opacity: 0.18; pointer-events: none; filter: blur(1px); }
+  .orb.teal { background: radial-gradient(circle at 30% 30%, var(--teal) 0%, transparent 70%); opacity: 0.12; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 26px; transition: transform 0.25s ease, border-color 0.25s ease; }
+  .card:hover { border-color: var(--border-strong); }
+  .card.highlight { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(29, 228, 192, 0.07) 100%); }
+  .card.warn-card { border-color: rgba(253, 203, 110, 0.55); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.06) 100%); }
+  .card h3 { color: var(--white); }
+  .card-note { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  caption { caption-side: top; text-align: left; padding: 8px 0; font-weight: 600; color: var(--text-muted); font-size: 0.86rem; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--purple-light); font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-alt); }
+  tr:last-child td { border-bottom: none; }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; color: var(--text); }
+  tr:hover td { background: rgba(108, 92, 231, 0.05); }
+
+  pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6; color: var(--text); overflow-x: auto; white-space: pre; width: 100%; }
+  pre .k { color: var(--purple-light); } pre .s { color: var(--teal); } pre .c { color: var(--text-muted); } pre .v { color: var(--warning); }
+  code.inline { background: var(--bg-code); border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px; font-size: 0.9em; color: var(--purple-light); }
+
+  ul.check, ul.arrow { list-style: none; padding: 0; }
+  ul.check li, ul.arrow li { padding-left: 26px; position: relative; margin-bottom: 8px; font-size: 0.98rem; }
+  ul.check li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+  ul.arrow li::before { content: '→'; position: absolute; left: 0; color: var(--purple-light); font-weight: 700; }
+
+  .pill-chip { display: inline-block; padding: 4px 12px; background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(29, 228, 192, 0.4); border-radius: 999px; font-size: 0.78rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+  .pill-chip.brand { background: rgba(108, 92, 231, 0.18); color: var(--purple-light); border-color: rgba(108, 92, 231, 0.45); }
+  .pill-chip.warn { background: rgba(253, 203, 110, 0.14); color: var(--warning); border-color: rgba(253, 203, 110, 0.45); }
+  .pill-chip.final { background: linear-gradient(135deg, rgba(29,228,192,0.15) 0%, rgba(108,92,231,0.18) 100%); color: var(--white); border-color: var(--purple-light); }
+
+  .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 0.92rem; color: var(--teal); letter-spacing: 0.08em; }
+
+  .arch { display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.94rem; width: 100%; }
+  .arch-box { width: 100%; padding: 14px 22px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .arch-box.highlight { border-color: var(--teal); background: linear-gradient(90deg, var(--bg-card), var(--teal-soft)); }
+  .arch-box.new { border-color: var(--warning); background: linear-gradient(90deg, var(--bg-card), rgba(253, 203, 110, 0.07)); }
+  .arch-label { font-weight: 700; color: var(--white); font-family: 'Sora', sans-serif; font-size: 1.04rem; }
+  .arch-modes { font-size: 0.84rem; color: var(--text-muted); }
+  .arch-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 999px; background: rgba(253, 203, 110, 0.18); color: var(--warning); margin-left: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .title-slide { text-align: center; align-items: center; }
+  .title-kicker { font-size: 0.92rem; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 22px; font-weight: 700; }
+  .title-underline { display: inline-block; padding-bottom: 8px; border-bottom: 4px solid var(--teal); }
+
+  .kbd { display: inline-block; padding: 3px 9px; background: var(--bg-code); border: 1px solid var(--border); border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--purple-light); font-weight: 600; }
+
+  .divider-line { height: 1px; background: var(--border); width: 100%; margin: 22px 0; }
+
+  /* CTA buttons in title slide */
+  .deck-cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; min-height: 44px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); text-decoration: none; font-size: 0.86rem; font-family: 'JetBrains Mono', monospace; font-weight: 600; margin: 4px; transition: background 0.18s, border-color 0.18s; }
+  .deck-cta:hover { background: var(--teal-soft); }
+  .deck-cta:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+  @media (max-width: 900px) {
+    .slide { padding: 48px 24px 96px; }
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.7rem; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .nav-hint { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html, .deck { scroll-behavior: auto; }
+    .progress-bar { transition: none; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="progress-bar-wrap" role="progressbar" aria-label="Slide progress" aria-valuemin="1" aria-valuemax="16" aria-valuenow="1" id="progress-role">
+  <div class="progress-bar" id="progress"></div>
+</div>
+<div class="slide-counter" aria-hidden="true" id="counter">01 / 16</div>
+<div class="nav-hint" aria-hidden="true">
+  <span class="kbd">↑</span> <span class="kbd">↓</span> <span class="dim">navigate</span> &nbsp;·&nbsp; <span class="kbd">PgDn</span> <span class="kbd">PgUp</span>
+</div>
+<div class="sr-only" role="status" aria-live="polite" id="slide-announce"></div>
+
+<main id="main" class="deck" aria-label="Architecture v3.2 deck">
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<section class="slide title-slide" role="group" aria-roledescription="slide" aria-labelledby="s1-title">
+  <div class="orb" style="width: 520px; height: 520px; top: -160px; right: -160px;" aria-hidden="true"></div>
+  <div class="orb teal" style="width: 340px; height: 340px; bottom: -90px; left: -90px;" aria-hidden="true"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">20-Brand White Label · ComeOn · 2026-04-30 · Final</div>
+    <h1 id="s1-title">
+      Design Token<br>
+      <span class="title-underline">Architecture</span> <span class="accent">v3.2</span>
+    </h1>
+    <p class="subtitle" style="margin: 18px auto 0;">The final architecture for ComeOn's white-label platform. Six collections. Two locked invariants. Nine brand modes. Light + Dark theme. Brand DNA in three ramps plus a tertiary accent. Implemented in Figma file <code class="inline">fysBbW10LRJUNgisaBKXJo</code> on 2026-04-29.</p>
+    <div style="margin-top: 36px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <span class="pill-chip final">FINAL · 2026-04-30</span>
+      <span class="pill-chip">6 collections</span>
+      <span class="pill-chip">9 brand modes</span>
+      <span class="pill-chip">Light + Dark</span>
+      <span class="pill-chip brand">~382 tokens</span>
+      <span class="pill-chip warn">marketing edits Modes only</span>
+    </div>
+    <p style="margin-top: 36px;">
+      <a class="deck-cta" href="design-token-reference-v3.2.html"><span aria-hidden="true">→</span> Token Reference v3.2</a>
+      <a class="deck-cta" href="component-audit-v3.2.html"><span aria-hidden="true">→</span> Component Audit</a>
+      <a class="deck-cta" href="brand-audit.html"><span aria-hidden="true">→</span> Brand Audit (evidence)</a>
+    </p>
+    <p class="dim" style="margin-top: 18px; font-size: 0.86rem;">v3.2 supersedes v3.1 and v4. The v4 exploration is preserved in the <a href="index.html#archive" style="color: var(--purple-light); border-bottom: 1px solid var(--purple-light);">Archive</a>; it was dropped on 2026-04-29.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: WHY v3.2 ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s2-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">02</span><span class="tag">Why v3.2 is final</span></div>
+    <h2 id="s2-title">v4 was an architecture; v3.2 is a <span class="accent">discipline</span>.</h2>
+    <p class="lead" style="margin-bottom: 28px;">v4 proposed flattening Primitives into a brand-prefixed library and moving the brand mode axis onto Semantic. After three iteration sessions the team concluded the migration cost outweighed the structural win — and that the real problem was not the shape of the collections but the discipline applied inside them. v3.2 keeps the v3.1 collection model and locks two rules that make it stay clean.</p>
+
+    <div class="grid-2">
+      <div class="card warn-card">
+        <h4 class="warn">Why v4 was dropped</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li>Flattening 20 brand modes to ~990 flat tokens lost the single-edit-point per ramp (marketing now has to touch 9 places to retint a ramp).</li>
+          <li>Moving brand mode to Semantic broke the orthogonality between brand and theme — the <code class="inline">.dark</code> toggle stopped being a single-axis flip.</li>
+          <li>Library subscribers (Lyllo Casino, Brand Tokens, etc.) would each need their own v4 adoption; without that, Semantic would alias into stale Primitives.</li>
+          <li>The migration generated a measurable amount of dormant <code class="inline">_legacy/*</code> binding cruft that took two cleanup sessions to retire.</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h4 class="teal">What v3.2 locks down</h4>
+        <ul class="check" style="margin-top: 8px;">
+          <li><strong>Hex invariant</strong> — raw hex lives in exactly two homes: Global (system + black/white/alpha) and Modes brand DNA (primary, secondary, neutral, tertiary).</li>
+          <li><strong>Strict 4-point scale</strong> — <code class="inline">Global/scale/*</code> contains only <code class="inline">[0, 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 72, 80, 96, 112, 128, 144, 160]</code>. No off-grid stops.</li>
+          <li><strong>Tertiary ramp</strong> in brand DNA for accent colours that don't fit primary/secondary (Lyllo orange, Comeon lime).</li>
+          <li><strong>Semantic spacing + icon-size</strong> exposed for component consumption.</li>
+          <li><strong>Theme is alias-only</strong> — every Light + Dark resolution chains through Modes DNA.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: SIX COLLECTIONS ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s3-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">03</span><span class="tag teal">Six collections</span></div>
+    <h2 id="s3-title">The shape of v3.2.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Each axis lives in exactly one collection. Aliases flow downward only: Global is the floor, Component Packs is the ceiling.</p>
+
+    <div class="arch">
+      <div class="arch-box highlight">
+        <div><span class="arch-label">Global</span> <span class="arch-modes">· 1 mode (Default) · 116 vars + 5 elevation Effect Styles</span></div>
+        <div><span class="pill-chip">raw values</span></div>
+      </div>
+      <div class="arch-box new">
+        <div><span class="arch-label">Modes</span> <span class="arch-modes">· 9 brand modes · 140 vars (DNA + alias chrome)</span></div>
+        <div><span class="pill-chip brand">brand axis</span></div>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">Theme</span> <span class="arch-modes">· 2 modes (Light, Dark) · 31 vars · 100% alias</span></div>
+        <div><span class="pill-chip">theme axis</span></div>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">Semantic</span> <span class="arch-modes">· 1 mode · 53 vars · all aliases</span></div>
+        <div><span class="pill-chip">role layer</span></div>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">Component Packs</span> <span class="arch-modes">· 1 mode · 38 vars · all aliases</span></div>
+        <div><span class="pill-chip">component layer</span></div>
+      </div>
+      <div class="arch-box">
+        <div><span class="arch-label">Regulatory</span> <span class="arch-modes">· 7 modes · 4 vars</span></div>
+        <div><span class="pill-chip warn">jurisdiction axis</span></div>
+      </div>
+    </div>
+
+    <p class="dim" style="margin-top: 18px; font-size: 0.92rem;">Total: ~382 active tokens across ~2,180 distinct values when unrolled across all modes. Down from v3.1's ~525 because the chrome layer collapsed when Modes absorbed it.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: ALIAS CHAIN ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s4-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">04</span><span class="tag">Alias chain</span></div>
+    <h2 id="s4-title">How a token resolves at the component.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Components bind Component Packs or Semantic. Each layer aliases the layer below. Frame mode = brand × theme. The chain ends at Global or Modes DNA.</p>
+
+    <pre aria-label="Alias chain example for primary CTA"><span class="c"># Frame mode: brand=Lyllo, theme=Light</span>
+
+Component Packs/cta/primary/background
+  → Semantic/color/brand/primary
+    → Modes/color/brand/primary <span class="c"># resolves per brand mode</span>
+      → Modes/color/primary/500 <span class="c"># Lyllo: #F02884 · raw hex (DNA)</span>
+
+Component Packs/cta/primary/text
+  → Theme/color/text/on-brand
+    → Modes/color/text/on-brand <span class="c"># Light: aliases Global/color/white</span>
+      → Global/color/white <span class="c"># #FFFFFF · raw hex</span>
+
+Component Packs/cta/radius
+  → Semantic/radius/sm
+    → Modes/radius/cta
+      → Global/scale/4 <span class="c"># 4px (rounded from legacy 3)</span>
+
+Component Packs/cta/padding/x
+  → Semantic/spacing/md
+    → Global/scale/16 <span class="c"># 16px</span></pre>
+
+    <p class="dim" style="margin-top: 18px; font-size: 0.92rem;">Read this as: <strong>component → role → brand-or-theme → DNA-or-Global</strong>. Switching <code class="inline">Theme=Dark</code> at the frame swaps only the Theme leg; switching <code class="inline">Modes=Snabarre</code> swaps the Modes leg. Global is invariant across everything.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: GLOBAL ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s5-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">05</span><span class="tag teal">Collection 1 · Global</span></div>
+    <h2 id="s5-title">The floor: <span class="accent">brand-invariant raw values</span>.</h2>
+    <p class="lead" style="margin-bottom: 22px;">116 variables + 5 elevation Effect Styles. Single Default mode. Holds black, white, system colours, the 4-point scale, typography sizes, breakpoints, strokes — anything that does not change per brand or theme.</p>
+
+    <div class="grid-2">
+      <table>
+        <caption class="sr-only">Global collection groups</caption>
+        <thead><tr><th scope="col">Group</th><th scope="col">Sizes</th><th scope="col">Notes</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">color/black, /white</th><td>2</td><td>Pure raw hex</td></tr>
+          <tr><th scope="row" class="mono">color/black-alpha/{0..90}</th><td>10</td><td>Overlay alphas</td></tr>
+          <tr><th scope="row" class="mono">color/white-alpha/{0..90}</th><td>10</td><td>Overlay alphas</td></tr>
+          <tr><th scope="row" class="mono">color/system/{success, warning, error, info}/50-900</th><td>40</td><td>Brand-invariant feedback</td></tr>
+          <tr><th scope="row" class="mono">scale/{0,4,8,…,160}</th><td>20</td><td>Strict 4-point only</td></tr>
+          <tr><th scope="row" class="mono">typography/size/* + line-height/*</th><td>~16</td><td>Aliases scale</td></tr>
+          <tr><th scope="row" class="mono">typography/letter-spacing/{tight,normal,wide}</th><td>3</td><td>Raw FLOAT</td></tr>
+          <tr><th scope="row" class="mono">stroke/{hairline,default,thick,strong}</th><td>4</td><td>Aliases scale</td></tr>
+          <tr><th scope="row" class="mono">breakpoint/{mobile,tablet,desktop,desktop-wide}</th><td>4</td><td>FLOAT</td></tr>
+          <tr><th scope="row" class="mono">elevation/0..4</th><td>5</td><td>Effect Styles</td></tr>
+        </tbody>
+      </table>
+      <div class="card highlight">
+        <h4 class="teal">Why Global is small</h4>
+        <p style="font-size: 0.96rem;">Anything that <em>could</em> vary per brand goes into Modes instead. Anything that <em>must</em> stay the same across every brand and every theme — like <code class="inline">color/white</code> or <code class="inline">scale/16</code> — lives here. The size of Global is the rate at which we add new universal foundations, which should be near zero in steady state.</p>
+        <div class="divider-line"></div>
+        <h4 class="teal">Hex appears here, deliberately</h4>
+        <p style="font-size: 0.96rem;">Global is one of two homes for raw hex (the other is Modes brand DNA). Editing <code class="inline">Global/color/system/error/500</code> updates every error surface across all 9 brands and both themes — that single-edit-point property is the reason Global exists.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: MODES ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s6-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">06</span><span class="tag">Collection 2 · Modes</span></div>
+    <h2 id="s6-title">Brand DNA + brand-tinted chrome.</h2>
+    <p class="lead" style="margin-bottom: 22px;">140 variables across <strong>9 brand modes</strong>. Brand DNA holds the only raw hex outside Global. Everything else in Modes is an alias to brand DNA or Global.</p>
+
+    <div class="grid-2">
+      <div class="card highlight">
+        <h4 class="teal">Brand DNA · the raw-hex layer</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li><code class="inline">color/primary/{50..900}</code> — 10 stops</li>
+          <li><code class="inline">color/secondary/{50..900}</code> — 10 stops</li>
+          <li><code class="inline">color/neutral/{50..900}</code> — 10 stops, brand-tinted</li>
+          <li><code class="inline">color/tertiary/{50..900}</code> — 10 stops, accent</li>
+        </ul>
+        <p class="dim" style="font-size: 0.9rem; margin-top: 10px;">40 raw hex tokens × 9 brand modes = 360 raw hex values. The only place outside Global where hex is allowed.</p>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Why tertiary was added</h4>
+        <p style="font-size: 0.96rem;">Lyllo's accent is orange (<code class="inline">#FD6A00</code>) but its primary is pink and its secondary is also pink-leaning. There was no clean home for a third accent without forcing it into a non-DNA token. Tertiary unblocks brands that need a third hue — Comeon lime (<code class="inline">#C3FF00</code>), future palettes — and stays at zero cost for brands that don't (other 7 brands mirror primary as a placeholder).</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 28px;">Alias chrome inside Modes</h3>
+    <p class="dim" style="font-size: 0.94rem; margin-bottom: 12px;">Every other Modes token aliases DNA — radii, brand chrome (header, banner, landing, menu-row, nav, surface, text, icon, border), typography family/weight, flag/meta strings.</p>
+    <pre>Modes/color/header/surface-primary
+  → <span class="s">Modes/color/neutral/600</span>   <span class="c"># Lyllo: #5b5c60 (brand-tinted grey)</span>
+
+Modes/radius/cta
+  → <span class="s">Global/scale/4</span>           <span class="c"># 4px — rounded from legacy 3</span>
+
+Modes/radius/pill
+  → <span class="s">Global/scale/160</span>         <span class="c"># 160px — true pill</span></pre>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: THEME ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s7-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">07</span><span class="tag teal">Collection 3 · Theme</span></div>
+    <h2 id="s7-title">Light and Dark, <span class="accent">100% alias</span>.</h2>
+    <p class="lead" style="margin-bottom: 22px;">31 variables, 2 modes (Light, Dark). Every token in Theme is an alias — never raw hex. The Light alias chains through Modes to brand DNA; the Dark alias does the same with the dark-side stop.</p>
+
+    <pre>theme/surface/page
+  Light → Modes/color/surface/page
+            → Modes/color/neutral/100   <span class="c"># brand-tinted off-white</span>
+  Dark  → Modes/color/surface/page
+            → Modes/color/neutral/900   <span class="c"># brand-tinted near-black</span>
+
+theme/text/primary
+  Light → Modes/color/text/primary
+            → Modes/color/neutral/900   <span class="c"># near-black text on light</span>
+  Dark  → Modes/color/text/primary
+            → Modes/color/neutral/100   <span class="c"># off-white text on dark</span>
+
+theme/nav/shadow
+  Light → Global/color/black-alpha/10
+  Dark  → Global/color/black-alpha/0    <span class="c"># no shadow needed on dark</span></pre>
+
+    <div class="grid-2" style="margin-top: 22px;">
+      <div class="card">
+        <h4>Why theme tokens never hold hex</h4>
+        <p style="font-size: 0.96rem;">If <code class="inline">theme/surface/page</code> ever held a raw hex, that hex would be wrong for at least 8 of 9 brands. The alias forces the resolution to flow back into the brand-tinted neutrals, so Lyllo's "page" is its own off-white/near-black, not a generic grey.</p>
+      </div>
+      <div class="card highlight">
+        <h4 class="teal">Theme is the cheap toggle</h4>
+        <p style="font-size: 0.96rem;">A single frame mode flip — <code class="inline">Theme = Dark</code> — switches every Theme alias's resolution to its Dark target. Brand modes stay where they are. Component bindings don't change. Add a per-brand dark stop in Modes once, every Theme token picks it up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: SEMANTIC ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s8-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">08</span><span class="tag">Collection 4 · Semantic</span></div>
+    <h2 id="s8-title">Role tokens for <span class="accent">designers and devs</span>.</h2>
+    <p class="lead" style="margin-bottom: 22px;">53 variables, single mode, 100% alias. Spacing, icon-size, and 36 colour roles. Components bind Semantic when they need a role-named token without component-specific naming.</p>
+
+    <div class="grid-2">
+      <table>
+        <caption class="sr-only">Semantic spacing scale</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">spacing/xxs</th><td class="mono">Global/scale/4</td></tr>
+          <tr><th scope="row" class="mono">spacing/xs</th><td class="mono">Global/scale/8</td></tr>
+          <tr><th scope="row" class="mono">spacing/sm</th><td class="mono">Global/scale/12</td></tr>
+          <tr><th scope="row" class="mono">spacing/md</th><td class="mono">Global/scale/16</td></tr>
+          <tr><th scope="row" class="mono">spacing/lg</th><td class="mono">Global/scale/24</td></tr>
+          <tr><th scope="row" class="mono">spacing/xl</th><td class="mono">Global/scale/32</td></tr>
+          <tr><th scope="row" class="mono">spacing/2xl</th><td class="mono">Global/scale/48</td></tr>
+          <tr><th scope="row" class="mono">spacing/3xl</th><td class="mono">Global/scale/64</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <caption class="sr-only">Semantic icon size</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Aliases</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">icon-size/sm</th><td class="mono">Global/scale/16</td></tr>
+          <tr><th scope="row" class="mono">icon-size/md</th><td class="mono">Global/scale/20</td></tr>
+          <tr><th scope="row" class="mono">icon-size/lg</th><td class="mono">Global/scale/24</td></tr>
+          <tr><th scope="row" class="mono">icon-size/xl</th><td class="mono">Global/scale/32</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="margin-top: 18px; font-size: 0.92rem;">Plus 36 colour aliases mapping common roles (text, surface, border, icon, status, brand) to Modes or Theme tokens.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: COMPONENT PACKS ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s9-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">09</span><span class="tag">Collection 5 · Component Packs</span></div>
+    <h2 id="s9-title">Last-mile alias packs for component masters.</h2>
+    <p class="lead" style="margin-bottom: 22px;">38 variables. Component-specific aliases that sit one layer above Semantic — used when a component master needs a token name that does not generalise (e.g. <code class="inline">menu-row/label/on-icon</code>).</p>
+
+    <pre>Component Packs/menu-row/icon
+  → Semantic/color/icon/content
+    → Theme/color/icon/content
+      → Modes/color/icon/content
+        → Modes/color/neutral/700
+
+Component Packs/cta/primary/background
+  → Semantic/color/brand/primary
+    → Modes/color/brand/primary
+      → Modes/color/primary/500
+
+Component Packs/header/active-selected
+  → Modes/color/header/active-selected
+    → Modes/color/primary/500   <span class="c"># NOT neutral — must contrast surface-primary</span></pre>
+
+    <div class="card warn-card" style="margin-top: 18px;">
+      <h4 class="warn">Header rule</h4>
+      <p style="font-size: 0.96rem;"><code class="inline">header/active-selected</code> must never alias the same Modes/neutral stop as <code class="inline">header/surface-primary</code> for a brand — that produces an invisible nav active state on coloured headers. Pin <code class="inline">active-selected</code> to a brand stop (primary/500) instead. This rule is locked in the <a href="component-audit-v3.2.html#header-rule" style="color: var(--purple-light);">component audit</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: HEX INVARIANT ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s10-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">10</span><span class="tag warn">Invariant 1</span></div>
+    <h2 id="s10-title">Raw hex lives in <span class="teal">two homes</span>. Everywhere else is an alias.</h2>
+    <p class="lead" style="margin-bottom: 22px;">This is the discipline rule. It is enforced by a single Plugin API audit that any session can run.</p>
+
+    <div class="grid-2">
+      <div class="card highlight">
+        <h4 class="teal">Raw hex allowed in</h4>
+        <ul class="check" style="margin-top: 8px;">
+          <li><code class="inline">Global/color/black</code>, <code class="inline">/white</code></li>
+          <li><code class="inline">Global/color/black-alpha/{0..90}</code></li>
+          <li><code class="inline">Global/color/white-alpha/{0..90}</code></li>
+          <li><code class="inline">Global/color/system/{success,warning,error,info}/{50..900}</code></li>
+          <li><code class="inline">Modes/color/primary/{50..900}</code></li>
+          <li><code class="inline">Modes/color/secondary/{50..900}</code></li>
+          <li><code class="inline">Modes/color/neutral/{50..900}</code></li>
+          <li><code class="inline">Modes/color/tertiary/{50..900}</code></li>
+        </ul>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Raw hex forbidden in</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li>Modes (outside primary/secondary/neutral/tertiary) — <code class="inline">brand/*</code>, <code class="inline">surface/*</code>, <code class="inline">text/*</code>, <code class="inline">icon/*</code>, <code class="inline">border/*</code>, <code class="inline">banner/*</code>, <code class="inline">landing/*</code>, <code class="inline">menu-row/*</code>, <code class="inline">nav/*</code>, <code class="inline">header/*</code>, <code class="inline">chrome/*</code></li>
+          <li>Theme — every var in both modes</li>
+          <li>Semantic — every var</li>
+          <li>Component Packs — every var</li>
+          <li>Regulatory — every var</li>
+        </ul>
+        <p class="dim" style="font-size: 0.88rem; margin-top: 10px;">Audit: <code class="inline">getLocalVariablesAsync()</code> filtered to COLOR; assert non-DNA / non-Global vars resolve to <code class="inline">VARIABLE_ALIAS</code> in every mode.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: 4-POINT INVARIANT ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s11-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">11</span><span class="tag warn">Invariant 2</span></div>
+    <h2 id="s11-title">Strict 4-point scale. <span class="teal">No exceptions.</span></h2>
+    <p class="lead" style="margin-bottom: 22px;"><code class="inline">Global/scale/*</code> contains only <code class="inline">0</code> or multiples of <code class="inline">4</code>. Twenty stops. Off-grid legacy values round to the closest stop — type rounds up, radii round to closest.</p>
+
+    <pre>Canonical scale (20 stops):
+0, 4, 8, 12, 16, 20, 24, 28, 32, 40,
+48, 56, 64, 72, 80, 96, 112, 128, 144, 160</pre>
+
+    <div class="grid-2" style="margin-top: 22px;">
+      <table>
+        <caption class="sr-only">Legacy values rounded to canonical stops</caption>
+        <thead><tr><th scope="col">Legacy</th><th scope="col">Rounded to</th><th scope="col">Why</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">3 (radii)</th><td class="mono">scale/4</td><td>Closest stop</td></tr>
+          <tr><th scope="row" class="mono">6 (radii)</th><td class="mono">scale/4 or scale/8</td><td>Closest stop · team to choose</td></tr>
+          <tr><th scope="row" class="mono">100 (radii)</th><td class="mono">scale/96</td><td>Closest stop</td></tr>
+          <tr><th scope="row" class="mono">11 (type)</th><td class="mono">scale/12</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">15 (type)</th><td class="mono">scale/16</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">17 (type)</th><td class="mono">scale/20</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">19 (type)</th><td class="mono">scale/20</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">22 (type)</th><td class="mono">scale/24</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">36 (line-height)</th><td class="mono">scale/40</td><td>Round up</td></tr>
+          <tr><th scope="row" class="mono">50 / 60 (display)</th><td class="mono">scale/48 / 64</td><td>Closest stop</td></tr>
+        </tbody>
+      </table>
+      <div class="card highlight">
+        <h4 class="teal">The exception is letter-spacing</h4>
+        <p style="font-size: 0.96rem;"><code class="inline">typography/letter-spacing/{tight, normal, wide}</code> are raw FLOAT (fractional values like ±0.02). They live in their own micro-scale and don't pretend to fit <code class="inline">scale/*</code>.</p>
+        <div class="divider-line"></div>
+        <h4 class="teal">Why the rule is strict</h4>
+        <p style="font-size: 0.96rem;">Once you allow off-grid stops "just for this radius", every legacy value becomes a candidate. The scale erodes into a list of historical accidents. A 1–4px visual drift on a few radii is a one-time cost; carrying off-grid stops forever is a recurring cost on every designer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: BRANDS ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s12-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">12</span><span class="tag">Nine brand modes</span></div>
+    <h2 id="s12-title">Same DNA, nine personalities.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Each brand mode in <code class="inline">Modes</code> overrides the four DNA ramps. Everything else in Modes (chrome aliases, radii, typography family, meta strings) re-resolves automatically when the frame's brand mode flips.</p>
+
+    <div class="overview" style="border: 1px solid var(--border); border-radius: 12px; overflow-x: auto;">
+      <table>
+        <caption class="sr-only">Brand DNA primary anchors</caption>
+        <thead>
+          <tr>
+            <th scope="col">Brand</th>
+            <th scope="col">primary/500</th>
+            <th scope="col">secondary/500</th>
+            <th scope="col">tertiary/500</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Lyllo</th><td><span class="mono">#F02884</span> pink</td><td>pink-leaning</td><td><span class="mono">#FD6A00</span> orange</td><td>Visible · Tertiary unblocks orange accent</td></tr>
+          <tr><th scope="row">Snabarre</th><td>green</td><td>blue</td><td>placeholder</td><td>Visible · Header lives in blue</td></tr>
+          <tr><th scope="row">Mobilespin</th><td>red</td><td>red-deep</td><td>placeholder</td><td>Visible · Icons stay charcoal</td></tr>
+          <tr><th scope="row">Comeon</th><td>green</td><td>green-deep</td><td><span class="mono">#C3FF00</span> lime</td><td>Modes-only · Tertiary lime accent</td></tr>
+          <tr><th scope="row">Mobilebet</th><td>green</td><td>green-deep</td><td>placeholder</td><td>Modes-only · No frame yet</td></tr>
+          <tr><th scope="row">Get Lucky</th><td>orange</td><td>pink-magenta</td><td>placeholder</td><td>Modes-only · Dual-palette</td></tr>
+          <tr><th scope="row">Reviant</th><td>red</td><td>warm</td><td>placeholder</td><td>Modes-only</td></tr>
+          <tr><th scope="row">888 Casino</th><td>yellow</td><td>black</td><td>placeholder</td><td>Modes-only · Yellow CTAs</td></tr>
+          <tr><th scope="row">Reviant 2</th><td>red-pink</td><td>blue-purple</td><td>placeholder</td><td>Modes-only · Sharp-edge variant</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim" style="margin-top: 14px; font-size: 0.9rem;">Three brands have visible frames in <code class="inline">fysBbW10LRJUNgisaBKXJo</code>; the remaining six exist as Modes entries ready for future visual coverage.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: v3.1 → v3.2 ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s13-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">13</span><span class="tag">Migration map</span></div>
+    <h2 id="s13-title">v3.1 → v3.2 in one table.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Renames preserve binding IDs in Figma — components pick up new names without per-instance edits.</p>
+
+    <table>
+      <caption class="sr-only">v3.1 to v3.2 token migration</caption>
+      <thead><tr><th scope="col">v3.1 token / family</th><th scope="col">v3.2 location</th><th scope="col">Change</th></tr></thead>
+      <tbody>
+        <tr><th scope="row" class="mono">color/brand/primary-N</th><td class="mono">Modes/color/primary/N</td><td>Renamed · group flat</td></tr>
+        <tr><th scope="row" class="mono">color/brand/secondary-N</th><td class="mono">Modes/color/secondary/N</td><td>Renamed</td></tr>
+        <tr><th scope="row" class="mono">color/brand/tertiary-N</th><td class="mono">Modes/color/tertiary/N</td><td>Promoted from optional</td></tr>
+        <tr><th scope="row" class="mono">color/neutral-N</th><td class="mono">Modes/color/neutral/N</td><td>Brand-tinted, moved to Modes</td></tr>
+        <tr><th scope="row" class="mono">color/status/*</th><td class="mono">Global/color/system/*</td><td>Renamed · Global, brand-invariant</td></tr>
+        <tr><th scope="row" class="mono">color/always/{black,white}</th><td class="mono">Global/color/{black,white}</td><td>Flat in Global</td></tr>
+        <tr><th scope="row" class="mono">spacing/N</th><td class="mono">Global/scale/N + Semantic/spacing/{xxs..3xl}</td><td>Two-layer · scale + named</td></tr>
+        <tr><th scope="row" class="mono">radius/{base-3,input,box,card,pill,navigation,large}</th><td class="mono">Modes/radius/* → Global/scale/*</td><td>All aliased to scale</td></tr>
+        <tr><th scope="row" class="mono">icon/sizes</th><td class="mono">Semantic/icon-size/{sm,md,lg,xl}</td><td>Promoted to Semantic</td></tr>
+        <tr><th scope="row" class="mono">elevation tokens</th><td class="mono">Global/elevation/0..4 (Effect Style)</td><td>Effect Styles · 5 levels</td></tr>
+        <tr><th scope="row" class="mono">launcher/* (deferred)</th><td>—</td><td>Stays deferred</td></tr>
+        <tr><th scope="row" class="mono">platform/* (deferred)</th><td>—</td><td>Stays deferred</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: WHO EDITS WHAT ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s14-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">14</span><span class="tag teal">Permission matrix</span></div>
+    <h2 id="s14-title">Who can edit what.</h2>
+    <p class="lead" style="margin-bottom: 22px;">Marketing edits brand DNA only. Compliance edits Regulatory. The DS lead owns the rest. This boundary is what makes the architecture survive contact with day-to-day work.</p>
+
+    <table>
+      <caption class="sr-only">Permission matrix per collection</caption>
+      <thead><tr><th scope="col">Collection</th><th scope="col">Marketing</th><th scope="col">Compliance</th><th scope="col">DS lead</th><th scope="col">Engineering</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Global</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only via export</td></tr>
+        <tr><th scope="row">Modes · brand DNA</th><td>✓ writes <em>(only here)</em></td><td>—</td><td>review</td><td>read-only</td></tr>
+        <tr><th scope="row">Modes · alias chrome</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
+        <tr><th scope="row">Theme</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
+        <tr><th scope="row">Semantic</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
+        <tr><th scope="row">Component Packs</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
+        <tr><th scope="row">Regulatory</th><td>—</td><td>✓ writes</td><td>review</td><td>read-only</td></tr>
+      </tbody>
+    </table>
+
+    <p class="dim" style="margin-top: 18px; font-size: 0.92rem;">The single-edit-point property of brand DNA is what enables marketing self-service: edit one ramp stop, the whole chain updates. Component bindings never need touching at the marketing level.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15: STATUS + WHAT'S NEXT ============ -->
+<section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s15-title">
+  <div class="slide-inner">
+    <div class="section-header"><span class="section-num">15</span><span class="tag">Component adoption</span></div>
+    <h2 id="s15-title">v3.2 ships in the variable layer. Components are next.</h2>
+    <p class="lead" style="margin-bottom: 22px;">The variables landed on 2026-04-29. Component masters on the Components page still bind earlier library names — see the <a href="component-audit-v3.2.html" style="color: var(--purple-light);">component audit</a> for the full gap analysis and remediation plan.</p>
+
+    <div class="grid-2">
+      <div class="card highlight">
+        <h4 class="teal">Done</h4>
+        <ul class="check" style="margin-top: 8px;">
+          <li>6 collections rebuilt in <code class="inline">fysBbW10LRJUNgisaBKXJo</code></li>
+          <li>9 brand modes seeded with DNA</li>
+          <li>Tertiary ramp added across 9 brands</li>
+          <li>Strict 4-point scale enforced (off-grid stops removed)</li>
+          <li>Theme alias-only audit passes</li>
+          <li>Hex invariant audit passes</li>
+          <li>Live HTML reference (this set)</li>
+        </ul>
+      </div>
+      <div class="card warn-card">
+        <h4 class="warn">Outstanding</h4>
+        <ul class="arrow" style="margin-top: 8px;">
+          <li>Component-master rewire — components still bind <code class="inline">Main/*</code>, <code class="inline">Generic/*</code>, <code class="inline">Lobby Header/*</code>, <code class="inline">Whiteframe/*</code></li>
+          <li>Focus tokens — none defined yet (WCAG 2.4.7 / 2.4.11 / 2.4.13)</li>
+          <li>Notification text-on-color contrast — confirmed AA failures (success, warning, info)</li>
+          <li>Touch target sizes &lt; 24×24 in Toggle thumb, Notification ×, Modal ×, Micro Button</li>
+          <li>"OLD" components retiring (Payment Method OLD, duplicate Sub Tabs)</li>
+          <li>Per-brand dark-mode neutrals beyond the placeholder set</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 16: CLOSE ============ -->
+<section class="slide title-slide" role="group" aria-roledescription="slide" aria-labelledby="s16-title">
+  <div class="orb" style="width: 480px; height: 480px; top: -140px; right: -140px;" aria-hidden="true"></div>
+  <div class="orb teal" style="width: 320px; height: 320px; bottom: -80px; left: -80px;" aria-hidden="true"></div>
+  <div class="slide-inner" style="text-align: center;">
+    <div class="title-kicker">v3.2 · Final</div>
+    <h1 id="s16-title">Six collections.<br><span class="title-underline accent">Two invariants.</span></h1>
+    <p class="subtitle" style="margin: 18px auto 0;">Edit brand DNA. Everything else flows. Audit at any time with one Plugin API call. The architecture is locked — the work that remains is component adoption.</p>
+
+    <div style="margin-top: 36px;">
+      <a class="deck-cta" href="design-token-reference-v3.2.html"><span aria-hidden="true">→</span> Token Reference v3.2</a>
+      <a class="deck-cta" href="component-audit-v3.2.html"><span aria-hidden="true">→</span> Component Audit</a>
+      <a class="deck-cta" href="index.html"><span aria-hidden="true">→</span> Home</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  (function(){
+    var slides = document.querySelectorAll('main.deck > section.slide');
+    var total = slides.length;
+    var counter = document.getElementById('counter');
+    var bar = document.getElementById('progress');
+    var role = document.getElementById('progress-role');
+    var announce = document.getElementById('slide-announce');
+    var current = 1;
+
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+    function update(){
+      var idx = current;
+      counter.textContent = pad(idx) + ' / ' + pad(total);
+      bar.style.width = (idx / total * 100) + '%';
+      role.setAttribute('aria-valuenow', String(idx));
+      var t = slides[idx-1].querySelector('h1, h2');
+      announce.textContent = 'Slide ' + idx + ' of ' + total + (t ? ': ' + t.textContent.trim() : '');
+    }
+
+    function detect(){
+      var midline = window.innerHeight / 2;
+      for (var i = 0; i < slides.length; i++){
+        var r = slides[i].getBoundingClientRect();
+        if (r.top <= midline && r.bottom >= midline){
+          if (current !== i + 1){ current = i + 1; update(); }
+          return;
+        }
+      }
+    }
+
+    function go(delta){
+      var next = Math.max(1, Math.min(total, current + delta));
+      slides[next-1].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    }
+
+    document.addEventListener('keydown', function(e){
+      if (['INPUT','TEXTAREA','SELECT'].indexOf(document.activeElement && document.activeElement.tagName) > -1) return;
+      switch(e.key){
+        case 'ArrowDown': case 'PageDown': case ' ': e.preventDefault(); go(1); break;
+        case 'ArrowUp': case 'PageUp': e.preventDefault(); go(-1); break;
+        case 'Home': e.preventDefault(); slides[0].scrollIntoView(); break;
+        case 'End': e.preventDefault(); slides[total-1].scrollIntoView(); break;
+      }
+    });
+
+    window.addEventListener('scroll', detect, { passive: true });
+    window.addEventListener('resize', detect);
+    update();
+  })();
+</script>
+
+</body>
+</html>

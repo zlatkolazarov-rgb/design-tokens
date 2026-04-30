@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Design Tokens · Landing</title>
+<title>Design Tokens · v3.2 Final</title>
+<meta name="description" content="Design Token system for ComeOn's 20-brand white-label platform. v3.2 is the final architecture: six collections, two locked invariants, nine brand modes, Light + Dark.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,196 +14,230 @@
     --bg-alt: #0f0e1f;
     --bg-card: #17162a;
     --bg-card-hover: #1f1c3e;
-    --border: rgba(255,255,255,0.08);
-    --border-strong: rgba(0, 212, 180, 0.35);
-    --text: #e8e6f0;
-    --text-muted: #8a86a0;
-    --text-dim: #5c587a;
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(0, 212, 180, 0.45);
+    --text: #eceaf5;
+    --text-muted: #b1adc8;
     --purple: #8b7dff;
-    --purple-light: #a29bfe;
-    --teal: #00d4b4;
+    --purple-light: #b6afff;
+    --teal: #1de4c0;
     --warning: #fdcb6e;
+    --focus: #ffd166;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; color-scheme: dark; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; line-height: 1.55; }
   h1, h2, h3 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
-  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.88em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.9em; }
   a { color: inherit; text-decoration: none; }
 
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 24px 120px; }
+  .skip-link { position: absolute; left: -9999px; top: 0; padding: 12px 16px; background: var(--bg-card); color: var(--text); border: 2px solid var(--focus); border-radius: 8px; font-weight: 600; z-index: 1000; }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 120px; }
 
   header.hero { margin-bottom: 56px; }
-  header.hero .tag { display: inline-block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: rgba(0, 212, 180, 0.12); border: 1px solid rgba(0, 212, 180, 0.3); padding: 5px 12px; border-radius: 999px; }
-  header.hero h1 { font-size: 2.8rem; line-height: 1.1; margin: 20px 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+  header.hero .tag { display: inline-block; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: rgba(29, 228, 192, 0.14); border: 1px solid rgba(29, 228, 192, 0.4); padding: 6px 14px; border-radius: 999px; font-weight: 700; }
+  header.hero h1 { font-size: 2.8rem; line-height: 1.1; margin: 22px 0 14px; font-weight: 800; letter-spacing: -0.02em; }
   header.hero h1 .accent { color: var(--purple-light); }
-  header.hero p.lead { font-size: 1.05rem; color: var(--text-muted); margin: 0 0 12px; line-height: 1.55; max-width: 640px; }
-  header.hero .meta { font-size: 0.85rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  header.hero h1 .final { color: var(--teal); }
+  header.hero p.lead { font-size: 1.06rem; color: var(--text); margin: 0 0 14px; line-height: 1.6; max-width: 720px; }
+  header.hero p.lead .strong { color: var(--white); font-weight: 600; }
+  header.hero .meta { font-size: 0.86rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
-  section { margin-bottom: 52px; }
-  section h2 { font-size: 1.12rem; font-weight: 600; margin-bottom: 6px; color: var(--text); display: flex; align-items: center; gap: 10px; }
-  section h2 .sec-num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-size: 0.84em; font-weight: 500; }
-  section h2 .sec-tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 2px 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-weight: 400; }
-  section > p.desc { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 18px; max-width: 720px; }
+  section { margin-bottom: 56px; }
+  section h2 { font-size: 1.18rem; font-weight: 700; margin-bottom: 8px; color: var(--text); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  section h2 .sec-num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-size: 0.84em; font-weight: 600; }
+  section h2 .sec-tag { font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 3px 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  section > p.desc { font-size: 0.96rem; color: var(--text-muted); margin-bottom: 20px; max-width: 760px; }
 
   .cards { display: grid; gap: 16px; }
   .cards.two { grid-template-columns: 1fr 1fr; }
   .cards.three { grid-template-columns: repeat(3, 1fr); }
   @media (max-width: 820px) { .cards.two, .cards.three { grid-template-columns: 1fr; } }
 
-  a.card { display: block; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; text-decoration: none; color: inherit; transition: border-color 0.18s, transform 0.18s, background 0.18s; position: relative; }
-  a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.04) 100%); }
-  a.card .meta { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
+  a.card { display: block; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; text-decoration: none; color: inherit; transition: border-color 0.18s, transform 0.18s, background 0.18s; position: relative; min-height: 44px; }
+  a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(29, 228, 192, 0.05) 100%); }
+  a.card .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.74rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
   a.card .meta .v { color: var(--text-muted); }
-  a.card h3 { margin: 0 0 6px; font-size: 1.12rem; font-weight: 600; color: var(--text); }
-  a.card p { margin: 0; color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; }
-  a.card .arrow { display: block; margin-top: 12px; color: var(--purple-light); font-weight: 600; font-size: 0.88rem; }
+  a.card h3 { margin: 0 0 8px; font-size: 1.16rem; font-weight: 700; color: var(--text); }
+  a.card p { margin: 0; color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+  a.card .arrow { display: block; margin-top: 14px; color: var(--purple-light); font-weight: 600; font-size: 0.92rem; }
 
-  a.card.primary { border-color: rgba(0, 212, 180, 0.25); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 212, 180, 0.06) 100%); }
+  a.card.primary { border-color: rgba(29, 228, 192, 0.35); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(29, 228, 192, 0.08) 100%); }
   a.card.primary:hover { border-color: var(--teal); }
-  a.card.archived { opacity: 0.72; }
+  a.card.archived { opacity: 0.78; }
   a.card.archived:hover { opacity: 1; }
 
-  .badge { display: inline-block; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; }
-  .badge.new { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.4); background: rgba(253, 203, 110, 0.08); }
-  .badge.v3 { color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.4); background: rgba(0, 212, 180, 0.1); }
-  .badge.v4 { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.5); background: rgba(253, 203, 110, 0.12); }
-  .badge.v2 { color: var(--text-muted); border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
-  .badge.shipped { color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.4); background: rgba(0, 212, 180, 0.1); }
-  .badge.proposal { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.5); background: rgba(253, 203, 110, 0.12); }
+  .badge { display: inline-block; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .badge.final { color: var(--white); border: 1px solid var(--purple-light); background: linear-gradient(135deg, rgba(29,228,192,0.2) 0%, rgba(108,92,231,0.25) 100%); }
+  .badge.shipped { color: var(--teal); border: 1px solid rgba(29, 228, 192, 0.45); background: rgba(29, 228, 192, 0.12); }
+  .badge.archived { color: var(--text-muted); border: 1px solid var(--border); background: rgba(255,255,255,0.04); }
+  .badge.audit { color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.5); background: rgba(253, 203, 110, 0.12); }
 
-  .option-tag { display: inline-block; font-family: 'Sora', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 4px; margin-bottom: 10px; }
-  .option-tag.a { background: rgba(0, 212, 180, 0.12); color: var(--teal); border: 1px solid rgba(0, 212, 180, 0.3); }
-  .option-tag.b { background: rgba(253, 203, 110, 0.12); color: var(--warning); border: 1px solid rgba(253, 203, 110, 0.4); }
+  .option-tag { display: inline-block; font-family: 'Sora', sans-serif; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; }
+  .option-tag.final { background: linear-gradient(135deg, rgba(29, 228, 192, 0.18) 0%, rgba(139, 125, 255, 0.22) 100%); color: var(--white); border: 1px solid var(--purple-light); }
+  .option-tag.legacy { background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--border); }
 
-  a.card.proposal-card { border-color: rgba(253, 203, 110, 0.3); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.05) 100%); }
-  a.card.proposal-card:hover { border-color: var(--warning); }
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 0; }
+  .pill { display: inline-block; padding: 4px 12px; background: rgba(29, 228, 192, 0.14); color: var(--teal); border: 1px solid rgba(29, 228, 192, 0.4); border-radius: 999px; font-size: 0.78rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .pill.purple { background: rgba(139, 125, 255, 0.16); color: var(--purple-light); border-color: rgba(139, 125, 255, 0.4); }
+  .pill.warn { background: rgba(253, 203, 110, 0.14); color: var(--warning); border-color: rgba(253, 203, 110, 0.45); }
 
-  footer { margin-top: 72px; color: var(--text-muted); font-size: 0.82rem; padding-top: 24px; border-top: 1px solid var(--border); }
-  footer code { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+  footer { margin-top: 72px; color: var(--text-muted); font-size: 0.86rem; padding-top: 24px; border-top: 1px solid var(--border); }
+  footer code { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: var(--purple-light); }
   footer p { margin-bottom: 6px; }
+  footer a { color: var(--purple-light); }
+  footer a:hover { color: var(--teal); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>
-  <div class="wrap">
 
-    <header class="hero">
-      <span class="tag">20-brand white label · ComeOn</span>
-      <h1>Design Token <span class="accent">Architecture</span></h1>
-      <p class="lead">A 5-collection, multi-axis Figma Variables system for brand, theme, jurisdiction, and iGaming-specific surfaces — built on a 4-point scale linked to a 16px body. Two architectures live on this page: <strong style="color: var(--teal);">Option A (v3.1)</strong> is the shipped current architecture; <strong style="color: var(--warning);">Option B (v4)</strong> is the proposal that moves brand modes onto Semantic and flattens Primitives.</p>
-      <p class="meta">Option A · v3.1 (shipped, 2026-04-20) &nbsp;·&nbsp; Option B · v4 (proposal, 2026-04-22)</p>
-    </header>
+<a class="skip-link" href="#main">Skip to main content</a>
 
-    <section>
-      <h2><span class="sec-num">01</span> Architecture <span class="sec-tag">compare options</span></h2>
-      <p class="desc">Two architectures side by side. Option A is what's in Figma today. Option B moves the brand mode axis down to Semantic and flattens Primitives into an unmoded palette library — each axis owns exactly one collection.</p>
-      <div class="cards two">
-        <a class="card primary" href="design-token-architecture-v3.html">
-          <div class="meta"><span>Deck · 19 slides</span><span class="v">· 2026-04-20</span><span class="badge shipped">shipped</span></div>
-          <span class="option-tag a">Option A · v3</span>
-          <h3>Architecture v3</h3>
-          <p>The current architecture. Five collections. Primitives carries the 20-brand mode axis; Theme carries light/dark; Semantic and Component are global (no modes). Implementation diagram shows the full token-resolution chain. Marketing-designer permission matrix and intentional-splits documentation convention.</p>
-          <span class="arrow">Open deck →</span>
-        </a>
-        <a class="card proposal-card" href="design-token-architecture-v4.html">
-          <div class="meta"><span>Deck · 14 slides</span><span class="v">· 2026-04-22</span><span class="badge proposal">proposal</span></div>
-          <span class="option-tag b">Option B · v4</span>
-          <h3>Architecture v4</h3>
-          <p>Proposal. Brand mode axis moves from Primitives to Semantic — designers switch brand where they bind. Primitives flattens into an unmoded palette library (<code>color/&lt;brand&gt;/&lt;ramp&gt;</code>). Theme, Regulatory, and Component unchanged. Each axis lives in exactly one collection. No cross-collection name-matching.</p>
-          <span class="arrow">Open deck →</span>
-        </a>
-      </div>
-    </section>
+<main id="main" class="wrap">
 
-    <section>
-      <h2><span class="sec-num">02</span> Reference <span class="sec-tag">token catalogues</span></h2>
-      <p class="desc">The token catalogues under each architecture. v3.1 is the current shipped reference. v4 is the proposed catalogue under Option B — structural walkthrough with representative tokens per collection, with a v3.1 → v4 migration map.</p>
-      <div class="cards two">
-        <a class="card primary" href="design-token-reference-v3.1.html">
-          <div class="meta"><span>Reference · ~525 active</span><span class="v">· 2026-04-20</span><span class="badge shipped">shipped</span></div>
-          <span class="option-tag a">Option A · v3.1</span>
-          <h3>Token Reference v3.1</h3>
-          <p>Narrowed catalogue against the 9-brand audit. Retires <code>interactive/viewall/*</code> in favour of the Component pack; defers <code>launcher/*</code> and <code>platform/*</code>. Full v3 coverage preserved for Primitives, Theme, Regulatory, and the rest of Semantic + Component.</p>
-          <span class="arrow">Open reference →</span>
-        </a>
-        <a class="card proposal-card" href="design-token-reference-v4.html">
-          <div class="meta"><span>Reference · structural</span><span class="v">· 2026-04-22</span><span class="badge proposal">proposal</span></div>
-          <span class="option-tag b">Option B · v4</span>
-          <h3>Token Reference v4</h3>
-          <p>Proposed catalogue. Primitives restructured to flat brand-prefixed names (~990 tokens, unmoded). Semantic gains 9–20 brand modes; ~290 of ~340 tokens are brand-identical across modes, ~50 diverge per brand. Includes Theme, Regulatory, Component as unchanged sections, plus a v3.1 → v4 migration map.</p>
-          <span class="arrow">Open reference →</span>
-        </a>
-      </div>
-    </section>
+  <header class="hero">
+    <span class="tag">20-brand white label · ComeOn</span>
+    <h1>Design Token <span class="accent">Architecture</span> · <span class="final">v3.2 Final</span></h1>
+    <p class="lead"><span class="strong">v3.2 is the final architecture.</span> Six collections (Global · Modes · Theme · Semantic · Component Packs · Regulatory), two locked invariants (raw-hex only in Global + Modes DNA, strict 4-point scale), nine brand modes, Light + Dark theme. Implemented in Figma file <code style="color: var(--purple-light); background: rgba(139,125,255,0.1); padding: 1px 6px; border-radius: 3px;">fysBbW10LRJUNgisaBKXJo</code> on 2026-04-29.</p>
+    <p class="meta">Final · 2026-04-30 &nbsp;·&nbsp; v3.1 (shipped) and v4 (dropped) preserved in <a href="#archive" style="color: var(--teal); border-bottom: 1px dotted var(--teal);">Archive</a></p>
+    <div class="pill-row">
+      <span class="pill">6 collections</span>
+      <span class="pill">9 brand modes</span>
+      <span class="pill">Light + Dark</span>
+      <span class="pill purple">~382 tokens</span>
+      <span class="pill warn">marketing edits Modes DNA only</span>
+    </div>
+  </header>
 
-    <section>
-      <h2><span class="sec-num">03</span> Audits <span class="sec-tag">evidence base</span></h2>
-      <p class="desc">The raw data feeding v3. Useful when arguing a specific edge case or onboarding new designers.</p>
-      <div class="cards two">
-        <a class="card" href="brand-audit.html">
-          <div class="meta"><span>Audit</span><span class="v">· per-brand</span></div>
-          <h3>Brand Audit</h3>
-          <p>Per-brand evidence cards for 9 brands × key screens. Every divergence categorised (dual-palette, three-icon split, pill colour rules, CTA radius by context, header as its own identity). Maps each edge case to a v3 token change.</p>
-          <span class="arrow">Open audit →</span>
-        </a>
-        <a class="card" href="component-hex-audit.html">
-          <div class="meta"><span>Audit</span><span class="v">· component library</span></div>
-          <h3>Component Hex Audit</h3>
-          <p>Which masters are fully tokenised, which have partial gaps, and where a semantic role is missing entirely (Pill, Badge, Modal). Per-component migration plan for the v3 rewire.</p>
-          <span class="arrow">Open audit →</span>
-        </a>
-      </div>
-    </section>
+  <!-- ============ V3.2 ============ -->
+  <section aria-labelledby="sec-current">
+    <h2 id="sec-current"><span class="sec-num">01</span> v3.2 · Final architecture <span class="sec-tag">2026-04-30</span></h2>
+    <p class="desc">The locked architecture. Architecture deck explains the model; Reference catalogues every token; Component Audit measures the gap between the v3.2 token layer and the components on the Components page.</p>
+    <div class="cards three">
+      <a class="card primary" href="design-token-architecture-v3.2.html">
+        <div class="meta"><span>Deck · 16 slides</span><span class="v">2026-04-30</span><span class="badge final">final</span></div>
+        <span class="option-tag final">v3.2</span>
+        <h3>Architecture v3.2</h3>
+        <p>The shape of v3.2 — six collections, alias chain walked end-to-end, hex invariant, strict 4-point scale, nine brand modes, permission matrix, what's outstanding (component adoption).</p>
+        <span class="arrow">Open deck <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card primary" href="design-token-reference-v3.2.html">
+        <div class="meta"><span>Reference · 382 tokens</span><span class="v">2026-04-30</span><span class="badge final">final</span></div>
+        <span class="option-tag final">v3.2</span>
+        <h3>Token Reference v3.2</h3>
+        <p>Full catalogue. Every Global, Modes, Theme, Semantic, Component Packs, and Regulatory token. v3.1 → v3.2 migration map. Audit rule snippets you can paste into the Plugin API.</p>
+        <span class="arrow">Open reference <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card primary" href="component-audit-v3.2.html">
+        <div class="meta"><span>Audit · 34 groups</span><span class="v">2026-04-30</span><span class="badge audit">new</span></div>
+        <span class="option-tag final">v3.2</span>
+        <h3>Component Audit v3.2</h3>
+        <p>Gap analysis between the 34 component groups in <code>fysBbW10LRJUNgisaBKXJo</code> and the v3.2 token layer. WCAG 2.2 AA contrast / target / focus findings, severity table, five-phase remediation plan, verification plan.</p>
+        <span class="arrow">Open audit <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
 
-    <section>
-      <h2><span class="sec-num">04</span> Dark chrome <span class="sec-tag">shipped 2026-04-23</span></h2>
-      <p class="desc">Brand-tinted dark mode for chrome surfaces (header, nav, menu-row, page, border, text) in the v4 Figma file. 14 brand-moded Semantic <code>*-dark</code> variables with raw hex per brand (Lyllo pink-grey, Snabbare blue-grey, Mobilespin red-grey); Theme Dark aliases rewired from brand-invariant neutrals to the new Semantic tokens. Primitives untouched.</p>
-      <div class="cards two">
-        <a class="card primary" href="dark-chrome-preview.html">
-          <div class="meta"><span>Visual preview</span><span class="v">· 2026-04-23</span><span class="badge shipped">shipped</span></div>
-          <h3>Dark Chrome Preview</h3>
-          <p>Side-by-side phone mocks for the 3 brands with swatch tables, tint-comparison strip, design rationale, and open questions. The visual reference for how dark chrome should look — matches the 14 Semantic <code>*-dark</code> variables currently in the v4 Figma file.</p>
-          <span class="arrow">Open preview →</span>
-        </a>
-        <a class="card" href="dark-chrome-proposal.md">
-          <div class="meta"><span>Hex table</span><span class="v">· 2026-04-23</span><span class="badge shipped">spec</span></div>
-          <h3>Dark Chrome Spec</h3>
-          <p>Markdown table of the 14 dark chrome tokens × 3 brands with exact hex values, tint-strength adjustment guidance, and open questions. Use this when comparing rendered output against the intended values.</p>
-          <span class="arrow">Open spec →</span>
-        </a>
-      </div>
-    </section>
+  <!-- ============ AUDITS ============ -->
+  <section aria-labelledby="sec-audits">
+    <h2 id="sec-audits"><span class="sec-num">02</span> Evidence base <span class="sec-tag">audits feeding v3.2</span></h2>
+    <p class="desc">The data that drove the architecture. Useful when arguing a specific edge case or onboarding new designers.</p>
+    <div class="cards two">
+      <a class="card" href="brand-audit.html">
+        <div class="meta"><span>Audit · per-brand</span><span class="v">2026-04-20</span></div>
+        <h3>Brand Audit</h3>
+        <p>Per-brand evidence cards for 9 brands × key screens. Every divergence categorised (dual-palette, three-icon split, pill colour rules, CTA radius by context, header as its own identity). Maps each edge case to a v3 token change carried forward into v3.2.</p>
+        <span class="arrow">Open audit <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card" href="component-hex-audit.html">
+        <div class="meta"><span>Audit · component library</span><span class="v">2026-04-20</span></div>
+        <h3>Component Hex Audit (v3 era)</h3>
+        <p>Which masters were fully tokenised at the v3 baseline, which had partial gaps, and where a semantic role was missing entirely (Pill, Badge, Modal). Per-component migration plan that informed v3 → v3.1 → v3.2.</p>
+        <span class="arrow">Open audit <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
 
-    <section id="archive">
-      <h2><span class="sec-num">05</span> Archive <span class="sec-tag">process history</span></h2>
-      <p class="desc">Earlier versions preserved as the record of how the architecture evolved. v3 (pre-narrowing) sits here now that v3.1 and v4 are the two primary options above. v2 is the foundational 5-collection model.</p>
-      <div class="cards two">
-        <a class="card archived" href="design-token-reference-v3.html">
-          <div class="meta"><span>Reference · ~585 tokens</span><span class="v">· 2026-04-20</span><span class="badge v2">superseded by v3.1</span></div>
-          <h3>Token Reference v3</h3>
-          <p>The pre-narrowing v3 catalogue. Everything promoted from v2 plus the v3 additions (pill / badge / banner, icon roles, expanded Component packs). v3.1 narrows this; see above.</p>
-          <span class="arrow">Open archived reference →</span>
-        </a>
-        <a class="card archived" href="design-token-architecture-v2.html">
-          <div class="meta"><span>Deck · v2</span><span class="v">· 2026-04-17</span><span class="badge v2">superseded by v3</span></div>
-          <h3>Architecture v2</h3>
-          <p>The original 22-slide walkthrough. Locked the 5-collection model, the four axes (brand × theme × jurisdiction × viewport), the 4-point scale linked to 1rem = 16px. v3 inherits the shape from here and extends the contents of Collections 3 and 5.</p>
-          <span class="arrow">Open archived deck →</span>
-        </a>
-        <a class="card archived" href="design-token-reference.html" style="grid-column: 1 / -1;">
-          <div class="meta"><span>Reference · v2</span><span class="v">· 2026-04-17</span><span class="badge v2">superseded by v3</span></div>
-          <h3>Token Reference v2</h3>
-          <p>The original ~550-token catalogue. v3 carries all of these forward and adds ~35 new tokens. Kept here to show what v3 was built on top of.</p>
-          <span class="arrow">Open archived reference →</span>
-        </a>
-      </div>
-    </section>
+  <!-- ============ ARCHIVE ============ -->
+  <section id="archive" aria-labelledby="sec-archive">
+    <h2 id="sec-archive"><span class="sec-num">03</span> Archive <span class="sec-tag">process history</span></h2>
+    <p class="desc">Previous versions kept as the record of how the architecture evolved. v3.1 was the prior shipped reference. v4 was a structural exploration (flatten Primitives + move brand mode onto Semantic) — dropped on 2026-04-29 in favour of locking discipline rules inside the v3.1 collection model.</p>
 
-    <footer>
-      <p>Served via GitHub Pages at <a href="https://zlatkolazarov-rgb.github.io/design-tokens/" style="color: var(--teal);">zlatkolazarov-rgb.github.io/design-tokens</a>. Push to <code>main</code>, Pages redeploys in ~1 minute.</p>
-      <p style="margin-top: 6px;">Evidence base: Figma file <code>qnPOhVnKHuYo7t0g6PgrcS</code> (Token Explorations). Auto-sync via Claude PostToolUse hook; updates commit + push on every edit.</p>
-    </footer>
+    <div class="cards two">
+      <a class="card archived" href="design-token-architecture-v3.html">
+        <div class="meta"><span>Deck · 19 slides</span><span class="v">2026-04-20</span><span class="badge archived">superseded by v3.2</span></div>
+        <span class="option-tag legacy">v3</span>
+        <h3>Architecture v3</h3>
+        <p>The pre-narrowing v3 deck. Five-collection model, brand × theme × jurisdiction axes, v3 semantic and component additions. v3.2 inherits the shape and adds two locked invariants.</p>
+        <span class="arrow">Open archived deck <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-reference-v3.1.html">
+        <div class="meta"><span>Reference · ~525 active</span><span class="v">2026-04-20</span><span class="badge archived">superseded by v3.2</span></div>
+        <span class="option-tag legacy">v3.1</span>
+        <h3>Token Reference v3.1</h3>
+        <p>The prior shipped reference. Narrowed against the 9-brand audit. Carried forward into v3.2 with the collection rename + DNA promotion + scale enforcement.</p>
+        <span class="arrow">Open archived reference <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-architecture-v4.html">
+        <div class="meta"><span>Deck · v4</span><span class="v">2026-04-22</span><span class="badge archived">dropped 2026-04-29</span></div>
+        <span class="option-tag legacy">v4 (dropped)</span>
+        <h3>Architecture v4</h3>
+        <p>Structural exploration that flattened Primitives and moved the brand mode axis to Semantic. Migration cost outweighed structural win; team chose to keep the v3.1 model and lock discipline rules instead — that is v3.2.</p>
+        <span class="arrow">Open archived deck <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-reference-v4.html">
+        <div class="meta"><span>Reference · v4</span><span class="v">2026-04-22</span><span class="badge archived">dropped 2026-04-29</span></div>
+        <span class="option-tag legacy">v4 (dropped)</span>
+        <h3>Token Reference v4</h3>
+        <p>The proposed v4 catalogue. Kept as reference only. The dark-mode pattern surfaced here was carried forward to v3.2 with brand-tinted neutrals.</p>
+        <span class="arrow">Open archived reference <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-reference-v3.html">
+        <div class="meta"><span>Reference · ~585 tokens</span><span class="v">2026-04-20</span><span class="badge archived">v3 baseline</span></div>
+        <span class="option-tag legacy">v3</span>
+        <h3>Token Reference v3</h3>
+        <p>The pre-narrowing v3 catalogue. v3.1 narrowed it against the brand audit; v3.2 then renamed and locked invariants on top.</p>
+        <span class="arrow">Open archived reference <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-architecture-v2.html">
+        <div class="meta"><span>Deck · v2</span><span class="v">2026-04-17</span><span class="badge archived">superseded by v3</span></div>
+        <span class="option-tag legacy">v2</span>
+        <h3>Architecture v2</h3>
+        <p>The original 22-slide walkthrough that locked the 5-collection model, the four axes, and the 4-point scale linked to 1rem = 16px. Foundational document.</p>
+        <span class="arrow">Open archived deck <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="design-token-reference.html">
+        <div class="meta"><span>Reference · v2</span><span class="v">2026-04-17</span><span class="badge archived">superseded by v3</span></div>
+        <span class="option-tag legacy">v2</span>
+        <h3>Token Reference v2</h3>
+        <p>The original ~550-token catalogue. v3 carried these forward and added ~35 new tokens; v3.2 then collapsed v3.1's chrome layer when Modes absorbed it.</p>
+        <span class="arrow">Open archived reference <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="card archived" href="dark-chrome-preview.html">
+        <div class="meta"><span>Visual preview</span><span class="v">2026-04-23</span><span class="badge archived">v4-era · reference</span></div>
+        <h3>Dark Chrome Preview</h3>
+        <p>Side-by-side phone mocks for the 3 brands with swatch tables and tint-comparison strip. Authored under the v4 dark-mode architecture; the brand-tinted neutrals pattern carried forward into v3.2's <code>Modes/color/neutral/*</code>.</p>
+        <span class="arrow">Open preview <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
 
-  </div>
+  <footer>
+    <p>Served via GitHub Pages at <a href="https://zlatkolazarov-rgb.github.io/design-tokens/">zlatkolazarov-rgb.github.io/design-tokens</a>. Push to <code>main</code>, Pages redeploys in ~1 minute.</p>
+    <p>Canonical Figma source for v3.2: <code>fysBbW10LRJUNgisaBKXJo</code>. Auto-sync via Claude PostToolUse hook; updates commit + push on every edit.</p>
+  </footer>
+
+</main>
+
 </body>
 </html>

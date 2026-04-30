@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Audit v3.2 — Components page vs token architecture · WCAG 2.2 AA</title>
+<meta name="description" content="Component Audit v3.2: gap analysis between the 34 component groups in the Test File Tokens v3.2 Components page and the v3.2 token architecture. Includes WCAG 2.2 AA contrast, target size, focus, and responsiveness findings, plus a phased remediation plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0b0a1a; --bg-alt: #0f0e1f; --bg-card: #17152e; --bg-card-hover: #1f1c3e; --bg-code: #0a0918;
+    --border: rgba(108, 92, 231, 0.32); --border-strong: rgba(108, 92, 231, 0.55);
+    --purple: #6c5ce7; --purple-light: #b6afff; --teal: #1de4c0; --teal-soft: rgba(29, 228, 192, 0.14);
+    --text: #eceaf5; --text-muted: #b1adc8;
+    --warning: #fdcb6e; --error: #ff8e74; --success: #00d4a8; --critical: #ff5e5e;
+    --white: #ffffff;
+    --focus: #ffd166;
+  }
+  html { font-size: 16px; scroll-behavior: smooth; color-scheme: dark; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; }
+  h1, h2, h3, h4 { font-family: 'Sora', sans-serif; letter-spacing: -0.015em; }
+  code, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.875em; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { color: var(--purple-light); text-decoration: underline; }
+
+  .skip-link { position: absolute; left: -9999px; top: 0; padding: 12px 16px; background: var(--bg-card); color: var(--white); border: 2px solid var(--focus); border-radius: 8px; font-weight: 600; z-index: 1000; }
+  .skip-link:focus { left: 16px; top: 16px; }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  .topbar { position: sticky; top: 0; z-index: 10; background: rgba(11, 10, 26, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .topbar .back { color: var(--purple-light); font-size: 0.9rem; min-height: 36px; display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 6px; }
+  .topbar .back:hover { color: var(--teal); background: var(--bg-card); }
+  .topbar .tag { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); background: var(--teal-soft); border: 1px solid rgba(29, 228, 192, 0.4); padding: 4px 12px; border-radius: 999px; font-weight: 700; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px 120px; }
+  header.hero { margin-bottom: 48px; }
+  header.hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 14px; }
+  header.hero h1 .accent { color: var(--purple-light); }
+  header.hero p.lead { color: var(--text); font-size: 1.1rem; max-width: 880px; line-height: 1.55; margin-bottom: 14px; }
+  header.hero p.meta { color: var(--text-muted); font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; }
+
+  section { margin-bottom: 56px; scroll-margin-top: 80px; }
+  section h2 { font-size: 1.65rem; font-weight: 700; margin-bottom: 10px; }
+  section h2 .num { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-right: 12px; font-size: 0.92em; }
+  section > p.lead { color: var(--text); margin-bottom: 18px; max-width: 860px; }
+  section > p { color: var(--text-muted); margin-bottom: 16px; max-width: 860px; }
+
+  /* TOC */
+  .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 48px; }
+  .toc h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--purple-light); margin-bottom: 12px; font-weight: 700; }
+  .toc ol { list-style: none; padding: 0; counter-reset: toc; column-count: 2; column-gap: 32px; }
+  .toc li { counter-increment: toc; padding: 6px 0; font-size: 0.94rem; }
+  .toc li::before { content: counter(toc, decimal-leading-zero) "  "; color: var(--teal); font-family: 'JetBrains Mono', monospace; font-size: 0.84em; margin-right: 8px; }
+  .toc a { color: var(--text); }
+  .toc a:hover { color: var(--teal); }
+  @media (max-width: 720px) { .toc ol { column-count: 1; } }
+
+  /* tables */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); margin: 12px 0; background: var(--bg-alt); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  caption { caption-side: top; text-align: left; padding: 8px 14px; font-weight: 600; color: var(--text-muted); font-size: 0.86rem; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--purple-light); background: var(--bg-card); }
+  th[scope="row"] { font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; font-weight: 500; color: var(--text); background: transparent; text-transform: none; letter-spacing: 0; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(108, 92, 231, 0.05); }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; color: var(--text); }
+  td.note { color: var(--text-muted); font-size: 0.86rem; }
+  .swatch { display: inline-block; width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; margin-right: 8px; border: 1px solid rgba(255,255,255,0.18); }
+
+  /* severity badges - icon + text, never color alone */
+  .sev { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-family: 'JetBrains Mono', monospace; }
+  .sev::before { font-family: 'Sora', sans-serif; font-weight: 800; }
+  .sev.crit { color: #ffeaea; background: rgba(255, 94, 94, 0.18); border: 1px solid var(--critical); }
+  .sev.crit::before { content: "!!"; color: var(--critical); }
+  .sev.high { color: #fff3d6; background: rgba(253, 203, 110, 0.16); border: 1px solid var(--warning); }
+  .sev.high::before { content: "!"; color: var(--warning); }
+  .sev.med { color: var(--purple-light); background: rgba(108, 92, 231, 0.16); border: 1px solid var(--purple-light); }
+  .sev.med::before { content: "·"; color: var(--purple-light); }
+  .sev.low { color: var(--text-muted); background: var(--bg-code); border: 1px solid var(--border); }
+  .sev.low::before { content: "·"; color: var(--text-muted); }
+
+  /* note cards */
+  .note-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 0.95rem; }
+  .note-card.teal { border-color: var(--teal); }
+  .note-card.warn { border-color: rgba(253, 203, 110, 0.5); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(253, 203, 110, 0.06) 100%); }
+  .note-card.crit { border-color: var(--critical); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 94, 94, 0.06) 100%); }
+  .note-card h4 { margin: 0 0 10px; color: var(--white); font-size: 1rem; }
+
+  code.inline {
+    background: var(--bg-code); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 3px; font-size: 0.9em; color: var(--purple-light);
+  }
+  pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.86rem; line-height: 1.6; color: var(--text); overflow-x: auto; white-space: pre; }
+
+  /* phase cards */
+  .phase { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 26px; margin-bottom: 18px; }
+  .phase header { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .phase header h3 { font-size: 1.18rem; }
+  .phase header .label { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; }
+  .phase ol { padding-left: 22px; }
+  .phase ol li { padding: 4px 0; font-size: 0.94rem; }
+  .phase ol li code { color: var(--purple-light); }
+
+  ul.check, ul.arrow { list-style: none; padding: 0; }
+  ul.check li, ul.arrow li { padding-left: 26px; position: relative; margin-bottom: 8px; font-size: 0.96rem; }
+  ul.check li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; aria-hidden: true; }
+  ul.arrow li::before { content: '→'; position: absolute; left: 0; color: var(--purple-light); font-weight: 700; aria-hidden: true; }
+
+  .pill { display: inline-block; padding: 3px 10px; background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(29, 228, 192, 0.4); border-radius: 999px; font-size: 0.76rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; }
+  footer a { color: var(--purple-light); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="topbar">
+  <a class="back" href="index.html"><span aria-hidden="true">←</span> Design Tokens home</a>
+  <span class="tag">Audit · v3.2 · Final</span>
+</div>
+
+<main id="main" class="wrap">
+  <header class="hero">
+    <h1>Component <span class="accent">Audit</span> · v3.2</h1>
+    <p class="lead">Gap analysis between the 34 component groups on the Components page (<code class="inline">fysBbW10LRJUNgisaBKXJo</code> → <code class="inline">4050:50253</code>) and the locked v3.2 token architecture. Captures token-binding violations, WCAG 2.2 AA conformance issues, structural duplication, and a five-phase remediation plan. Read-only audit — no Figma writes were made.</p>
+    <p class="meta">2026-04-30 · sourced via Figma MCP <code>get_metadata</code>, <code>get_screenshot</code>, <code>get_variable_defs</code></p>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Audit table of contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#scope">Scope &amp; method</a></li>
+      <li><a href="#inventory">34 component groups</a></li>
+      <li><a href="#structure">Component structure</a></li>
+      <li><a href="#layout">Spacing &amp; layout</a></li>
+      <li><a href="#tokens">Token application vs v3.2</a></li>
+      <li><a href="#hex-violations">Raw-hex violations</a></li>
+      <li><a href="#a11y">WCAG 2.2 AA accessibility</a></li>
+      <li><a href="#contrast">Contrast failures</a></li>
+      <li><a href="#targets">Touch target sizes</a></li>
+      <li><a href="#focus">Focus states</a></li>
+      <li><a href="#responsive">Responsiveness</a></li>
+      <li><a href="#severity">Severity summary</a></li>
+      <li><a href="#header-rule">Header active-state rule</a></li>
+      <li><a href="#phases">Phased remediation</a></li>
+      <li><a href="#verification">Verification plan</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============ SCOPE ============ -->
+  <section id="scope" aria-labelledby="scope-h">
+    <h2 id="scope-h"><span class="num">01</span>Scope &amp; method</h2>
+    <p class="lead">v3.2 landed in the variable layer on 2026-04-29. The components on this page were authored against earlier token states (v3.0 / v3.1 + remote libraries). This audit measures the gap between component reality today and the v3.2 invariants, plus WCAG 2.2 AA conformance.</p>
+    <p>Two locked invariants drive the token-side findings:</p>
+    <ul class="check" style="margin-bottom: 14px;">
+      <li><strong>Hex invariant</strong> — raw hex only in <code class="inline">Global/{black, white, black-alpha/*, white-alpha/*, system/*}</code> and <code class="inline">Modes/color/{primary, secondary, neutral, tertiary}/{50..900}</code>. Everything else aliases.</li>
+      <li><strong>Strict 4-point scale</strong> — <code class="inline">Global/scale/*</code> contains exactly <code class="inline">[0, 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 72, 80, 96, 112, 128, 144, 160]</code>. No off-grid stops.</li>
+    </ul>
+    <p>Probed via Figma MCP: full canvas metadata (179 KB XML) plus visual screenshots and resolved variable bindings for the ten highest-impact component groups (Buttons, Inputs, Toggle, Modal Dialogs, Bottom sheets, Navigation, Cards, Headers, List Items, Pills, Banners, Notifications).</p>
+  </section>
+
+  <!-- ============ INVENTORY ============ -->
+  <section id="inventory" aria-labelledby="inv-h">
+    <h2 id="inv-h"><span class="num">02</span>The 34 component groups</h2>
+    <p>Top-level frames on canvas <code class="inline">4050:50253</code>, listed roughly by audit priority.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>34 component groups · node IDs · why audited</caption>
+        <thead>
+          <tr><th scope="col">#</th><th scope="col">Group</th><th scope="col">Node</th><th scope="col">Audit focus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>01</td><th scope="row">Buttons</th><td class="mono">4050:64556</td><td class="note">CTA radius, contrast, focus, target size</td></tr>
+          <tr><td>02</td><th scope="row">Inputs</th><td class="mono">4050:56823</td><td class="note">Labels, errors, placeholder contrast, autocomplete</td></tr>
+          <tr><td>03</td><th scope="row">Select</th><td class="mono">4050:57100</td><td class="note">Combobox semantics</td></tr>
+          <tr><td>04</td><th scope="row">Toggle</th><td class="mono">4050:57210</td><td class="note">Target size, contrast, non-color affordance</td></tr>
+          <tr><td>05</td><th scope="row">Modal Dialogs</th><td class="mono">4050:63769</td><td class="note">Focus trap, dismiss, sizing</td></tr>
+          <tr><td>06</td><th scope="row">Bottom sheets</th><td class="mono">4050:62808</td><td class="note">Drag affordance, dismiss, mobile target</td></tr>
+          <tr><td>07</td><th scope="row">Navigation</th><td class="mono">4050:62261</td><td class="note">Active-state contrast, chrome interaction</td></tr>
+          <tr><td>08</td><th scope="row">Cards</th><td class="mono">4050:53708</td><td class="note">Reuse pattern, spacing scale</td></tr>
+          <tr><td>09</td><th scope="row">Headers</th><td class="mono">4050:56038</td><td class="note">Header active-state pattern</td></tr>
+          <tr><td>10</td><th scope="row">Compliance Headers</th><td class="mono">4050:56198</td><td class="note">Regulatory chrome variants</td></tr>
+          <tr><td>11</td><th scope="row">List Items</th><td class="mono">4050:61483</td><td class="note">Touch targets, dividers, OLD/NEW dedup</td></tr>
+          <tr><td>12</td><th scope="row">Pills · Badges</th><td class="mono">4050:55890 · 4050:55972</td><td class="note">Contrast on tinted bg</td></tr>
+          <tr><td>13</td><th scope="row">Banners</th><td class="mono">4050:61205</td><td class="note">Inline messaging, dismissal</td></tr>
+          <tr><td>14</td><th scope="row">Notifications</th><td class="mono">4050:55720</td><td class="note">Live-region intent, contrast on color</td></tr>
+          <tr><td>15</td><th scope="row">Hero Sections</th><td class="mono">4050:57235</td><td class="note">Layout, type scale</td></tr>
+          <tr><td>16</td><th scope="row">Footer · Full-width</th><td class="mono">4050:57970 · 4050:58084</td><td class="note">Landmark, link contrast</td></tr>
+          <tr><td>17</td><th scope="row">Search</th><td class="mono">4050:56708</td><td class="note">Combobox / listbox semantics</td></tr>
+          <tr><td>18</td><th scope="row">Accordion</th><td class="mono">4050:61436</td><td class="note">Disclosure semantics</td></tr>
+          <tr><td>19</td><th scope="row">Pagination</th><td class="mono">4050:57684</td><td class="note">aria-current="page", target size</td></tr>
+          <tr><td>20</td><th scope="row">Tournament</th><td class="mono">4050:52648</td><td class="note">Domain pattern reuse</td></tr>
+          <tr><td>21</td><th scope="row">Calendar</th><td class="mono">4050:62600</td><td class="note">Date-grid keyboard model</td></tr>
+          <tr><td>22</td><th scope="row">Progress indicators</th><td class="mono">4050:53162</td><td class="note">Status announcement</td></tr>
+          <tr><td>23</td><th scope="row">Effects · Spacers · Informational</th><td class="mono">4050:61012 · 4050:61076 · 4050:61128</td><td class="note">Scaffolding · move to Foundations page</td></tr>
+          <tr><td>24</td><th scope="row">Product Filter</th><td class="mono">4050:57890</td><td class="note">Multi-select pattern</td></tr>
+          <tr><td>25</td><th scope="row">Balance</th><td class="mono">4050:57773</td><td class="note">Number formatting</td></tr>
+          <tr><td>26</td><th scope="row">iOS Elements</th><td class="mono">4050:58251</td><td class="note">Platform chrome</td></tr>
+          <tr><td>27</td><th scope="row">Compliance Header Token System Components</th><td class="mono">4050:64853</td><td class="note">Documentation frames · move</td></tr>
+          <tr><td>28</td><th scope="row">Originals Title Animated · Originals Logo</th><td class="mono">4050:64921 · 4050:64942</td><td class="note">Branded micro-asset</td></tr>
+          <tr><td>29</td><th scope="row">Table of contents</th><td class="mono">4050:53028</td><td class="note">Page-internal navigation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ STRUCTURE ============ -->
+  <section id="structure" aria-labelledby="struct-h">
+    <h2 id="struct-h"><span class="num">03</span>Component structure</h2>
+
+    <h3 style="margin-top: 24px;">3.1 · OLD/NEW duplication shipped live</h3>
+    <ul class="arrow">
+      <li><strong>List Items / Payment Method NEW + Payment Method OLD</strong> are both shipped. Cancel-button styles diverge between them.</li>
+      <li><strong>Navigation / Sub Tabs</strong> has two parallel chip rows ("Recommended", "New", "Jackpots"…) drawn twice with subtly different fills/strokes — a migration mid-flight.</li>
+      <li><strong>Inputs / Whiteframe</strong> typography (<code class="inline">Whiteframe/Heading 5 new</code>, <code class="inline">Whiteframe / Label Regular</code> in Museo Sans) coexists with <code class="inline">Open Sauce One</code> body styles inside the same component sheet.</li>
+      <li><strong>Buttons / Button Core</strong> holds 20+ permutations including a "Default Button" set + a "Button Core / Text Before/After" set that visually overlap.</li>
+    </ul>
+
+    <h3>3.2 · Variant axes that should be properties, not separate components</h3>
+    <ul class="arrow">
+      <li><strong>Headers</strong> is split into "Main Header (Responsive)", "Main Header (Mobile)", "Page Header", "Grid Header (Responsive)" — four components for what is one logical pattern with <code class="inline">Size = Desktop|Mobile</code> and <code class="inline">Layout = Logo+CTA | Logo+Title | Logo+Title+Balance</code> axes.</li>
+      <li><strong>Banners</strong> has 8+ near-identical size variants of the "We are celebrating!" template — should be one banner with a <code class="inline">Size = sm|md|lg|xl</code> variant.</li>
+      <li><strong>Pills / Pill / Navigation Pill / Small Pill / New Filters</strong> are 4 separate components for one pill family. Variants should fold into a single <code class="inline">Pill</code> with <code class="inline">Size · Trailing · Leading · State</code>.</li>
+    </ul>
+
+    <h3>3.3 · Cards — uncontrolled growth</h3>
+    <p>The Cards group is 20,017 px tall — the largest group on the page. Game-tile / promo-tile patterns have grown organically into many one-off variants. Without consolidation, downstream consumers cannot reliably pick one "card" — every product team forks a new variant.</p>
+
+    <h3>3.4 · Slot vs. instance</h3>
+    <p><strong>Notifications</strong> mixes the "container with leading icon + dismiss + optional CTA" pattern across 3 colors × 4 variants instead of using one component with <code class="inline">Status = info|success|warning|error</code> + <code class="inline">Action = none|inline|stacked</code> + <code class="inline">Dismissible = true|false</code> properties. <strong>Tournament</strong> rebuilds list-item/header patterns instead of instancing <code class="inline">List Items / Tournament / Header</code> — the file already has the master, but Tournament also has hand-built copies.</p>
+
+    <h3>3.5 · Documentation frames mixed with components</h3>
+    <p><code class="inline">Compliance Header Token System Components</code> and <code class="inline">Originals Title Animated</code> / <code class="inline">Originals Logo</code> are documentation/asset frames mixed into the component canvas. They are not reusable components — should move to a separate "Tokens &amp; Assets" page. <code class="inline">Spacers</code> and <code class="inline">Effects</code> are scaffolding; they belong in a foundations page beside the token tables.</p>
+
+    <h3>3.6 · Naming inconsistency</h3>
+    <p>Multiple naming conventions co-exist on the canvas: <code class="inline">List Item / Tournament / Header</code> (forward slash, title case) · <code class="inline">Variant =Main</code> (space-equals) · <code class="inline">User=No, Initials=Yes</code> (CSV-style) · <code class="inline">Whiteframe/Heading 5 new</code> (legacy product prefix). Pick one convention and rename the rest.</p>
+  </section>
+
+  <!-- ============ LAYOUT ============ -->
+  <section id="layout" aria-labelledby="layout-h">
+    <h2 id="layout-h"><span class="num">04</span>Spacing &amp; layout</h2>
+
+    <h3>4.1 · Off-grid radii — violates strict 4-point invariant</h3>
+    <div class="table-wrap">
+      <table>
+        <caption>Radii currently bound on the components page</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Current</th><th scope="col">v3.2 target</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">Extras/CTA Radius</th><td><strong>3</strong></td><td><code class="inline">scale/4</code></td></tr>
+          <tr><th scope="row" class="mono">Extras/Input Radius</th><td><strong>3</strong></td><td><code class="inline">scale/4</code></td></tr>
+          <tr><th scope="row" class="mono">Base/Radius 3</th><td><strong>3</strong></td><td><code class="inline">scale/4</code></td></tr>
+          <tr><th scope="row" class="mono">Extras/Box Radius</th><td><strong>6</strong></td><td><code class="inline">scale/4</code> or <code class="inline">scale/8</code></td></tr>
+          <tr><th scope="row" class="mono">Extras/Card Radius</th><td>12</td><td><code class="inline">scale/12</code> ✓</td></tr>
+          <tr><th scope="row" class="mono">Extras/Pill Radius</th><td><strong>100</strong></td><td><code class="inline">scale/96</code> (or <code class="inline">scale/160</code> for true pill)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>~41 affected radius aliases were already remapped in the variable layer on 2026-04-29; the components on this page still show the old values because component bindings have not been swept.</p>
+
+    <h3>4.2 · Off-grid typography — applies to type too</h3>
+    <p>Typography rounds <strong>up</strong> per the locked rule.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Type sizes currently bound</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Current</th><th scope="col">v3.2 target (round up)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">Font/Size/X Small</th><td><strong>8</strong></td><td><code class="inline">scale/8</code> ✓ (deprecate as semantic body)</td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Small</th><td><strong>11</strong></td><td><code class="inline">scale/12</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Line Height/Small</th><td><strong>14</strong></td><td><code class="inline">scale/16</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Caption</th><td>12</td><td><code class="inline">scale/12</code> ✓</td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Label</th><td><strong>15</strong></td><td><code class="inline">scale/16</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Heading 5</th><td>16</td><td><code class="inline">scale/16</code> ✓</td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Heading 4</th><td><strong>17</strong></td><td><code class="inline">scale/20</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Heading 3</th><td><strong>19</strong></td><td><code class="inline">scale/20</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Heading 2</th><td><strong>22</strong></td><td><code class="inline">scale/24</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Heading 1</th><td>28</td><td><code class="inline">scale/28</code> ✓</td></tr>
+          <tr><th scope="row" class="mono">Font/Line Height/Heading 1</th><td><strong>36</strong></td><td><code class="inline">scale/40</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Size/Display 2</th><td><strong>50</strong></td><td><code class="inline">scale/48</code></td></tr>
+          <tr><th scope="row" class="mono">Font/Line Height/Display 2</th><td><strong>60</strong></td><td><code class="inline">scale/64</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>4.3 · Magic-number spacing</h3>
+    <p><code class="inline">token('space.100') = 8</code> appears bound on most components — Atlassian-style legacy naming. v3.2 already exposes <code class="inline">Semantic/spacing/{xxs..3xl}</code>. Components should consume Semantic spacing tokens, not the literal.</p>
+
+    <h3>4.4 · Layout alignment</h3>
+    <ul class="arrow">
+      <li>Cards group is 1864 px wide — exceeds desktop-wide breakpoint (1440) and tablet (768). Frame should be sized to a representative breakpoint, not free.</li>
+      <li>Buttons / Inputs / Toggle / Pills are presented at fluid/free width with no breakpoint bands. Designers cannot tell which width a given variant is intended for.</li>
+    </ul>
+  </section>
+
+  <!-- ============ TOKENS ============ -->
+  <section id="tokens" aria-labelledby="tokens-h">
+    <h2 id="tokens-h"><span class="num">05</span>Token application — v3.2 conformance</h2>
+
+    <h3>5.1 · Components still bind legacy library tokens</h3>
+    <p>Every probed component (Buttons, Inputs, Modals, Headers, Notifications, List Items) returns variable names from the old library:</p>
+    <pre>Main/Text  ·  Main/Primary  ·  Main/Background  ·  Main/On-Primary
+Main/Text-Disabled  ·  Main/Text-Supportive  ·  Main/Disabled CTA
+Generic/Stroke 10  ·  Generic/Stroke 30  ·  Generic/Dividers
+Generic/Input-Border  ·  Generic/Overlay-80  ·  Generic/IOS-Bar
+Lobby Header/Background  ·  Lobby Header/Surface-Primary  ·  Lobby Header/Active-Selected
+Lobby Header/On-Surface-Primary  ·  Lobby Header/CTA  ·  Lobby Header/Text  ...
+Extras/CTA Radius  ·  Extras/Input Radius  ·  Extras/Pill Radius
+Extras/Box Radius  ·  Extras/Card Radius
+Font/Size/*  ·  Font/Line Height/*  ·  Font/Family/*  ·  Font/Weight/*
+Whiteframe/*   <span style="color: var(--text-muted)"># Museo Sans family — clearly stale</span>
+Base/Base White  ·  Base/Base Black  ·  Base/Base White 10  ·  Base/Radius 3
+System/Error  ·  System/Success  ·  System/Informative  ·  System/Orange  ·  System/Purple</pre>
+    <p>None of these match the v3.2 namespace (<code class="inline">Global/*</code>, <code class="inline">Modes/*</code>, <code class="inline">Theme/*</code>, <code class="inline">Semantic/*</code>, <code class="inline">Component Packs/*</code>). The variable rename + restructure landed in collections; <strong>component bindings did not follow</strong>.</p>
+
+    <h3>5.2 · v3.2 tokens that exist but are not consumed</h3>
+    <ul class="arrow">
+      <li><code class="inline">Semantic/spacing/{xxs..3xl}</code> — components hold <code class="inline">space.100</code> literal instead.</li>
+      <li><code class="inline">Semantic/icon-size/{sm,md,lg,xl}</code> — icon sizes are free FLOATs.</li>
+      <li><code class="inline">Global/scale/*</code> — radii / sizes still bound to <code class="inline">Extras/*</code> and <code class="inline">Font/Size/*</code>.</li>
+      <li><code class="inline">Global/elevation/0..4</code> Effect Styles — components hold raw inline <code class="inline">Effect(type: DROP_SHADOW, …)</code>.</li>
+      <li><code class="inline">Global/breakpoint/*</code> — zero references on this canvas.</li>
+    </ul>
+    <p>This is the largest single gap: the v3.2 abstractions exist but nothing on the component page reaches them.</p>
+
+    <h3>5.3 · Three font families coexist</h3>
+    <p><code class="inline">Open Sauce One</code> (current) · <code class="inline">Museo Sans</code> (legacy <code class="inline">Whiteframe/*</code>) · <code class="inline">SF Pro Text</code> (iOS native — fine for iOS Elements only). Museo Sans appears inside Inputs and Modal Dialogs — these are NOT iOS-only contexts. Audit and remove Museo Sans bindings everywhere except where intentionally legacy.</p>
+  </section>
+
+  <!-- ============ HEX VIOLATIONS ============ -->
+  <section id="hex-violations" aria-labelledby="hex-h">
+    <h2 id="hex-h"><span class="num">06</span>Raw-hex violations</h2>
+    <p>Tokens currently carrying raw hex outside the two allowed homes (Global / Modes DNA).</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Raw-hex violations — current binding to v3.2 alias target</caption>
+        <thead><tr><th scope="col">Token</th><th scope="col">Hex</th><th scope="col">Should alias</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="mono">Generic/Stroke 10</th><td class="mono"><span class="swatch" style="background:#0000001a"></span>#0000001a</td><td class="mono">Global/color/black-alpha/10</td></tr>
+          <tr><th scope="row" class="mono">Generic/Stroke 30</th><td class="mono"><span class="swatch" style="background:#0000004d"></span>#0000004d</td><td class="mono">Global/color/black-alpha/30</td></tr>
+          <tr><th scope="row" class="mono">Generic/Input-Border</th><td class="mono"><span class="swatch" style="background:#b7b8bc"></span>#b7b8bc</td><td class="mono">Modes/color/neutral/300</td></tr>
+          <tr><th scope="row" class="mono">Generic/Dividers</th><td class="mono"><span class="swatch" style="background:#b7b8bc"></span>#b7b8bc</td><td class="mono">Modes/color/neutral/300</td></tr>
+          <tr><th scope="row" class="mono">Base/Base White 10</th><td class="mono"><span class="swatch" style="background:#ffffff1a"></span>#ffffff1a</td><td class="mono">Global/color/white-alpha/10</td></tr>
+          <tr><th scope="row" class="mono">Base/Base White 30</th><td class="mono"><span class="swatch" style="background:#ffffff4d"></span>#ffffff4d</td><td class="mono">Global/color/white-alpha/30</td></tr>
+          <tr><th scope="row" class="mono">Base/Base Black 10</th><td class="mono"><span class="swatch" style="background:#0000001a"></span>#0000001a</td><td class="mono">Global/color/black-alpha/10</td></tr>
+          <tr><th scope="row" class="mono">Base/Base-12</th><td class="mono"><span class="swatch" style="background:#000000"></span>#000000</td><td class="mono">Global/color/black</td></tr>
+          <tr><th scope="row" class="mono">System/Error</th><td class="mono"><span class="swatch" style="background:#e92636"></span>#e92636</td><td class="mono">Global/color/system/error/500</td></tr>
+          <tr><th scope="row" class="mono">System/Success</th><td class="mono"><span class="swatch" style="background:#00c76b"></span>#00c76b</td><td class="mono">Global/color/system/success/500</td></tr>
+          <tr><th scope="row" class="mono">System/Informative</th><td class="mono"><span class="swatch" style="background:#0082eb"></span>#0082eb</td><td class="mono">Global/color/system/info/500</td></tr>
+          <tr><th scope="row" class="mono">System/Orange</th><td class="mono"><span class="swatch" style="background:#f9ae41"></span>#f9ae41</td><td class="mono">Global/color/system/warning/500</td></tr>
+          <tr><th scope="row" class="mono">System/Purple</th><td class="mono"><span class="swatch" style="background:#a864ff"></span>#a864ff</td><td class="note">no v3.2 home — add tertiary slot or move to brand DNA</td></tr>
+          <tr><th scope="row" class="mono">Lobby Header/Active-Selected</th><td class="mono"><span class="swatch" style="background:#1c1d20"></span>#1c1d20</td><td class="mono">Modes/color/neutral/900 → primary/500 (per rule)</td></tr>
+          <tr><th scope="row" class="mono">Lobby Header/Surface-Primary</th><td class="mono"><span class="swatch" style="background:#5b5c60"></span>#5b5c60</td><td class="mono">Modes/color/neutral/600</td></tr>
+          <tr><th scope="row" class="mono">Lobby Header/Surface-1</th><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td class="mono">Modes/color/neutral/400</td></tr>
+          <tr><th scope="row" class="mono">Main/Disabled CTA</th><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td class="mono">Modes/color/neutral/400</td></tr>
+          <tr><th scope="row" class="mono">Main/On-Disabled CTA</th><td class="mono"><span class="swatch" style="background:#b7b8bc"></span>#b7b8bc</td><td class="mono">Modes/color/neutral/300</td></tr>
+          <tr><th scope="row" class="mono">Main/Text-Disabled</th><td class="mono"><span class="swatch" style="background:#b7b8bc"></span>#b7b8bc</td><td class="mono">Modes/color/neutral/300</td></tr>
+          <tr><th scope="row" class="mono">Main/Text-Supportive</th><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td class="mono">Modes/color/neutral/400</td></tr>
+          <tr><th scope="row" class="mono">Main/Text</th><td class="mono"><span class="swatch" style="background:#1c1d20"></span>#1c1d20</td><td class="mono">Modes/color/neutral/900</td></tr>
+          <tr><th scope="row" class="mono">Default/SystemBlue/Light</th><td class="mono"><span class="swatch" style="background:#007AFF"></span>#007AFF</td><td class="note">iOS native — leave or add Modes/color/native/ios-blue</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ A11Y ============ -->
+  <section id="a11y" aria-labelledby="a11y-h">
+    <h2 id="a11y-h"><span class="num">07</span>WCAG 2.2 AA accessibility</h2>
+    <p class="lead">Computed from the hex values returned by <code class="inline">get_variable_defs</code>. AA thresholds: 4.5:1 normal text, 3:1 large text (≥18pt or 14pt bold) and UI components.</p>
+  </section>
+
+  <!-- ============ CONTRAST ============ -->
+  <section id="contrast" aria-labelledby="contrast-h">
+    <h2 id="contrast-h"><span class="num">08</span>Contrast failures</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>Computed contrast ratios for foreground × background pairings</caption>
+        <thead>
+          <tr><th scope="col">Pairing</th><th scope="col">Foreground</th><th scope="col">Background</th><th scope="col">Ratio</th><th scope="col">Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Disabled CTA label</th><td class="mono"><span class="swatch" style="background:#b7b8bc"></span>#b7b8bc</td><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td><strong>1.27:1</strong></td><td><span class="sev crit">Critical</span></td></tr>
+          <tr><th scope="row">Notification / Success body</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#00c76b"></span>#00c76b</td><td><strong>2.05:1</strong></td><td><span class="sev crit">Critical</span></td></tr>
+          <tr><th scope="row">Notification / Info (small)</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#0082eb"></span>#0082eb</td><td><strong>3.59:1</strong></td><td><span class="sev high">High</span> Large only</td></tr>
+          <tr><th scope="row">Notification / Warning</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#f9ae41"></span>#f9ae41</td><td><strong>1.93:1</strong></td><td><span class="sev crit">Critical</span></td></tr>
+          <tr><th scope="row">Notification / Purple promo</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#a864ff"></span>#a864ff</td><td><strong>2.94:1</strong></td><td><span class="sev high">High</span> Large only</td></tr>
+          <tr><th scope="row">Text-Supportive</th><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td><strong>2.74:1</strong></td><td><span class="sev high">High</span> Helper text fails</td></tr>
+          <tr><th scope="row">Lobby Header / On-Surface-1</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#98989c"></span>#98989c</td><td><strong>2.74:1</strong></td><td><span class="sev high">High</span> White text on light grey</td></tr>
+          <tr><th scope="row">Header / Active-Selected on Surface-Primary</th><td class="mono"><span class="swatch" style="background:#1c1d20"></span>#1c1d20</td><td class="mono"><span class="swatch" style="background:#5b5c60"></span>#5b5c60</td><td>3.74:1</td><td><span class="sev med">Medium</span> Visually muddy</td></tr>
+          <tr><th scope="row">Header / On-Surface-Primary white</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#5b5c60"></span>#5b5c60</td><td>5.83:1</td><td>✓ Passes</td></tr>
+          <tr><th scope="row">Notification / Error body</th><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td class="mono"><span class="swatch" style="background:#e92636"></span>#e92636</td><td>5.04:1</td><td>✓ Passes</td></tr>
+          <tr><th scope="row">Body text on page</th><td class="mono"><span class="swatch" style="background:#1c1d20"></span>#1c1d20</td><td class="mono"><span class="swatch" style="background:#f8f9fd"></span>#f8f9fd</td><td>15.5:1</td><td>✓ Passes AAA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-card crit">
+      <h4>Notification colour fix</h4>
+      <p style="margin: 0;">Every failing surface either needs (a) the foreground swapped to <code class="inline">neutral/900</code> (dark) for warm/light bodies (success, warning, info, purple) or (b) the surface stop deepened to a <code class="inline">700</code>/<code class="inline">800</code> shade. Error red is the only AA-passing surface today.</p>
+    </div>
+
+    <h3 style="margin-top: 24px;">Text size minimums</h3>
+    <ul class="arrow">
+      <li><code class="inline">Font/Size/X Small = 8 px</code> is below any reasonable readable minimum. Used in Headers (<code class="inline">X Small Bold</code>). Recommend retiring from semantic use; keep only for non-essential decorative numerals if at all.</li>
+      <li><code class="inline">Font/Size/Small = 11 px</code> is borderline. WCAG doesn't set a minimum but mobile platforms recommend 12 px. Round to 12.</li>
+    </ul>
+  </section>
+
+  <!-- ============ TARGETS ============ -->
+  <section id="targets" aria-labelledby="targets-h">
+    <h2 id="targets-h"><span class="num">09</span>Touch / pointer target sizes</h2>
+    <p>WCAG 2.2 SC 2.5.8 (AA) requires interactive targets ≥ 24×24 CSS px (with exceptions for inline links and dense lists). Mobile lift to 44×44 (Apple HIG) / 48 dp (Material).</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Estimated hit areas from screenshots — measurement still required</caption>
+        <thead><tr><th scope="col">Element</th><th scope="col">Estimated</th><th scope="col">Verdict</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Toggle drag thumb</th><td>~16 px</td><td><span class="sev high">High</span> below 24×24</td></tr>
+          <tr><th scope="row">Notification dismiss ×</th><td>~16 px</td><td><span class="sev high">High</span> wrap in 24×24 hit area</td></tr>
+          <tr><th scope="row">Modal dismiss ×</th><td>~16 px</td><td><span class="sev high">High</span> wrap in 24×24 hit area</td></tr>
+          <tr><th scope="row">Micro Button</th><td>~24×24 or below</td><td><span class="sev high">High</span> measurement required</td></tr>
+          <tr><th scope="row">Page Header chevrons</th><td>~24×24</td><td><span class="sev med">Medium</span> borderline</td></tr>
+          <tr><th scope="row">Pagination numerals</th><td>small</td><td><span class="sev med">Medium</span> measurement required</td></tr>
+          <tr><th scope="row">Button / Default</th><td>~40 px</td><td>✓ Passes</td></tr>
+          <tr><th scope="row">List Item rows (mobile)</th><td>~44 px</td><td>✓ Passes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ FOCUS ============ -->
+  <section id="focus" aria-labelledby="focus-h">
+    <h2 id="focus-h"><span class="num">10</span>Focus visibility</h2>
+    <p>Components do not show a defined focus state in any screenshot probed. There is no <code class="inline">Theme/focus-ring</code> or <code class="inline">Global/focus/*</code> token in the variable defs returned. Without a focus token, every interactive primitive (Buttons, Pills, Inputs, Toggle, List Items, Pagination, Tabs) lacks a designed <code class="inline">:focus-visible</code> style.</p>
+    <p>WCAG 2.2 adds <strong>2.4.11 Focus Not Obscured (Minimum)</strong> and <strong>2.4.13 Focus Appearance</strong> at AA — focus must be ≥ 2 px outline at 3:1 contrast against both component and adjacent background. None of this is currently encoded.</p>
+    <div class="note-card teal">
+      <h4>Recommended focus tokens</h4>
+      <ul class="check" style="margin: 6px 0 0 0;">
+        <li><code class="inline">Global/focus/ring-color</code> → <code class="inline">Modes/color/border/focus</code> → <code class="inline">Modes/color/primary/500</code></li>
+        <li><code class="inline">Global/focus/ring-width</code> → <code class="inline">Global/scale/4</code> (used as 2px stroke)</li>
+        <li><code class="inline">Global/focus/ring-offset</code> → <code class="inline">Global/scale/4</code></li>
+      </ul>
+      <p style="margin-top: 10px; font-size: 0.9rem;">Add an explicit <code class="inline">State = Focus</code> variant to every interactive component. Verify the focus ring resolves to 3:1 against both surface and adjacent neighbours per brand mode.</p>
+    </div>
+
+    <h3 style="margin-top: 22px;">Color-only state encoding</h3>
+    <ul class="arrow">
+      <li><strong>Inputs</strong> error state is signalled by <code class="inline">System/Error</code> border only. Helper text presence is good — but if helper text is omitted in production, error state would be color-only (fails 1.4.1 Use of Color).</li>
+      <li><strong>Toggle</strong> states distinguished by colour blue/grey only. Add an icon (✓ inside the thumb when on) or position-based affordance.</li>
+      <li><strong>Pagination</strong> "current" page shown by filled background only. Add <code class="inline">aria-current="page"</code> requirement and a non-color visual (underline / weight).</li>
+    </ul>
+
+    <h3>Component-specific accessibility</h3>
+    <ul class="arrow">
+      <li><strong>Calendar</strong> needs <code class="inline">role="grid"</code>, arrow-key model, <code class="inline">aria-selected</code>. No "today" indicator visible — required for orientation.</li>
+      <li><strong>Search</strong> combobox with listbox results — verify input + popup + active-descendant relationship encoded in the design.</li>
+      <li><strong>Accordion</strong> disclosure pattern — needs collapsed/expanded variant pair with <code class="inline">aria-expanded</code> mapping documented.</li>
+      <li><strong>Modal Dialogs</strong> dismissable via × only. Add Esc affordance in spec, document focus-return target. "Congrats!" modals with no dismiss are an a11y risk if non-blocking.</li>
+      <li><strong>Bottom sheets</strong> — verify drag-handle has alt method for keyboard users; document close gesture parity.</li>
+      <li><strong>Notifications</strong> — production handoff should include <code class="inline">aria-live</code> polite/assertive mapping per status.</li>
+      <li><strong>Originals Title Animated</strong> — no <code class="inline">prefers-reduced-motion</code> reduced variant exists. Add motion tokens or a static fallback.</li>
+    </ul>
+  </section>
+
+  <!-- ============ RESPONSIVE ============ -->
+  <section id="responsive" aria-labelledby="resp-h">
+    <h2 id="resp-h"><span class="num">11</span>Responsiveness</h2>
+
+    <h3>11.1 · No breakpoint-driven layout</h3>
+    <p>Variable defs returned <strong>zero</strong> <code class="inline">Global/breakpoint/*</code> consumption across all probed components. v3.2 declares <code class="inline">breakpoint/{mobile, tablet, desktop, desktop-wide}</code> but they are unused.</p>
+
+    <h3>11.2 · Responsive variants are separate components</h3>
+    <ul class="arrow">
+      <li><code class="inline">Headers / Main Header (Responsive)</code> and <code class="inline">Main Header (Mobile)</code> are siblings, not breakpoint variants.</li>
+      <li><code class="inline">Headers / Grid Header (Responsive)</code> is a third sibling for grid contexts.</li>
+      <li>Breaks responsive parity — when desktop changes, mobile must be edited separately.</li>
+    </ul>
+
+    <h3>11.3 · Mobile-first patterns missing breakpoint adaptation</h3>
+    <ul class="arrow">
+      <li>Bottom sheets is mobile-only by name but has no desktop fallback (modal). Spec which breakpoint promotes a bottom sheet to a modal.</li>
+      <li>iOS Elements is platform-specific; OK to keep separate but tag clearly.</li>
+      <li>Hero Sections is 612 px wide. No mobile/tablet variants. Heroes need 2–3 breakpoint variants.</li>
+    </ul>
+
+    <h3>11.4 · Dark mode</h3>
+    <p>v3.2 ships Light + Dark in Theme. Components on this canvas are presented in Light only. There is no Dark-mode preview frame to validate token resolution. Add a Dark variant frame per major component group, or a single "Component canvas (Dark)" page.</p>
+  </section>
+
+  <!-- ============ SEVERITY ============ -->
+  <section id="severity" aria-labelledby="sev-h">
+    <h2 id="sev-h"><span class="num">12</span>Severity summary</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>Issue ranking across the 34 component groups</caption>
+        <thead><tr><th scope="col">#</th><th scope="col">Issue</th><th scope="col">Severity</th><th scope="col">Affected groups</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><th scope="row">Notification text-on-color fails AA (success, warning, info, purple)</th><td><span class="sev crit">Critical</span></td><td class="note">Notifications, Banners, inline alerts</td></tr>
+          <tr><td>B</td><th scope="row">Components still bind legacy library tokens (Main/*, Generic/*, Lobby Header/*, Extras/*, Whiteframe/*) — v3.2 namespace not adopted</th><td><span class="sev crit">Critical</span></td><td class="note">All 34 groups</td></tr>
+          <tr><td>C</td><th scope="row">Off-grid radii (3, 6, 100) and typography (11, 15, 17, 19, 22, 36, 50, 60)</th><td><span class="sev high">High</span></td><td class="note">All groups via shared tokens</td></tr>
+          <tr><td>D</td><th scope="row">Raw hex in non-Global / non-DNA tokens</th><td><span class="sev high">High</span></td><td class="note">All groups</td></tr>
+          <tr><td>E</td><th scope="row">No focus tokens / focus states defined (WCAG 2.4.7 / 2.4.11 / 2.4.13)</th><td><span class="sev high">High</span></td><td class="note">All interactive components</td></tr>
+          <tr><td>F</td><th scope="row">Touch target sizes below 24×24 (Toggle thumb, Notification ×, Modal ×, Micro Button)</th><td><span class="sev high">High</span></td><td class="note">Toggle, Notifications, Modals, Buttons</td></tr>
+          <tr><td>G</td><th scope="row">OLD/NEW component duplication shipped</th><td><span class="sev high">High</span></td><td class="note">List Items, Navigation</td></tr>
+          <tr><td>H</td><th scope="row">Headers split into 4 components for one logical pattern</th><td><span class="sev med">Medium</span></td><td class="note">Headers</td></tr>
+          <tr><td>I</td><th scope="row">Pills split into 4 components for one family</th><td><span class="sev med">Medium</span></td><td class="note">Pills</td></tr>
+          <tr><td>J</td><th scope="row">Banners has 8+ size variants of same template</th><td><span class="sev med">Medium</span></td><td class="note">Banners</td></tr>
+          <tr><td>K</td><th scope="row">Cards group has uncontrolled growth (20,017 px)</th><td><span class="sev med">Medium</span></td><td class="note">Cards</td></tr>
+          <tr><td>L</td><th scope="row">Font/Size/X Small = 8 px retained as semantic size</th><td><span class="sev med">Medium</span></td><td class="note">Headers, Footer (fine print)</td></tr>
+          <tr><td>M</td><th scope="row">Three font families coexist outside iOS scope</th><td><span class="sev med">Medium</span></td><td class="note">Inputs, Modal Dialogs</td></tr>
+          <tr><td>N</td><th scope="row">No breakpoint tokens consumed</th><td><span class="sev med">Medium</span></td><td class="note">All groups</td></tr>
+          <tr><td>O</td><th scope="row">No Dark-mode preview frames</th><td><span class="sev med">Medium</span></td><td class="note">All groups</td></tr>
+          <tr><td>P</td><th scope="row">Documentation/asset frames mixed with components</th><td><span class="sev low">Low</span></td><td class="note">Compliance Header Token System, Originals Title/Logo, Spacers, Effects</td></tr>
+          <tr><td>Q</td><th scope="row">Naming conventions inconsistent</th><td><span class="sev low">Low</span></td><td class="note">All groups</td></tr>
+          <tr><td>R</td><th scope="row">Color-only state encoding</th><td><span class="sev med">Medium</span></td><td class="note">Toggle, Inputs, Pagination</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ HEADER RULE ============ -->
+  <section id="header-rule" aria-labelledby="hrule-h">
+    <h2 id="hrule-h"><span class="num">13</span>Header active-state rule</h2>
+    <div class="note-card warn">
+      <h4>Locked rule</h4>
+      <p style="margin: 0;"><code class="inline">Modes/color/header/active-selected</code> must <strong>not</strong> alias the same neutral stop as <code class="inline">Modes/color/header/surface-primary</code> for a brand. Pin <code class="inline">active-selected</code> to <code class="inline">primary/500</code> instead — this prevents invisible nav active state on coloured headers (Snabarre blue, Mobilespin red).</p>
+    </div>
+    <p>Today's bindings on the Components page:</p>
+    <ul class="arrow">
+      <li><code class="inline">Lobby Header/Surface-Primary</code> = <code class="inline">#5b5c60</code> (≈ neutral/600)</li>
+      <li><code class="inline">Lobby Header/Active-Selected</code> = <code class="inline">#1c1d20</code> (≈ neutral/900)</li>
+    </ul>
+    <p>Two stops apart — passes the rule by hex, but contrast is weak (3.74:1) so the active state is visually muddy. Re-point active-selected to <code class="inline">primary/500</code> per the rule.</p>
+  </section>
+
+  <!-- ============ PHASES ============ -->
+  <section id="phases" aria-labelledby="phases-h">
+    <h2 id="phases-h"><span class="num">14</span>Phased remediation</h2>
+
+    <article class="phase" aria-labelledby="p0-h">
+      <header><span class="label">Phase 0</span><h3 id="p0-h">Triage</h3></header>
+      <ol>
+        <li>Snapshot the page (page export PNG + every variable rebuilt to JSON) before any rewire.</li>
+        <li>Lock the page to read-only for non-DS editors during sweep.</li>
+        <li>Confirm with team which "OLD" components can be retired.</li>
+      </ol>
+    </article>
+
+    <article class="phase" aria-labelledby="p1-h">
+      <header><span class="label">Phase 1</span><h3 id="p1-h">Token rewire — mechanical, ID-preserving</h3></header>
+      <ol>
+        <li>Rename legacy tokens to v3.2 names in-place to preserve binding IDs:
+          <ul class="arrow" style="margin-top: 8px;">
+            <li><code class="inline">Main/Text</code> → <code class="inline">Modes/color/text/primary</code> (alias <code class="inline">neutral/900</code>)</li>
+            <li><code class="inline">Main/Primary</code> → <code class="inline">Modes/color/brand/primary</code> (alias <code class="inline">primary/500</code>)</li>
+            <li><code class="inline">Main/Background</code> → <code class="inline">Modes/color/surface/page</code></li>
+            <li><code class="inline">Generic/Stroke 10</code> → <code class="inline">Modes/color/border/subtle</code> (alias <code class="inline">Global/color/black-alpha/10</code>)</li>
+            <li><code class="inline">Generic/Stroke 30</code> → <code class="inline">Modes/color/border/strong</code> (alias <code class="inline">Global/color/black-alpha/30</code>)</li>
+            <li><code class="inline">Lobby Header/*</code> → <code class="inline">Modes/color/header/*</code></li>
+            <li><code class="inline">Extras/CTA Radius</code> → alias <code class="inline">Global/scale/4</code></li>
+            <li><code class="inline">Extras/Box Radius</code> → alias <code class="inline">Global/scale/4</code> (or 8) — confirm with team</li>
+            <li><code class="inline">Extras/Pill Radius</code> → alias <code class="inline">Global/scale/96</code></li>
+            <li><code class="inline">Font/Size/Heading {1..5}</code> → alias <code class="inline">Global/typography/size/{N}</code> rounded up</li>
+            <li><code class="inline">System/Error</code> → alias <code class="inline">Global/color/system/error/500</code> · same for success/info/warning (orange→warning, purple → tertiary or new home)</li>
+          </ul>
+        </li>
+        <li>Variable IDs persist across renames, so component instances pick up new names automatically — no per-component edit needed for the rename pass.</li>
+        <li>Run <code class="inline">getLocalVariablesAsync</code> audit to confirm zero raw hex outside Global / Modes DNA.</li>
+      </ol>
+    </article>
+
+    <article class="phase" aria-labelledby="p2-h">
+      <header><span class="label">Phase 2</span><h3 id="p2-h">Accessibility fixes</h3></header>
+      <ol>
+        <li>Notification colors: re-bind text on success / warning / info / purple to <code class="inline">neutral/900</code>. Verify contrast ≥ 4.5:1 per pairing.</li>
+        <li>Add focus tokens (<code class="inline">Global/focus/ring-color</code>, <code class="inline">/ring-width</code>, <code class="inline">/ring-offset</code>) and apply a <code class="inline">State = Focus</code> variant on every interactive component.</li>
+        <li>Touch targets: enforce 24×24 minimum on Toggle thumb, Notification ×, Modal ×, Pagination items, Micro Button. Mobile lift to 44×44.</li>
+        <li>Disabled CTA: choose either lower opacity of normal CTA OR re-bind label to a higher-contrast neutral. Document that disabled state is not focusable.</li>
+        <li>Toggle: add a non-color affordance (✓ icon in thumb when on, OR distinct knob position + visible OFF/ON label).</li>
+        <li><code class="inline">X Small (8 px)</code>: deprecate from semantic typography. Migrate consumers to <code class="inline">Small (12 px)</code> minimum.</li>
+      </ol>
+    </article>
+
+    <article class="phase" aria-labelledby="p3-h">
+      <header><span class="label">Phase 3</span><h3 id="p3-h">Component consolidation</h3></header>
+      <ol>
+        <li>Headers: collapse 4 components into 1 with <code class="inline">Layout</code> + <code class="inline">Size</code> props.</li>
+        <li>Pills: collapse 4 components into 1 with <code class="inline">Size</code> + <code class="inline">Leading</code> + <code class="inline">Trailing</code> + <code class="inline">State</code> props.</li>
+        <li>Banners: collapse 8 size variants into 1 with <code class="inline">Size = sm|md|lg|xl|fullwidth</code>.</li>
+        <li>Notifications: 1 component with <code class="inline">Status × Action × Dismissible</code> props instead of 12 frames.</li>
+        <li>Cards: split into named domain families (<code class="inline">Card / Game Tile</code>, <code class="inline">/ Promo</code>, <code class="inline">/ Payment</code>) and dedupe within each family.</li>
+        <li>List Items / Payment Method: retire OLD when NEW is signed off.</li>
+        <li>Navigation / Sub Tabs: dedupe duplicate chip rows.</li>
+        <li>Move documentation frames (Compliance Header Token System Components, Originals Title/Logo, Spacers, Effects) to a separate "Foundations" page.</li>
+      </ol>
+    </article>
+
+    <article class="phase" aria-labelledby="p4-h">
+      <header><span class="label">Phase 4</span><h3 id="p4-h">Responsiveness</h3></header>
+      <ol>
+        <li>Add <code class="inline">Size = Mobile | Tablet | Desktop</code> variant to Headers, Hero Sections, Footer, Cards, Banners.</li>
+        <li>Add per-group Dark-mode preview frame (or a single mirror page set to <code class="inline">Theme = Dark</code>).</li>
+        <li>Replace fixed-width canvases (Cards 1864 px) with breakpoint-sized frames anchored to <code class="inline">breakpoint/desktop = 1024</code> / <code class="inline">desktop-wide = 1440</code>.</li>
+        <li>Add long-string snapshots (German DE, "longest brand name", "URL with query string") to Headers, Banners, Notifications, Hero.</li>
+      </ol>
+    </article>
+
+    <article class="phase" aria-labelledby="p5-h">
+      <header><span class="label">Phase 5</span><h3 id="p5-h">Hygiene</h3></header>
+      <ol>
+        <li>Standardise naming to <code class="inline">Domain / Component / Variant</code>. Variant property names use <code class="inline">PascalCase</code>, variant values use <code class="inline">Title Case</code>.</li>
+        <li>Adopt <code class="inline">Semantic/spacing/*</code> and <code class="inline">Semantic/icon-size/*</code> everywhere <code class="inline">space.100</code> and free-FLOAT icon sizes appear.</li>
+        <li>Adopt <code class="inline">Global/elevation/0..4</code> Effect Styles in place of inline <code class="inline">Effect(type: DROP_SHADOW, …)</code>.</li>
+        <li>Strip <code class="inline">Whiteframe/*</code> (Museo Sans) bindings outside scoped legacy areas.</li>
+      </ol>
+    </article>
+  </section>
+
+  <!-- ============ VERIFICATION ============ -->
+  <section id="verification" aria-labelledby="verify-h">
+    <h2 id="verify-h"><span class="num">15</span>Verification plan</h2>
+    <p>After each phase, verify with read-only Plugin API (<code class="inline">use_figma</code> in dry-run mode):</p>
+    <ol style="padding-left: 22px;">
+      <li><strong>Token sweep audit</strong> — <code class="inline">getLocalVariablesAsync()</code> filtered to COLOR; assert every var outside <code class="inline">Global/*</code> and <code class="inline">Modes/color/{primary,secondary,neutral,tertiary}/*</code> resolves to <code class="inline">VARIABLE_ALIAS</code> in every mode. Zero raw hex tolerated.</li>
+      <li><strong>Scale audit</strong> — assert every <code class="inline">Global/scale/*</code> value is in the canonical 20-stop set; assert every dimension consumer aliases a <code class="inline">scale/N</code>.</li>
+      <li><strong>Contrast audit</strong> — for every (text-token, surface-token) pair used on the page, compute APCA + WCAG 2.x ratios; assert ≥ 4.5:1 for normal text, ≥ 3:1 for large/UI.</li>
+      <li><strong>Target-size audit</strong> — walk every interactive component; assert hit area ≥ 24×24 (desktop) and ≥ 44×44 (mobile variants).</li>
+      <li><strong>Focus state audit</strong> — assert every interactive component has a <code class="inline">State = Focus</code> variant or <code class="inline">:focus-visible</code> styling layer with the focus tokens applied.</li>
+      <li><strong>Variant audit</strong> — assert no two siblings on the page differ only by <code class="inline">Size</code> or <code class="inline">Status</code> (must be variants, not separate components).</li>
+      <li><strong>Visual regression</strong> — render a per-brand snapshot of each component group at start and after each phase; diff against pixel baseline. Tolerate ≤ 2 px drift on radii (3 → 4 round-up).</li>
+      <li><strong>Dark-mode resolution</strong> — render the same component grid under <code class="inline">Theme = Dark</code>; assert no token resolves to its Light value.</li>
+    </ol>
+
+    <div class="note-card teal" style="margin-top: 20px;">
+      <h4>End-to-end success criteria</h4>
+      <ul class="check" style="margin: 6px 0 0 0;">
+        <li>Every component on the canvas binds <strong>only</strong> v3.2 tokens.</li>
+        <li>Zero raw hex outside Global / Modes DNA.</li>
+        <li>WCAG 2.2 AA conformance verified across all 34 groups in both themes.</li>
+        <li><code class="inline">getLocalVariablesAsync</code> audit returns 0 violations.</li>
+        <li>Component count reduced by an estimated ~30% via consolidation.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Component Audit v3.2 · 2026-04-30. <a href="design-token-architecture-v3.2.html">Architecture deck</a> · <a href="design-token-reference-v3.2.html">Token reference</a> · <a href="brand-audit.html">Brand audit</a> · <a href="index.html">Home</a>.</p>
+    <p style="margin-top: 6px;">Source file: <code class="inline">fysBbW10LRJUNgisaBKXJo</code> · Components page <code class="inline">4050:50253</code>.</p>
+  </footer>
+</main>
+
+</body>
+</html>
