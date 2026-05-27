@@ -117,9 +117,17 @@ variants (In-game/Lobby/Germany) stay black. Verified 0 dangling refs;
 screenshots confirm blue links on light headers, untouched white labels on
 colored headers.
 
-**Held (no change):** `View all` Grid 6 (reference-ambiguous), 2× `cta`
-"Change Method" (dark `#1c1d20`, no reference match — not the white
-button-label case).
+**Held 3 — RESOLVED 2026-05-27 (follow-up):**
+- `View all` Desktop/Casino Grid 6 (`I4050:55612;27172:190617`) — was the lone
+  outlier on `color/text/primary` (#1c1d20 black); all 26 sibling "View all"
+  buttons + the reference use gray. Rebound `color/text/primary` →
+  `color/text/secondary` (`50:8`). Consistency repair, not a link.
+- 2× `cta` "Change Method" (`4050:63287` Active, `4050:63306` Open) — their
+  disclosure chevron was already `color/icon/action` (#0066ff blue) while the
+  label was black `color/text/primary`. Rebound label → `color/text/link`
+  (`6607:61814`) so the control reads as one tappable affordance (icon/action ↔
+  text/link parallel). AA-safe per brand on bottomsheet. Verified visually
+  (blue label + blue chevron on white QD sheet).
 
 Collection counts after this: Semantic 97→98, Modes 124→125 (the two new link
 tokens).
