@@ -86,6 +86,44 @@ Moved: `cta/primary/{surface, on-surface, surface-disabled}`,
 - Other (4): `nav/shadow`, `generic/ios-bar`, `text/on-raised-light`,
   `cta/landing/radius` (brand-DNA)
 
+## 6. Action-link color fix + new `color/text/link` token
+
+Carry-over from the prior session: during the component rewire, legacy
+`Main/Text-Primary` (a blue link colour) was collapsed onto v3.2
+`color/text/primary` (body-text near-black), so action-links rendered black.
+
+**Root-cause nuance found via reference cross-check** (`DiM6F6cVhVzV5ato0ZQE44`):
+link-named slots are heterogeneous — `link`/`CTA`/`Read More` were blue
+`#0066ff`; `View all` was neutral gray `#98989c`; lowercase `cta` was white
+button labels `#f8f9fd`; `Text Link Right` was mixed blue/black by context. A
+blanket rebind would have broken the gray/white/black cases.
+
+**AA problem with the obvious fix:** `color/text/brand` is a per-brand accent
+and fails WCAG AA (<4.5:1) as link text on 16/22 brands. So a dedicated token
+was created instead.
+
+**New token — `color/text/link`:**
+- Modes `color/text/link` (`6607:61813`) — 22 brand modes, each aliasing the
+  *lightest* `color/primitives/primary/{500..900}` stop that clears 4.5:1
+  against that brand's page **and** bottom-sheet surface.
+- Semantic `color/text/link` (`6607:61814`) — aliases the Modes token.
+- Result: **all 22 brands pass AA** (lowest 4.62; most 5–13:1).
+
+**Rebound 36 action-links** to `color/text/link` (reference-confirmed blue):
+`link` (4), `CTA` (6), `Read More` (2), all `Text Link Right` (23, headers +
+search-bar Cancel, all blue contexts), `View all` Originals (1). Per-instance
+only — the shared Text Link Right master was left alone so black "Login"
+variants (In-game/Lobby/Germany) stay black. Verified 0 dangling refs;
+screenshots confirm blue links on light headers, untouched white labels on
+colored headers.
+
+**Held (no change):** `View all` Grid 6 (reference-ambiguous), 2× `cta`
+"Change Method" (dark `#1c1d20`, no reference match — not the white
+button-label case).
+
+Collection counts after this: Semantic 97→98, Modes 124→125 (the two new link
+tokens).
+
 ## Follow-ups
 
 - **Bucket B (post-delivery):** moving the remaining granular header / landing /
