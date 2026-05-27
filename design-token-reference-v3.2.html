@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design Token Reference v3.2 — Final catalogue · 6 collections · 9 brand modes</title>
-<meta name="description" content="Token Reference v3.2 — final catalogue for ComeOn's white-label platform. Global, Modes, Theme, Semantic, Component Packs, Regulatory. Strict 4-point scale, raw-hex invariant, 9 brand modes, Light + Dark.">
+<meta name="description" content="Token Reference v3.2 — final catalogue for ComeOn's white-label platform. Global, Modes, Theme, Semantic, Exceptions, Regulatory. Strict 4-point scale, raw-hex invariant, 9 brand modes, Light + Dark.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -224,7 +224,7 @@
     </div>
 
     <div class="toc-group" role="group" aria-labelledby="tg-c5">
-      <div class="toc-group-title" id="tg-c5">5 · Component Packs</div>
+      <div class="toc-group-title" id="tg-c5">5 · Exceptions</div>
       <a href="#c-cta" class="toc-link-block">cta.*</a>
       <a href="#c-menu-row" class="toc-link-block">menu-row.*</a>
       <a href="#c-nav" class="toc-link-block">nav.*</a>
@@ -280,7 +280,7 @@
     <div class="stat"><dt>140</dt><dd>Modes vars × 9</dd></div>
     <div class="stat"><dt>31</dt><dd>Theme vars × 2</dd></div>
     <div class="stat"><dt>53</dt><dd>Semantic vars</dd></div>
-    <div class="stat"><dt>38</dt><dd>Component Packs</dd></div>
+    <div class="stat"><dt>38</dt><dd>Exceptions</dd></div>
     <div class="stat"><dt>4</dt><dd>Regulatory × 7</dd></div>
   </dl>
 </header>
@@ -790,7 +790,7 @@
 <!-- ============================================================
      COLLECTION 5 — COMPONENT PACKS
      ============================================================ -->
-<h2 id="c5">Collection 5 · Component Packs <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">38 vars · all aliases</span></h2>
+<h2 id="c5">Collection 5 · Exceptions <span class="pill" style="font-size: 0.74rem; vertical-align: middle;">38 vars · all aliases</span></h2>
 <div class="section-intro">Last-mile alias packs for component masters. Used when a component needs a token name that does not generalise to a Semantic role.</div>
 
 <section id="c-cta" aria-labelledby="c-cta-h">
@@ -929,7 +929,7 @@
 
 <div class="note-card teal">
   <h4>Hex invariant audit</h4>
-  <p style="margin: 0;"><code class="inline">getLocalVariablesAsync()</code> filtered to <code class="inline">COLOR</code>; for each var, if collection is <strong>Modes</strong> and name does not match <code class="inline">color/(primary|secondary|neutral|tertiary)/*</code>, the value must be a <code class="inline">VARIABLE_ALIAS</code> in every mode. If collection is <strong>Theme / Semantic / Component Packs / Regulatory</strong>, same rule (no exceptions). The only places raw hex is allowed are <strong>Global/color/{black, white, black-alpha/*, white-alpha/*, system/*}</strong> and the four DNA ramps in Modes.</p>
+  <p style="margin: 0;"><code class="inline">getLocalVariablesAsync()</code> filtered to <code class="inline">COLOR</code>; for each var, if collection is <strong>Modes</strong> and name does not match <code class="inline">color/(primary|secondary|neutral|tertiary)/*</code>, the value must be a <code class="inline">VARIABLE_ALIAS</code> in every mode. If collection is <strong>Theme / Semantic / Exceptions / Regulatory</strong>, same rule (no exceptions). The only places raw hex is allowed are <strong>Global/color/{black, white, black-alpha/*, white-alpha/*, system/*}</strong> and the four DNA ramps in Modes.</p>
 </div>
 
 <div class="note-card teal">

@@ -91,6 +91,8 @@ Moved: `cta/primary/{surface, on-surface, surface-disabled}`,
 - **Bucket B (post-delivery):** moving the remaining granular header / landing /
   menu-row tokens out requires **expanding Semantic** with those roles first,
   then alias + rebind through them (same workflow). Start with `menu-row/*`.
-- **Doc naming drift:** the architecture/reference v3.2 HTML decks still call
-  this collection "Component Packs / CP"; the live file names it "Exceptions".
-  Reconcile naming in those decks in a later pass.
+- **Doc naming drift — RESOLVED 2026-05-27:** the v3.2 architecture deck,
+  reference deck, and `index.html` were renamed from "Component Packs / CP" to
+  "Exceptions" to match the live file. Naming-only pass — the `38 vars` figures
+  in those decks were left at their 2026-04-29 snapshot value (the decks are
+  dated point-in-time artifacts; live count is now 27).

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Design Token Architecture v3.2 — Final · 6 collections, two locked invariants, 9 brand modes</title>
-<meta name="description" content="Design Token Architecture v3.2: the final architecture for ComeOn's white-label platform. Six collections (Global, Modes, Theme, Semantic, Component Packs, Regulatory), strict 4-point scale, raw-hex invariant, 9 brand modes.">
+<meta name="description" content="Design Token Architecture v3.2: the final architecture for ComeOn's white-label platform. Six collections (Global, Modes, Theme, Semantic, Exceptions, Regulatory), strict 4-point scale, raw-hex invariant, 9 brand modes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -216,7 +216,7 @@
   <div class="slide-inner">
     <div class="section-header"><span class="section-num">03</span><span class="tag teal">Six collections</span></div>
     <h2 id="s3-title">The shape of v3.2.</h2>
-    <p class="lead" style="margin-bottom: 22px;">Each axis lives in exactly one collection. Aliases flow downward only: Global is the floor, Component Packs is the ceiling.</p>
+    <p class="lead" style="margin-bottom: 22px;">Each axis lives in exactly one collection. Aliases flow downward only: Global is the floor, Exceptions is the ceiling.</p>
 
     <div class="arch">
       <div class="arch-box highlight">
@@ -236,7 +236,7 @@
         <div><span class="pill-chip">role layer</span></div>
       </div>
       <div class="arch-box">
-        <div><span class="arch-label">Component Packs</span> <span class="arch-modes">· 1 mode · 38 vars · all aliases</span></div>
+        <div><span class="arch-label">Exceptions</span> <span class="arch-modes">· 1 mode · 38 vars · all aliases</span></div>
         <div><span class="pill-chip">component layer</span></div>
       </div>
       <div class="arch-box">
@@ -254,26 +254,26 @@
   <div class="slide-inner">
     <div class="section-header"><span class="section-num">04</span><span class="tag">Alias chain</span></div>
     <h2 id="s4-title">How a token resolves at the component.</h2>
-    <p class="lead" style="margin-bottom: 22px;">Components bind Component Packs or Semantic. Each layer aliases the layer below. Frame mode = brand × theme. The chain ends at Global or Modes DNA.</p>
+    <p class="lead" style="margin-bottom: 22px;">Components bind Exceptions or Semantic. Each layer aliases the layer below. Frame mode = brand × theme. The chain ends at Global or Modes DNA.</p>
 
     <pre aria-label="Alias chain example for primary CTA"><span class="c"># Frame mode: brand=Lyllo, theme=Light</span>
 
-Component Packs/cta/primary/background
+Exceptions/cta/primary/background
   → Semantic/color/brand/primary
     → Modes/color/brand/primary <span class="c"># resolves per brand mode</span>
       → Modes/color/primary/500 <span class="c"># Lyllo: #F02884 · raw hex (DNA)</span>
 
-Component Packs/cta/primary/text
+Exceptions/cta/primary/text
   → Theme/color/text/on-brand
     → Modes/color/text/on-brand <span class="c"># Light: aliases Global/color/white</span>
       → Global/color/white <span class="c"># #FFFFFF · raw hex</span>
 
-Component Packs/cta/radius
+Exceptions/cta/radius
   → Semantic/radius/sm
     → Modes/radius/cta
       → Global/scale/4 <span class="c"># 4px (rounded from legacy 3)</span>
 
-Component Packs/cta/padding/x
+Exceptions/cta/padding/x
   → Semantic/spacing/md
     → Global/scale/16 <span class="c"># 16px</span></pre>
 
@@ -429,22 +429,22 @@ theme/nav/shadow
 <!-- ============ SLIDE 9: COMPONENT PACKS ============ -->
 <section class="slide" role="group" aria-roledescription="slide" aria-labelledby="s9-title">
   <div class="slide-inner">
-    <div class="section-header"><span class="section-num">09</span><span class="tag">Collection 5 · Component Packs</span></div>
+    <div class="section-header"><span class="section-num">09</span><span class="tag">Collection 5 · Exceptions</span></div>
     <h2 id="s9-title">Last-mile alias packs for component masters.</h2>
     <p class="lead" style="margin-bottom: 22px;">38 variables. Component-specific aliases that sit one layer above Semantic — used when a component master needs a token name that does not generalise (e.g. <code class="inline">menu-row/label/on-icon</code>).</p>
 
-    <pre>Component Packs/menu-row/icon
+    <pre>Exceptions/menu-row/icon
   → Semantic/color/icon/content
     → Theme/color/icon/content
       → Modes/color/icon/content
         → Modes/color/neutral/700
 
-Component Packs/cta/primary/background
+Exceptions/cta/primary/background
   → Semantic/color/brand/primary
     → Modes/color/brand/primary
       → Modes/color/primary/500
 
-Component Packs/header/active-selected
+Exceptions/header/active-selected
   → Modes/color/header/active-selected
     → Modes/color/primary/500   <span class="c"># NOT neutral — must contrast surface-primary</span></pre>
 
@@ -482,7 +482,7 @@ Component Packs/header/active-selected
           <li>Modes (outside primary/secondary/neutral/tertiary) — <code class="inline">brand/*</code>, <code class="inline">surface/*</code>, <code class="inline">text/*</code>, <code class="inline">icon/*</code>, <code class="inline">border/*</code>, <code class="inline">banner/*</code>, <code class="inline">landing/*</code>, <code class="inline">menu-row/*</code>, <code class="inline">nav/*</code>, <code class="inline">header/*</code>, <code class="inline">chrome/*</code></li>
           <li>Theme — every var in both modes</li>
           <li>Semantic — every var</li>
-          <li>Component Packs — every var</li>
+          <li>Exceptions — every var</li>
           <li>Regulatory — every var</li>
         </ul>
         <p class="dim" style="font-size: 0.88rem; margin-top: 10px;">Audit: <code class="inline">getLocalVariablesAsync()</code> filtered to COLOR; assert non-DNA / non-Global vars resolve to <code class="inline">VARIABLE_ALIAS</code> in every mode.</p>
@@ -610,7 +610,7 @@ Component Packs/header/active-selected
         <tr><th scope="row">Modes · alias chrome</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
         <tr><th scope="row">Theme</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
         <tr><th scope="row">Semantic</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
-        <tr><th scope="row">Component Packs</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
+        <tr><th scope="row">Exceptions</th><td>—</td><td>—</td><td>✓ writes</td><td>read-only</td></tr>
         <tr><th scope="row">Regulatory</th><td>—</td><td>✓ writes</td><td>review</td><td>read-only</td></tr>
       </tbody>
     </table>
